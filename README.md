@@ -1,2 +1,14 @@
-# Knight
-A Programming Language to protect the Security of Information Flow
+# :sparkles: Knight :waning_crescent_moon:
+Knight is a Programming Language to protect the Security of Information Flow
+
+The whole Knight project, toolchain includes four parts:
+
+* __Knight :__ The programming Language
+* __Trial :__ Knight's Compiler
+* __Steed :__ The virtual machine to run Knight programs
+* __Duke :__ A toy OS to show and verify Knight's behavior
+
+All of these are in building ... ...
+
+
+___It's just my personal project at the moment___

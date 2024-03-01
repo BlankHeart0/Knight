@@ -1,0 +1,11 @@
+# Knight's ebnf grammar
+
+# Begin
+<Translation_Unit> ::= {<Expression>} CODE_EOF
+
+# Expression
+<Expression> ::= <MulDiv_Expression>{("+" | "-")<MulDiv_Expression>}
+<MulDiv_Expression> ::= <Unary_Expression>{("*" | "/" | "%")<Unary_Expression>}
+
+<Unary_Expression> ::= ["-"]<Primary_Expression> 
+<Primary_Expression> ::= "("<Expression>")" | CONSTANT_INT | CONSTANT_DEC | CONSTANT_STR | IDENTIFIER

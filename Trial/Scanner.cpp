@@ -249,4 +249,5 @@ void Scanner::Tokens_PrintTable()
 		else cout << "\t\tNULL";
 		cout << endl;
 	}
+    cout<<endl;
 }

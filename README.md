@@ -2,9 +2,7 @@
 Knight is a Programming Language to protect the Security of Information Flow
 
 <center>
-
-![Knight](Knight.jpg){width=400 height=380}
-
+<img src=Knight.jpg width="450"/>
 </center>
 
 The whole Knight project, toolchain includes four parts:

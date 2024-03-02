@@ -23,14 +23,12 @@ public:
 
     void ScanIdentifierKeyword();
 
-
     bool IsAtEnd();
     char Advance();
     bool Match(char expected);
     char Peek();
     char PeekNext();
 
-  
     bool IsDigit(char c);
     bool IsAlphaUnderline(char c);
     bool IsDigitAlphaUnderline(char c);

@@ -34,3 +34,7 @@
 # Knight file
 *.k
 *.ks
+
+#others
+*.vscode
+*.json

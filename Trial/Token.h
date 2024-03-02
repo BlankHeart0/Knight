@@ -19,7 +19,7 @@ enum TokenType
     LEFT_BRACE, RIGHT_BRACE, // { }
     
     //Operator
-    PLUS, MINUS, STAR, SLASH, MOD, // + - * / %
+    PLUS, MINUS, STAR, SLASH, PERCENT, // + - * / %
     
     ASSIGN, // =
 
@@ -51,7 +51,7 @@ static vector<string>TokenType_text
     "LEFT_BRACE", "RIGHT_BRACE", // { }
     
     //Operator
-    "PLUS", "MINUS", "STAR", "SLASH", "MOD", // + - * / %
+    "PLUS", "MINUS", "STAR", "SLASH", "PERCENT", // + - * / %
     
     "ASSIGN", // =
 
@@ -94,6 +94,7 @@ public:
     Literal(int literal_int):is_valid(true),literal_type(L_INT),literal_int(literal_int){}
     Literal(double literal_dec):is_valid(true),literal_type(L_DEC),literal_dec(literal_dec){}
     Literal(string literal_str):is_valid(true),literal_type(L_STR),literal_str(literal_str){}
+
 };
 
 class Token{

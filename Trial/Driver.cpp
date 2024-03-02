@@ -1,5 +1,6 @@
 #include "System.h"
 #include "Scanner.h"
+#include "Parser.h"
 
 void Usage()
 {
@@ -33,9 +34,15 @@ void Compile(char* input_file_path)
 {
     string code=Load(input_file_path);
 
+    //Scan
     Scanner scanner(code);
     scanner.ScanTokens();
     scanner.Tokens_PrintTable();
+
+    //Parse
+    Parser parser(scanner.tokens);
+    parser.Parse();
+    parser.abstract_syntax_tree.Print();
 }
 
 int main(int argc,char* argv[])

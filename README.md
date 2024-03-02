@@ -1,6 +1,12 @@
 # :sparkles: Knight :waning_crescent_moon:
 Knight is a Programming Language to protect the Security of Information Flow
 
+<center>
+
+![Knight](Knight.jpg){width=400 height=380}
+
+</center>
+
 The whole Knight project, toolchain includes four parts:
 
 * __Knight :__ The programming Language

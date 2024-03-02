@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Knight file
+*.k
+*.ks

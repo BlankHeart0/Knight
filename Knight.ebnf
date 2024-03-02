@@ -1,7 +1,16 @@
 # Knight's ebnf grammar
 
 # Begin
-<Translation_Unit> ::= {<Expression>} CODE_EOF
+<Translation_Unit> ::= {<Function_Definition>} CODE_EOF
+
+# Definition
+<Function_Definition> ::= IDENTIFIER "(" ")" <Compound_Statement>
+
+#Statement
+<Statement> ::= <Compound_Statement> | <Expression_Statement> 
+<Compound_Statement> ::= "{"{<Statement>}"}"
+
+<Expression_Statement> ::= [<Expression>]";"
 
 # Expression
 <Expression> ::= <MulDiv_Expression>{("+" | "-")<MulDiv_Expression>}

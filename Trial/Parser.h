@@ -24,6 +24,7 @@ public:
     // Statement
     ASTNode* Parse_Statement();
     ASTNode* Parse_Compound_Statement();
+    ASTNode* Parse_Print_Statement();
     ASTNode* Parse_Expression_Statement();
     // Expression
     ASTNode* Parse_Expression();

@@ -36,8 +36,8 @@ ASTNode* Parser::Parse_Function_Definition()
     {
         node->function_name=PreviousToken().lexeme;
 
-        if(!Match(LEFT_PAREN))PARSE_ERROR("Left paren ( loss");
-        if(!Match(RIGHT_PAREN))PARSE_ERROR("Right paren ) loss");
+        if(!Match(LEFT_PAREN))PARSE_ERROR("Left paren '(' loss");
+        if(!Match(RIGHT_PAREN))PARSE_ERROR("Right paren ')' loss");
 
         node->compound_statement=Parse_Compound_Statement();
     }
@@ -56,9 +56,27 @@ ASTNode* Parser::Parse_Statement()
     StatementAST* node=new StatementAST();
 
     if(Peek(LEFT_BRACE)) 
-        node->compound_or_expression_statement=Parse_Compound_Statement();
+        node->X_statement=Parse_Compound_Statement();
+    else if(Peek(PRINT))
+        node->X_statement=Parse_Print_Statement();
     else
-        node->compound_or_expression_statement=Parse_Expression_Statement();
+        node->X_statement=Parse_Expression_Statement();
+
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_Print_Statement()
+{
+    diagnostor.WhoAmI("Parse_Print_Statement");
+
+    PrintStatementAST* node=new PrintStatementAST();
+
+    if(Match(PRINT))
+    {
+        node->expression=Parse_Expression();
+        MatchSemicolon();
+    }
+    else PARSE_ERROR("Keyword 'print' loss");
 
     return (ASTNode*)node;
 }
@@ -77,9 +95,9 @@ ASTNode* Parser::Parse_Compound_Statement()
                             Parse_Statement());
         }
         if(PreviousToken().token_type!=RIGHT_BRACE)
-            PARSE_ERROR("Right barce } loss");
+            PARSE_ERROR("Right barce '}' loss");
     }
-    else PARSE_ERROR("Left barce { loss");
+    else PARSE_ERROR("Left barce '{' loss");
 
     return (ASTNode*)node;
 }
@@ -168,12 +186,12 @@ ASTNode* Parser::Parse_Primary_Expression()
 
     if(Match(CONSTANT_INT)||Match(CONSTANT_DEC)||Match(CONSTANT_STR))
     {
-        node->litreal=PreviousToken().literal;
+        node->literal=PreviousToken().literal;
     }
     else if(Match(LEFT_PAREN))
     {
         node->expression=Parse_Expression();
-        if(!Match(RIGHT_PAREN))PARSE_ERROR("Right paren ) loss");
+        if(!Match(RIGHT_PAREN))PARSE_ERROR("Right paren ')' loss");
     }
 
     else PARSE_ERROR("Primary character loss");
@@ -207,7 +225,7 @@ bool Parser::Match(TokenType expected)
 
 void Parser::MatchSemicolon()
 {
-    if(!Match(SEMICOLON))PARSE_ERROR("Semicolon ; loss");
+    if(!Match(SEMICOLON))PARSE_ERROR("Semicolon ';' loss");
 }
 
 bool Parser::Peek(TokenType expected)

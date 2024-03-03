@@ -31,7 +31,7 @@ void Scanner::ScanToken()
         case '-': AddToken(MINUS);          break;
         case '*': AddToken(STAR);           break;
         case '/': AddToken(SLASH);          break;
-        case '%': AddToken(MOD);            break;
+        case '%': AddToken(PERCENT);            break;
 
         case '=': AddToken(EQUAL);          break;
 

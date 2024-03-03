@@ -36,5 +36,6 @@
 *.ks
 
 #others
-*.vscode
+.vscode/
+.VSCodeCounter/
 *.json

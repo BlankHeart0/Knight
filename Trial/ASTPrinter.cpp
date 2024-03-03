@@ -3,7 +3,7 @@
 void PrintTab(int n)
 {
     cout<<endl;
-    for(int i=0;i<=n+1;i++)cout<<'\t';
+    for(int i=0;i<=n+2;i++)cout<<'\t';
 }
 
 void AST::Print()
@@ -44,7 +44,7 @@ void StatementAST::Print(int depth)
     PrintTab(depth);
     cout<<"Statement";
     
-    compound_or_expression_statement->Print(depth+1);
+    X_statement->Print(depth+1);
 }
 
 void CompoundStatementAST::Print(int depth)
@@ -54,6 +54,14 @@ void CompoundStatementAST::Print(int depth)
     
     for(ASTNode* ast_ptr:statements)
         ast_ptr->Print(depth+1);
+}
+
+void PrintStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Print_Statement";
+
+    expression->Print(depth);
 }
 
 void ExpressionStatementAST::Print(int depth)

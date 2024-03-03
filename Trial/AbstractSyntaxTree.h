@@ -51,9 +51,9 @@ public:
 class StatementAST: public ASTNode
 {
 public:
-    ASTNode* compound_or_expression_statement;
+    ASTNode* X_statement;
 
-    StatementAST():compound_or_expression_statement(nullptr){}
+    StatementAST():X_statement(nullptr){}
 
     void Print(int depth) override;
 };
@@ -64,6 +64,16 @@ public:
     vector<ASTNode*>statements;
 
     void Print(int depth) override;
+};
+
+class PrintStatementAST: public ASTNode
+{
+public:
+    ASTNode* expression;
+    PrintStatementAST():expression(nullptr){}
+
+    void Print(int depth) override;
+
 };
 
 class ExpressionStatementAST: public ASTNode

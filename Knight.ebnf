@@ -7,9 +7,9 @@
 <Function_Definition> ::= IDENTIFIER "(" ")" <Compound_Statement>
 
 #Statement
-<Statement> ::= <Compound_Statement> | <Expression_Statement> 
+<Statement> ::= <Compound_Statement> | <Print_Statement> | <Expression_Statement> 
 <Compound_Statement> ::= "{"{<Statement>}"}"
-
+<Print_Statement> ::= PRINT <Expression> ";"
 <Expression_Statement> ::= [<Expression>]";"
 
 # Expression

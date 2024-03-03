@@ -6,7 +6,7 @@
 
 enum ErrorModule
 {
-    E_SCANNER,E_PARSER,E_REGISTER
+    E_SCANNER,E_PARSER,E_REGISTER,E_FILEMANAGER
 };
 
 class Diagnostor

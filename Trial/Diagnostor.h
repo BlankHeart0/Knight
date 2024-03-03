@@ -6,13 +6,16 @@
 
 enum ErrorModule
 {
-    E_SCANNER,E_PARSER
+    E_SCANNER,E_PARSER,E_REGISTER
 };
 
 class Diagnostor
 {
 public:
+    void ErrorHead(ErrorModule error_module);
     void Error(ErrorModule error_module,int line,string error_message);
+    void Error(ErrorModule error_module,string error_message);
+    
     void WhoAmI(string name);
 };
 

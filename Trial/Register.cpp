@@ -2,11 +2,22 @@
 
 string GeneralRegister::Name(int register_i)
 {
-    string register_name;
+    string register_name="";
 
     if(register_i>=0&&register_i<table.size()
                     &&!table[register_i].free)
-        register_name="R"+to_string(register_i);
+    {
+        register_name+="R"+to_string(register_i);
+        register_name+="(";
+        switch(table[register_i].store_type)
+        {
+            case S_NULL:register_name+="NULL";break;
+            case S_INT:register_name+="INT";break;
+            case S_DEC:register_name+="DEC";break;
+            case S_STR:register_name+="STR";break;
+        }
+        register_name+=")";
+    }
     else
         REGISTER_ERROR("Can not visit this general register");
     

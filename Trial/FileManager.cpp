@@ -49,6 +49,16 @@ void FileManager::Write(string code_ks)
     output_file<<code_ks;
 }
 
+void FileManager::WriteComma()
+{
+    output_file<<",";
+}
+
+void FileManager::WriteEndl()
+{
+    output_file<<endl;
+}
+
 void FileManager::Close()
 {
     input_file.close();

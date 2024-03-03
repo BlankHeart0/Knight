@@ -7,7 +7,7 @@ class ASTNode
 {
 public:
     virtual ~ASTNode(){}
-    //virtual int CodeGen()=0;
+    virtual int CodeGen()=0;
     virtual void Print(int depth)=0;
 };
 
@@ -30,7 +30,7 @@ class TranslationUnitAST: public ASTNode
 public:
     vector<ASTNode*>function_definitions;
     
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -46,7 +46,7 @@ public:
 
     FunctionDefinitionAST():compound_statement(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -61,7 +61,7 @@ public:
 
     StatementAST():X_statement(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -71,7 +71,7 @@ class CompoundStatementAST: public ASTNode
 public:
     vector<ASTNode*>statements;
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -82,7 +82,7 @@ public:
     ASTNode* expression;
     PrintStatementAST():expression(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 
@@ -95,7 +95,7 @@ public:
 
     ExpressionStatementAST():expression(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -113,7 +113,7 @@ public:
 
     ExpressionAST():muldiv_expression(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -128,7 +128,7 @@ public:
 
     MulDivExpressionAST():unary_expression(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -141,7 +141,7 @@ public:
 
     UnaryExpressionAST():prefix_operator(""),primary_expression(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };
@@ -150,11 +150,13 @@ class PrimaryExpressionAST: public ASTNode
 {
 public:
     ASTNode* expression;
-    Literal literal;
+    Literal literal; 
+    //@Todo:use orgin Token,it has line
+    //@Todo:identifier
 
     PrimaryExpressionAST():expression(nullptr){}
 
-    //int CodeGen() override;
+    int CodeGen() override;
 
     void Print(int depth) override;
 };

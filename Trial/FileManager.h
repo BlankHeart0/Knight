@@ -21,6 +21,8 @@ public:
     void Open();
     void Load();
     void Write(string code_ks);
+    void WriteComma();
+    void WriteEndl();
     void Close();
 };
 
@@ -29,4 +31,9 @@ extern FileManager file_manager;
 #define FILEMANAGER_ERROR(error_message)                  \
         do{                                               \
             diagnostor.Error(E_REGISTER,error_message);   \
+        }while(0)
+
+#define WriteGeneralRegisterName(register_i)                        \
+        do{                                                         \
+            file_manager.Write(general_register.Name(register_i));  \
         }while(0)

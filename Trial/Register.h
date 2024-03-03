@@ -10,6 +10,7 @@ enum StoreType
     S_DEC,
     S_STR
 };
+
 static vector<string> StoreType_text
 {
     "S_NULL",

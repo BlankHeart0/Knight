@@ -10,7 +10,6 @@ void CodeGenerator::CodeGen()
 void AST::CodeGen()
 {
     cout<<"--- --- CodeGen Begin --- ---"<<endl;
-    file_manager.Write("Hello Knight!\n\n");
     translation_unit->CodeGen();
     cout<<"--- --- CodeGen Done --- ---"<<endl;
 }

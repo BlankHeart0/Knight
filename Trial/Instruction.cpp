@@ -1,5 +1,6 @@
 #include "CodeGenerator.h"
 
+//@Todo:Reduce load and store (from dragon book)
 int CodeGenerator::Load(Literal literal)
 {   
     int register_i=-1;

@@ -30,7 +30,7 @@ extern FileManager file_manager;
 
 #define FILEMANAGER_ERROR(error_message)                  \
         do{                                               \
-            diagnostor.Error(E_REGISTER,error_message);   \
+            diagnostor.Error(E_FILEMANAGER,error_message);\
         }while(0)
 
 #define WriteGeneralRegisterName(register_i)                        \

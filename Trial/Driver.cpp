@@ -9,7 +9,7 @@ void Usage()
     cout<<"Usage: trial knight_file "<<endl;
 }
 
-void Compile()
+void Trial()
 {
     //Scan
     Scanner scanner(file_manager.source);
@@ -34,7 +34,7 @@ int main(int argc,char* argv[])
         file_manager.Initialize(argv[1]);
         file_manager.Open();
         file_manager.Load();
-        Compile();
+        Trial();
     }
     return 0;
 }

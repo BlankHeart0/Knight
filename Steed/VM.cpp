@@ -12,8 +12,10 @@ void VirtualMachine::Load()
 
     string line_str=file_manager.ReadLine();
     while(line_str!="")
-    {
-        cout<<line_str<<endl;
+    {   
+        Parser parser(line_str);
+        main.instructions.push_back(parser.Parse());
+        
         line_str=file_manager.ReadLine();
     }
 
@@ -23,4 +25,5 @@ void VirtualMachine::Load()
 void VirtualMachine::Run()
 {
     cout<<"------Running------"<<endl;
+    main.Excute();
 }

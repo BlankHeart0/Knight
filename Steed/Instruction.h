@@ -20,6 +20,23 @@ public:
     OperandRegister operand1_register;
     OperandConstant operand2_constant;
 
+    Load_ConstantToRegister
+        (OperandRegister operand1_register,OperandConstant operand2_constant):
+        operand1_register(operand1_register),operand2_constant(operand2_constant){}
+
+    void Excute() override;
+};
+
+
+
+// Print
+class Print: public Instruction
+{
+public:
+    OperandRegister operand1_register;
+
+    Print(OperandRegister operand1_register):operand1_register(operand1_register){}
+
     void Excute() override;
 };
 
@@ -32,6 +49,9 @@ public:
     OperandRegister operand1_register;
     OperandRegister operand2_register;
 
+    Add(OperandRegister operand1_register,OperandRegister operand2_register):
+        operand1_register(operand1_register),operand2_register(operand2_register){}
+
     void Excute() override;
 };
 
@@ -41,6 +61,9 @@ public:
     OperandRegister operand1_register;
     OperandRegister operand2_register;
 
+    Sub(OperandRegister operand1_register,OperandRegister operand2_register):
+        operand1_register(operand1_register),operand2_register(operand2_register){}
+    
     void Excute() override;
 };
 
@@ -50,6 +73,9 @@ public:
     OperandRegister operand1_register;
     OperandRegister operand2_register;
 
+    Mul(OperandRegister operand1_register,OperandRegister operand2_register):
+        operand1_register(operand1_register),operand2_register(operand2_register){}
+    
     void Excute() override;
 };
 
@@ -59,6 +85,9 @@ public:
     OperandRegister operand1_register;
     OperandRegister operand2_register;
 
+    Div(OperandRegister operand1_register,OperandRegister operand2_register):
+        operand1_register(operand1_register),operand2_register(operand2_register){}
+    
     void Excute() override;
 };
 
@@ -67,7 +96,10 @@ class Mod: public Instruction
 public:
     OperandRegister operand1_register;
     OperandRegister operand2_register;
-
+    
+    Mod(OperandRegister operand1_register,OperandRegister operand2_register):
+        operand1_register(operand1_register),operand2_register(operand2_register){}
+  
     void Excute() override;
 };
 
@@ -78,6 +110,8 @@ class Neg: public Instruction
 {
 public:
     OperandRegister operand1_register;
+
+    Neg(OperandRegister operand1_register):operand1_register(operand1_register){}
 
     void Excute() override;
 };

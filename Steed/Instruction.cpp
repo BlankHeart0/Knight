@@ -21,6 +21,21 @@ void Load_ConstantToRegister::Excute()
 
 
 
+// Print
+void Print::Excute()
+{
+    Register& R1=general_register.GetRegister(operand1_register.register_i);
+    switch(R1.store_type)
+    {
+        case S_INT:cout<<R1.INT_val<<endl;break;
+        case S_DEC:cout<<R1.DEC_val<<endl;break;
+
+        case S_STR:cout<<R1.STR_val<<endl;break;
+    }
+}
+
+
+
 // Binary
 void Add::Excute()
 {

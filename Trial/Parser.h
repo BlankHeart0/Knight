@@ -21,6 +21,7 @@ public:
     ASTNode* Parse_Translation_Unit();
     // Definition
     ASTNode* Parse_Function_Definition();
+    ASTNode* Parse_LocalVariable_Definition();
     // Statement
     ASTNode* Parse_Statement();
     ASTNode* Parse_Compound_Statement();
@@ -28,6 +29,8 @@ public:
     ASTNode* Parse_Expression_Statement();
     // Expression
     ASTNode* Parse_Expression();
+    ASTNode* Parse_Assignment_Expression();
+    ASTNode* Parse_PlusMinus_Expression();
     ASTNode* Parse_MulDiv_Expression();
     ASTNode* Parse_Unary_Expression();
     ASTNode* Parse_Primary_Expression();

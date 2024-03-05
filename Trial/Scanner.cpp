@@ -31,9 +31,9 @@ void Scanner::ScanToken()
         case '-': AddToken(MINUS);          break;
         case '*': AddToken(STAR);           break;
         case '/': AddToken(SLASH);          break;
-        case '%': AddToken(PERCENT);            break;
+        case '%': AddToken(PERCENT);        break;
 
-        case '=': AddToken(EQUAL);          break;
+        case '=': AddToken(ASSIGN);         break;
 
         case '?': 
             if(Match('=')) AddToken(EQUAL); 
@@ -50,6 +50,7 @@ void Scanner::ScanToken()
         case '#':
             while(Peek()!='\n'&&!IsAtEnd())Advance();
             break;
+        //@Todo: multiple lines
 
         //Blank
         case ' ': case '\r': case '\t':     break;

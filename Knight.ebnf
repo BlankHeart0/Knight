@@ -5,15 +5,18 @@
 
 # Definition
 <Function_Definition> ::= IDENTIFIER "(" ")" <Compound_Statement>
+<LocalVariable_Definition> ::= (INT | DEC | STR) IDENTIFIER [":"<Expression>]";"
 
 #Statement
-<Statement> ::= <Compound_Statement> | <Print_Statement> | <Expression_Statement> 
+<Statement> ::= <Compound_Statement> | <LocalVariable_Definition> | <Print_Statement> | <Expression_Statement> 
 <Compound_Statement> ::= "{"{<Statement>}"}"
 <Print_Statement> ::= PRINT <Expression> ";"
 <Expression_Statement> ::= [<Expression>]";"
 
 # Expression
-<Expression> ::= <MulDiv_Expression>{("+" | "-")<MulDiv_Expression>}
+<Expression> ::= <Assignment_Expression>
+<Assignment_Expression> ::= [IDENTIFIER "="] <PlusMinus_Expression>
+<PlusMinus_Expression> ::= <MulDiv_Expression>{("+" | "-")<MulDiv_Expression>}
 <MulDiv_Expression> ::= <Unary_Expression>{("*" | "/" | "%")<Unary_Expression>}
 
 <Unary_Expression> ::= ["-"]<Primary_Expression> 

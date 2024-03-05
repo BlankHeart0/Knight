@@ -18,6 +18,9 @@ void Diagnostor::ErrorHead(ErrorModule error_module)
         case E_FILEMANAGER:
             cout<<"FileManager Error: ";
             break;
+        case E_SYMBOL:
+            cout<<"Symbol Error: ";
+            break;
     }
 }
 

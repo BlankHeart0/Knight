@@ -18,7 +18,7 @@ Instruction* Parser::Parse()
         operand2=knightASM_code.substr(current,end-current);
     }  
 
-    return ParseFunctio_map[opcode](operand1,operand2);
+    return ParseFunction_map[opcode](operand1,operand2);
 }
 
 

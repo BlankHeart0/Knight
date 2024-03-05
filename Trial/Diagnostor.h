@@ -2,11 +2,12 @@
 
 #include "System.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 enum ErrorModule
 {
-    E_SCANNER,E_PARSER,E_REGISTER,E_FILEMANAGER
+    E_SCANNER,E_PARSER,E_REGISTER,
+    E_FILEMANAGER,E_SYMBOL
 };
 
 class Diagnostor

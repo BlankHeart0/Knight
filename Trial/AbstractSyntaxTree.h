@@ -41,13 +41,27 @@ public:
 class FunctionDefinitionAST: public ASTNode
 {
 public:
-    string function_name;
+    Token function_name;
     ASTNode* compound_statement;
 
     FunctionDefinitionAST():compound_statement(nullptr){}
 
     int CodeGen() override;
 
+    void Print(int depth) override;
+};
+
+class LocalVariableDefinitionAST: public ASTNode
+{
+public:
+    Token type;
+    Token variable_name;
+    ASTNode* expression;
+
+    LocalVariableDefinitionAST():expression(nullptr){}
+    
+    int CodeGen() override;
+    
     void Print(int depth) override;
 };
 
@@ -106,12 +120,37 @@ public:
 class ExpressionAST: public ASTNode
 {
 public:
+    ASTNode* assignment_expression;
+
+    ExpressionAST():assignment_expression(nullptr){}
+    
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+class AssignmentExpressionAST: public ASTNode
+{
+public:
+    Token variable;
+    ASTNode* plusminus_expression;
+
+    AssignmentExpressionAST():plusminus_expression(nullptr){}
+    
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+class PlusMinusExpressionAST: public ASTNode
+{
+public:
     ASTNode* muldiv_expression;
     
-    vector<char> infix_operators;
+    vector<Token> infix_operators;
     vector<ASTNode*> muldiv_expressions;
 
-    ExpressionAST():muldiv_expression(nullptr){}
+    PlusMinusExpressionAST():muldiv_expression(nullptr){}
 
     int CodeGen() override;
 
@@ -123,7 +162,7 @@ class MulDivExpressionAST: public ASTNode
 public:
     ASTNode* unary_expression;
 
-    vector<char> infix_operators;
+    vector<Token> infix_operators;
     vector<ASTNode*> unary_expressions;
 
     MulDivExpressionAST():unary_expression(nullptr){}
@@ -136,10 +175,10 @@ public:
 class UnaryExpressionAST: public ASTNode
 {
 public:
-    string prefix_operator;
+    Token prefix_operator;
     ASTNode* primary_expression;
 
-    UnaryExpressionAST():prefix_operator(""),primary_expression(nullptr){}
+    UnaryExpressionAST():primary_expression(nullptr){}
 
     int CodeGen() override;
 
@@ -150,9 +189,8 @@ class PrimaryExpressionAST: public ASTNode
 {
 public:
     ASTNode* expression;
-    Literal literal; 
-    //@Todo:use orgin Token,it has line
-    //@Todo:identifier
+    Token constant;
+    Token variable;
 
     PrimaryExpressionAST():expression(nullptr){}
 

@@ -1,6 +1,7 @@
 #include "CodeGenerator.h"
 
 GeneralRegister CodeGenerator::general_register;
+VariableTable CodeGenerator::vartable;
 
 void CodeGenerator::CodeGen()
 {
@@ -30,8 +31,21 @@ int TranslationUnitAST::CodeGen()
 // Definition
 int FunctionDefinitionAST::CodeGen()
 {
-    file_manager.Write(function_name+":\n");
+    //file_manager.Write(function_name.lexeme+":\n");
     compound_statement->CodeGen();
+
+    return NOTHING;
+}
+
+int LocalVariableDefinitionAST::CodeGen()
+{
+    CodeGenerator::Var(type,variable_name.lexeme);
+    //Initialize
+    if(expression)
+    {
+        int expression_i=expression->CodeGen();
+        CodeGenerator::Store(variable_name,expression_i,true);
+    }
 
     return NOTHING;
 }
@@ -47,9 +61,11 @@ int StatementAST::CodeGen()
 }
 
 int CompoundStatementAST::CodeGen()
-{
+{        
+    CodeGenerator::vartable.EnterScope();
     for(ASTNode* ast_ptr:statements)
-        ast_ptr->CodeGen();
+        ast_ptr->CodeGen();    
+    CodeGenerator::vartable.LeaveScope();
 
     return NOTHING;
 }
@@ -64,8 +80,12 @@ int PrintStatementAST::CodeGen()
 
 int ExpressionStatementAST::CodeGen()
 {
-    if(expression)expression->CodeGen();
-
+    //@Todo:it breaks the packing
+    if(expression)
+    {
+        int expression_i=expression->CodeGen();
+        CodeGenerator::general_register.Free(expression_i);
+    }
     return NOTHING;
 }
 
@@ -73,6 +93,23 @@ int ExpressionStatementAST::CodeGen()
 
 // Expression
 int ExpressionAST::CodeGen()
+{
+    int result_ri=assignment_expression->CodeGen();
+    
+    return result_ri;
+}
+
+int AssignmentExpressionAST::CodeGen()
+{
+    int result_ri=plusminus_expression->CodeGen();
+
+    if(variable.is_valid)
+        CodeGenerator::Store(variable,result_ri,false);
+    
+    return result_ri;
+}
+
+int PlusMinusExpressionAST::CodeGen()
 {
     int result_ri=muldiv_expression->CodeGen();
 
@@ -106,7 +143,7 @@ int UnaryExpressionAST::CodeGen()
 {
     int result_ri=primary_expression->CodeGen();
 
-    if(prefix_operator=="") return result_ri;
+    if(!prefix_operator.is_valid) return result_ri;
     
     return CodeGenerator::
            UnaryInstruction(prefix_operator,result_ri);
@@ -114,7 +151,10 @@ int UnaryExpressionAST::CodeGen()
 
 int PrimaryExpressionAST::CodeGen()
 {
-    if(expression)return expression->CodeGen();
-
-    return CodeGenerator::Load(literal);
+    if(expression)
+        return expression->CodeGen();
+    else if(constant.is_valid)
+        return CodeGenerator::LoadConstant(constant);
+    
+    return CodeGenerator::LoadVariable(variable);
 }

@@ -79,7 +79,7 @@ enum LiteralType
 {
     L_INT,L_DEC,L_STR,
 };
-
+//@Todo: may be it is useless!
 class Literal
 {
 public:
@@ -99,11 +99,13 @@ public:
 
 class Token{
 public:
+    bool is_valid;
     TokenType token_type;
     string lexeme;
     Literal literal;
     int line;
 
+    Token():is_valid(false){}
     Token(TokenType token_type,string lexeme,Literal literal,int line):
-        token_type(token_type),lexeme(lexeme),literal(literal),line(line){}
+        is_valid(true),token_type(token_type),lexeme(lexeme),literal(literal),line(line){}
 };

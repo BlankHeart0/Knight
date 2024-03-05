@@ -5,6 +5,7 @@
 #include "Token.h"
 #include "AbstractSyntaxTree.h"
 #include "Register.h"
+#include "SymbolTable.h"
 
 #define NOTHING -1
 
@@ -19,10 +20,15 @@ public:
     void CodeGen();
 
     static GeneralRegister general_register;
-    //Instruction
-    static int Load(Literal literal);
-    static void Print(int register_i);
-    static int BinaryInstruction(int r1_i,char Operator,int r2_i);
-    static int UnaryInstruction(string Operator,int register_i);
+    static VariableTable vartable;
     
+    //Instruction
+    static void Var(Token type,string variable_name);
+    static int LoadConstant(Token constant);
+    static int LoadVariable(Token variable);
+    static void Store(Token variable,int register_i,bool need_free);
+    static void Print(int register_i);
+    static int BinaryInstruction(int r1_i,Token Operator,int r2_i);
+    static int UnaryInstruction(Token Operator,int register_i);
+
 };

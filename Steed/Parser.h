@@ -40,7 +40,7 @@ Instruction* Parse_Mod(string& operand1,string& operand2);
 Instruction* Parse_Neg(string& operand1,string& operand2);
 
 
-static unordered_map<string,Instruction* (*)(string&,string&)> ParseFunctio_map
+static unordered_map<string,Instruction* (*)(string&,string&)> ParseFunction_map
 {
     // Load
     {"Load",Parse_Load_ConstantToRegister},

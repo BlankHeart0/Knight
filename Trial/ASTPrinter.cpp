@@ -32,8 +32,18 @@ void FunctionDefinitionAST::Print(int depth)
     PrintTab(depth);
     cout<<"Function_Definition";
     
-    cout<<" function_name:"<<function_name;
+    cout<<" function_name:"<<function_name.lexeme;
     compound_statement->Print(depth+1);
+}
+
+void LocalVariableDefinitionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"LocalVariable_Definition";
+
+    cout<<" type:"<<type.lexeme;
+    cout<<" variable_name:"<<variable_name.lexeme;
+    if(expression)expression->Print(depth+1);
 }
 
 
@@ -80,12 +90,29 @@ void ExpressionAST::Print(int depth)
 {
     PrintTab(depth);
     cout<<"Expression";
-    
+
+    assignment_expression->Print(depth+1);
+}
+
+void AssignmentExpressionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Assignment_Expression";
+
+    if(variable.is_valid)cout<<" variable:"<<variable.lexeme;
+    plusminus_expression->Print(depth+1);    
+}
+
+void PlusMinusExpressionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"PlusMinus_Expression";
+
     muldiv_expression->Print(depth+1);
     for(int i=0;i<infix_operators.size();i++)
     {
         PrintTab(depth+1);
-        cout<<" infix_operator:"<<infix_operators[i];
+        cout<<" infix_operator:"<<infix_operators[i].lexeme;
         muldiv_expressions[i]->Print(depth+1);
     }
 }
@@ -99,7 +126,7 @@ void MulDivExpressionAST::Print(int depth)
     for(int i=0;i<infix_operators.size();i++)
     {
         PrintTab(depth+1);
-        cout<<" infix_operator:"<<infix_operators[i];
+        cout<<" infix_operator:"<<infix_operators[i].lexeme;
         unary_expressions[i]->Print(depth+1);
     }
 }
@@ -109,8 +136,8 @@ void UnaryExpressionAST::Print(int depth)
     PrintTab(depth);
     cout<<"Unary_Expression";
 
-    if(prefix_operator!="")
-        cout<<" prefix_operator:"<<prefix_operator;
+    if(prefix_operator.is_valid)
+        cout<<" prefix_operator:"<<prefix_operator.lexeme;
     primary_expression->Print(depth+1);
 }
 
@@ -120,19 +147,18 @@ void PrimaryExpressionAST::Print(int depth)
     cout<<"Primary_Expression";
 
     if(expression)expression->Print(depth+1);
-    else 
+    else if(constant.is_valid)
     {
-        switch(literal.literal_type)
+        switch(constant.token_type)
         {
-            case L_INT:
-                cout<<" constant_int:"<<literal.literal_int;
-                break;
-            case L_DEC:
-                cout<<" constant_dec:"<<literal.literal_dec;
-                break;
-            case L_STR:
-                cout<<" constant_str:"<<literal.literal_str;
-                break;
+            case CONSTANT_INT:cout<<" constant_int:";break;
+            case CONSTANT_DEC:cout<<" constant_dec:";break;
+            case CONSTANT_STR:cout<<" constant_str:";break;
         }
+        cout<<constant.lexeme;
+    }
+    else if(variable.is_valid)
+    {
+        cout<<" variable:"<<variable.lexeme;
     }
 }

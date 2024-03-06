@@ -2,6 +2,7 @@
 
 #include "System.h"
 #include "Instruction.h"
+#include "Operand.h"
 
 class Parser
 {
@@ -22,9 +23,14 @@ public:
 // Operand
 OperandConstant Parse_OperandConstant(string& operand_str);
 OperandRegister Parse_OperandRegister(string& operand_str);
+OperandType Parse_OperandType(string& operand_str);
+OperandVariable Parse_OperandVariable(string& operand_str);
 
-// Load
-Instruction* Parse_Load_ConstantToRegister(string& operand1,string& operand2);
+// Var
+Instruction* Parse_Var(string& operand1,string& operand2);
+// Load&Store
+Instruction* Parse_Load(string& operand1,string& operand2);
+Instruction* Parse_Store(string& operand1,string& operand2);
 
 // Print
 Instruction* Parse_Print(string& operand1,string& operand2);
@@ -41,10 +47,12 @@ Instruction* Parse_Neg(string& operand1,string& operand2);
 
 
 static unordered_map<string,Instruction* (*)(string&,string&)> ParseFunction_map
-{
+{   
+    // Var
+    {"Var",Parse_Var},
     // Load
-    {"Load",Parse_Load_ConstantToRegister},
-    
+    {"Load",Parse_Load},
+    {"Store",Parse_Store},
     // Print
     {"Print",Parse_Print},
 

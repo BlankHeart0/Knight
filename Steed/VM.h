@@ -9,10 +9,13 @@ class VirtualMachine
 {
 private:
     FileManager file_manager;
+    
+public:
     Function main;
 
-public:
     void Initialize(string knightASM_file_name);
     void Load();
     void Run();
 };
+
+extern VirtualMachine Steed;

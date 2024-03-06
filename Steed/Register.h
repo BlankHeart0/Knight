@@ -2,6 +2,7 @@
 
 #include "System.h"
 
+// Maybe it can be replace to DataType
 enum StoreType
 {
     S_NULL,
@@ -42,10 +43,6 @@ public:
     void Set(int register_i,string str_val);
 
     Register& GetRegister(int register_i);
-
-    int GetInt(int register_i);
-    double GetDec(int register_i);
-    string GetStr(int register_i);
 
     void Grow(int n);
 };

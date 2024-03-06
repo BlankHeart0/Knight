@@ -13,18 +13,60 @@ public:
 
 
 
+// Var
+class Var: public Instruction
+{
+public:
+    OperandType operand1_type;
+    OperandVariable operand2_variable;
+
+    Var(OperandType operand1_type,OperandVariable operand2_variable):
+        operand1_type(operand1_type),operand2_variable(operand2_variable){}
+
+    void Excute() override;
+};
+
+
+
 // Load
-class Load_ConstantToRegister: public Instruction
+class LoadConstant: public Instruction
 {
 public:
     OperandRegister operand1_register;
     OperandConstant operand2_constant;
 
-    Load_ConstantToRegister
+    LoadConstant
         (OperandRegister operand1_register,OperandConstant operand2_constant):
         operand1_register(operand1_register),operand2_constant(operand2_constant){}
 
     void Excute() override;
+};
+
+class LoadVariable: public Instruction
+{
+public:
+    OperandRegister operand1_register;
+    OperandVariable operand2_variable;
+
+    LoadVariable
+        (OperandRegister operand1_register,OperandVariable operand2_variable):
+        operand1_register(operand1_register),operand2_variable(operand2_variable){}
+
+    void Excute() override;
+};
+
+// Store
+class Store: public Instruction
+{
+public:
+    OperandVariable operand1_variable;
+    OperandRegister operand2_register;
+
+    Store
+        (OperandVariable operand1_variable,OperandRegister operand2_register):
+        operand1_variable(operand1_variable),operand2_register(operand2_register){}
+
+    void Excute() override;    
 };
 
 

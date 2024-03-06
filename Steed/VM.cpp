@@ -1,5 +1,7 @@
 #include "VM.h"
 
+VirtualMachine Steed;
+
 void VirtualMachine::Initialize(string knightASM_file_name)
 {
     file_manager.Initialize(knightASM_file_name);

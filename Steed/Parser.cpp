@@ -2,15 +2,18 @@
 
 Instruction* Parser::Parse()
 {
+    // Opcode
     int end=current;
     while(isalpha(knightASM_code[end]))end++;
     opcode=knightASM_code.substr(0,end);
 
+    // Operand1
     while(!isalpha(knightASM_code[end]))end++;
     current=end;
     while(end<knightASM_code.size()&&knightASM_code[end]!=',')end++;
     operand1=knightASM_code.substr(current,end-current);
 
+    // Operand2
     if(end<knightASM_code.size())
     {
         current=++end;
@@ -74,14 +77,70 @@ OperandRegister Parse_OperandRegister(string& operand_str)
     return OperandRegister(R_General,register_i);
 }
 
+OperandType Parse_OperandType(string& operand_str)
+{
+    if(operand_str=="INT")return OperandType(D_INT);
+    else if(operand_str=="DEC")return OperandType(D_DEC);
+    
+    return OperandType(D_STR);
+}
+
+OperandVariable Parse_OperandVariable(string& operand_str)
+{
+    int current=0;
+    //@Bug:I think it must have (
+    while(operand_str[current]!='(')current++;
+    string variable_name=operand_str.substr(0,current);
+    //@Bug: Also ...
+    current++;
+    int scope_i=0;
+    while(operand_str[current]!=')')
+    {
+        scope_i=scope_i*10+operand_str[current]-'0';
+        current++;
+    }
+
+    return OperandVariable(variable_name,scope_i);
+}
+
+
+
+// Var
+Instruction* Parse_Var(string& operand1,string& operand2)
+{
+    Var* instruction=new Var
+        (Parse_OperandType(operand1),Parse_OperandVariable(operand2));
+    
+    return (Instruction*)instruction;
+}
+
 
 
 // Load
-Instruction* Parse_Load_ConstantToRegister(string& operand1,string& operand2)
-{
-    Load_ConstantToRegister* instruction=new Load_ConstantToRegister
-        (Parse_OperandRegister(operand1),Parse_OperandConstant(operand2));
+Instruction* Parse_Load(string& operand1,string& operand2)
+{   
+    // LoadConstant
+    if(isdigit(operand2[0])||operand2[0]=='\"')
+    {
+        LoadConstant* instruction=new LoadConstant
+            (Parse_OperandRegister(operand1),Parse_OperandConstant(operand2));
 
+        return (Instruction*)instruction;
+    }
+
+    // LoadVariable
+    LoadVariable* instruction=new LoadVariable
+        (Parse_OperandRegister(operand1),Parse_OperandVariable(operand2));
+    
+    return (Instruction*)instruction;
+}
+
+// Store
+Instruction* Parse_Store(string& operand1,string& operand2)
+{
+    Store* instruction=new Store
+        (Parse_OperandVariable(operand1),Parse_OperandRegister(operand2));
+    
     return (Instruction*)instruction;
 }
 

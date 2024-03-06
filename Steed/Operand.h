@@ -1,7 +1,9 @@
 #pragma once
 
 #include "System.h"
+#include "SymbolTable.h"
 
+// Maybe it can be replace to DataType
 enum ConstantType
 {
     C_INT,C_DEC,C_STR
@@ -40,10 +42,20 @@ public:
 
 
 
+class OperandType
+{
+public:
+    DataType data_type;
+
+    OperandType(DataType data_type):data_type(data_type){}
+};
+
 class OperandVariable
 {
 public: 
     string name;
+    int scope_i;
 
-    OperandVariable(string name):name(name){}
+    OperandVariable(string name,int scope_i):
+        name(name),scope_i(scope_i){}
 };

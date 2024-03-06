@@ -52,9 +52,9 @@ ASTNode* Parser::Parse_LocalVariable_Definition()
 
     LocalVariableDefinitionAST* node=new LocalVariableDefinitionAST();
 
-    if(Match(INT)||Match(DEC)||Match(STR))
+    if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
     {
-        node->type=PreviousToken();
+        node->data_type=PreviousToken();
         if(Match(IDENTIFIER))
         {
             node->variable_name=PreviousToken();
@@ -85,7 +85,7 @@ ASTNode* Parser::Parse_Statement()
         node->X_statement=Parse_Compound_Statement();
     else if(Peek(PRINT))
         node->X_statement=Parse_Print_Statement();
-    else if(Peek(INT)||Peek(DEC)||Peek(STR))
+    else if(Peek(INT)||Peek(DEC)||Peek(STR)||Peek(BOOL))
         node->X_statement=Parse_LocalVariable_Definition();
     else
         node->X_statement=Parse_Expression_Statement();
@@ -236,7 +236,8 @@ ASTNode* Parser::Parse_Primary_Expression()
         node->expression=Parse_Expression();
         if(!Match(RIGHT_PAREN))PARSE_ERROR("Right paren ')' loss");
     }
-    else if(Match(CONSTANT_INT)||Match(CONSTANT_DEC)||Match(CONSTANT_STR))
+    else if(Match(CONSTANT_INT)||Match(CONSTANT_DEC)||Match(CONSTANT_STR)
+          ||Match(TRUE)||Match(FALSE))
     {
         node->constant=PreviousToken();
     }

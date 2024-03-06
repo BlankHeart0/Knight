@@ -5,7 +5,7 @@
 
 # Definition
 <Function_Definition> ::= IDENTIFIER "(" ")" <Compound_Statement>
-<LocalVariable_Definition> ::= (INT | DEC | STR) IDENTIFIER [":"<Expression>]";"
+<LocalVariable_Definition> ::= (INT | DEC | STR | BOOL) IDENTIFIER [":"<Expression>]";"
 
 #Statement
 <Statement> ::= <Compound_Statement> | <LocalVariable_Definition> | <Print_Statement> | <Expression_Statement> 
@@ -20,4 +20,6 @@
 <MulDiv_Expression> ::= <Unary_Expression>{("*" | "/" | "%")<Unary_Expression>}
 
 <Unary_Expression> ::= ["-"]<Primary_Expression> 
-<Primary_Expression> ::= "("<Expression>")" | CONSTANT_INT | CONSTANT_DEC | CONSTANT_STR | IDENTIFIER
+<Primary_Expression> ::= "("<Expression>")" | IDENTIFIER |
+                        | CONSTANT_INT | CONSTANT_DEC | CONSTANT_STR | TRUE | FALSE 
+                        

@@ -42,6 +42,9 @@ void VariableTable::Add(Token type,string variable_name)
             case STR:
                 table.back()[variable_name]=Variable(D_STR,variable_name,scope_i);
                 break;
+            case BOOL:
+                table.back()[variable_name]=Variable(D_BOOL,variable_name,scope_i);
+                break;
         }
     }
     else SYMBOL_ERROR("The variable: "+variable_name+" is redefined");

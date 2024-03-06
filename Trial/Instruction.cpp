@@ -10,9 +10,10 @@ void CodeGenerator::Var(Token type,string variable_name)
     // Operand1
     switch(type.token_type)
     {
-        case INT:file_manager.Write("INT");break;
-        case DEC:file_manager.Write("DEC");break;
-        case STR:file_manager.Write("STR");break;
+        case INT: file_manager.Write("INT"); break;
+        case DEC: file_manager.Write("DEC"); break;
+        case STR: file_manager.Write("STR"); break;
+        case BOOL:file_manager.Write("BOOL");break;
     }
     file_manager.WriteComma();
     
@@ -39,6 +40,9 @@ int CodeGenerator::LoadConstant(Token constant)
             break;
         case CONSTANT_STR:
             register_i= general_register.Alloc(S_STR);
+            break;
+        case TRUE:case FALSE:
+            register_i= general_register.Alloc(S_BOOL);
             break;
     }
 
@@ -73,6 +77,9 @@ int CodeGenerator::LoadVariable(Token variable)
             break;
         case D_STR:
             register_i= general_register.Alloc(S_STR);
+            break;
+        case D_BOOL:
+            register_i= general_register.Alloc(S_BOOL);
             break;
     }
 

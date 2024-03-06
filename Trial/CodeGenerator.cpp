@@ -39,7 +39,7 @@ int FunctionDefinitionAST::CodeGen()
 
 int LocalVariableDefinitionAST::CodeGen()
 {
-    CodeGenerator::Var(type,variable_name.lexeme);
+    CodeGenerator::Var(data_type,variable_name.lexeme);
     //Initialize
     if(expression)
     {

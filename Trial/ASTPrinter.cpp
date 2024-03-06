@@ -41,7 +41,7 @@ void LocalVariableDefinitionAST::Print(int depth)
     PrintTab(depth);
     cout<<"LocalVariable_Definition";
 
-    cout<<" type:"<<type.lexeme;
+    cout<<" type:"<<data_type.lexeme;
     cout<<" variable_name:"<<variable_name.lexeme;
     if(expression)expression->Print(depth+1);
 }
@@ -151,9 +151,10 @@ void PrimaryExpressionAST::Print(int depth)
     {
         switch(constant.token_type)
         {
-            case CONSTANT_INT:cout<<" constant_int:";break;
-            case CONSTANT_DEC:cout<<" constant_dec:";break;
-            case CONSTANT_STR:cout<<" constant_str:";break;
+            case CONSTANT_INT:    cout<<" constant_int:"; break;
+            case CONSTANT_DEC:    cout<<" constant_dec:"; break;
+            case CONSTANT_STR:    cout<<" constant_str:"; break;
+            case TRUE:case FALSE: cout<<" constant_bool:";break;
         }
         cout<<constant.lexeme;
     }

@@ -69,32 +69,9 @@ static vector<string>TokenType_text
 static unordered_map<string,TokenType>Keyword_map
 {
     {"int",INT}, {"dec",DEC}, {"str",STR},
-    {"bool",BOOL}, {"true", TRUE}, {"flase",FALSE},
+    {"bool",BOOL}, {"true", TRUE}, {"false",FALSE},
     {"if",IF}, {"else",ELSE}, {"while",WHILE},
     {"print",PRINT},{"ret",RET}
-};
-
-
-enum LiteralType
-{
-    L_INT,L_DEC,L_STR,
-};
-//@Todo: may be it is useless!
-class Literal
-{
-public:
-    bool is_valid;
-    LiteralType literal_type;
-
-    int literal_int;
-    double literal_dec;
-    string literal_str;
-    
-    Literal():is_valid(false){}
-    Literal(int literal_int):is_valid(true),literal_type(L_INT),literal_int(literal_int){}
-    Literal(double literal_dec):is_valid(true),literal_type(L_DEC),literal_dec(literal_dec){}
-    Literal(string literal_str):is_valid(true),literal_type(L_STR),literal_str(literal_str){}
-
 };
 
 class Token{
@@ -102,10 +79,9 @@ public:
     bool is_valid;
     TokenType token_type;
     string lexeme;
-    Literal literal;
     int line;
 
     Token():is_valid(false){}
-    Token(TokenType token_type,string lexeme,Literal literal,int line):
-        is_valid(true),token_type(token_type),lexeme(lexeme),literal(literal),line(line){}
+    Token(TokenType token_type,string lexeme,int line):
+        is_valid(true),token_type(token_type),lexeme(lexeme),line(line){}
 };

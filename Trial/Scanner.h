@@ -33,11 +33,7 @@ public:
     bool IsAlphaUnderline(char c);
     bool IsDigitAlphaUnderline(char c);
 
-    void AddToken(TokenType token_type,Literal literal);
     void AddToken(TokenType token_type);
-    void AddToken(TokenType token_type,int literal_int);
-    void AddToken(TokenType token_type,double literal_dec);
-    void AddToken(TokenType token_type,string literal_str);
 
     void Tokens_PrintTable();
 };

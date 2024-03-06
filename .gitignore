@@ -34,6 +34,8 @@
 # Knight file
 *.k
 *.ks
+Trial/trial
+Steed/steed
 
 #others
 .vscode/

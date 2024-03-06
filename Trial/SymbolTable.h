@@ -6,7 +6,7 @@
 
 enum DataType
 {
-    D_INT,D_DEC,D_STR
+    D_INT,D_DEC,D_STR,D_BOOL
 };
 
 class Variable

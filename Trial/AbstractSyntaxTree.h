@@ -54,7 +54,7 @@ public:
 class LocalVariableDefinitionAST: public ASTNode
 {
 public:
-    Token type;
+    Token data_type;
     Token variable_name;
     ASTNode* expression;
 

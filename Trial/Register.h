@@ -8,7 +8,8 @@ enum StoreType
     S_NULL,
     S_INT,
     S_DEC,
-    S_STR
+    S_STR,
+    S_BOOL
 };
 
 static vector<string> StoreType_text
@@ -16,7 +17,8 @@ static vector<string> StoreType_text
     "S_NULL",
     "S_INT",
     "S_DEC",
-    "S_STR"
+    "S_STR",
+    "S_BOOL"
 };
 
 class Register

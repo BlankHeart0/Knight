@@ -8,7 +8,7 @@ void Scanner::ScanTokens()
         ScanToken();
     }
 
-    tokens.push_back(Token(CODE_EOF,"",Literal(),line));
+    tokens.push_back(Token(CODE_EOF,"",line));
 }
 
 void Scanner::ScanToken()
@@ -76,32 +76,22 @@ void Scanner::ScanToken()
 
 void Scanner::Scan_Number()
 {
-    current--;
-    int part_int=0;
-
-    double part_decimal=0;
     bool is_decimal=false;
 
     while(!IsAtEnd()&&IsDigit(Peek()))
-    {
-        part_int=part_int*10+Peek()-'0';
         Advance();
-    }
 
     if(Peek()=='.'&&IsDigit(PeekNext()))
     {
         is_decimal=true;
         Advance();
 
-        for(int i=1;!IsAtEnd()&&IsDigit(Peek());i++)
-        {
-            part_decimal+=(double)(Peek()-'0')/pow(10,i);
+        while(!IsAtEnd()&&IsDigit(Peek()))
             Advance();
-        }
     }
 
-    if(is_decimal)AddToken(CONSTANT_DEC,(double)part_int+part_decimal);
-    else AddToken(CONSTANT_INT,part_int);
+    if(is_decimal)AddToken(CONSTANT_DEC);
+    else AddToken(CONSTANT_INT);
 }
 
 void Scanner::Scan_Str()
@@ -109,11 +99,9 @@ void Scanner::Scan_Str()
     string value_string;
 
     while (!IsAtEnd()&&Peek()!='\n'&&Peek()!= '"')
-    {
-        value_string.push_back(NextChar());
-    }
+        NextChar();
 
-	if (Match('"')) AddToken(CONSTANT_STR,value_string);
+	if (Match('"')) AddToken(CONSTANT_STR);
 	else SCAN_ERROR("Incomplete string.");
 }
 
@@ -201,54 +189,22 @@ bool Scanner::IsDigitAlphaUnderline(char c)
 
 
 
-void Scanner::AddToken(TokenType token_type,Literal literal)
-{
-    string lexeme=source.substr(start,current-start);
-    tokens.push_back(Token(token_type,lexeme,literal,line));
-}
-
 void Scanner::AddToken(TokenType token_type)
 {
-    AddToken(token_type,Literal());
-}
-
-void Scanner::AddToken(TokenType token_type,int literal_int)
-{
-    AddToken(token_type,Literal(literal_int));
-}
-
-void Scanner::AddToken(TokenType token_type,double literal_dec)
-{
-    AddToken(token_type,Literal(literal_dec));
-}
-
-void Scanner::AddToken(TokenType token_type,string literal_str)
-{
-    AddToken(token_type,Literal(literal_str));
+    string lexeme=source.substr(start,current-start);
+    tokens.push_back(Token(token_type,lexeme,line));
 }
 
 
 
 void Scanner::Tokens_PrintTable()
 {
-    cout << "  Line\tType\t\tLexeme\t\tLiteral" << endl<<endl;
+    cout << "  Line\tType\t\tLexeme" << endl<<endl;
 	for (Token& token : tokens)
 	{
 		cout << "  " << token.line << "\t" << TokenType_text[token.token_type] << "\t";
 		if (TokenType_text[token.token_type].size() < 8)cout << "\t";
-		cout<< token.lexeme;
-		if (token.literal.is_valid)
-		{
-			cout << "\t\t";
-			switch (token.token_type)
-			{
-				case CONSTANT_INT:cout << token.literal.literal_int; break;
-                case CONSTANT_DEC:cout << token.literal.literal_dec; break;
-				case CONSTANT_STR:cout << token.literal.literal_str; break;
-			}
-		}
-		else cout << "\t\tNULL";
-		cout << endl;
+		cout<< token.lexeme<<endl;
 	}
     cout<<endl;
 }

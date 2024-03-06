@@ -12,9 +12,10 @@ string GeneralRegister::Name(int register_i)
         switch(table[register_i].store_type)
         {
             case S_NULL:register_name+="NULL";break;
-            case S_INT:register_name+="INT";break;
-            case S_DEC:register_name+="DEC";break;
-            case S_STR:register_name+="STR";break;
+            case S_INT: register_name+="INT"; break;
+            case S_DEC: register_name+="DEC"; break;
+            case S_STR: register_name+="STR"; break;
+            case S_BOOL:register_name+="BOOL";break;
         }
         register_name+=")";
     }

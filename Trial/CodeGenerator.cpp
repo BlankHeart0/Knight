@@ -101,7 +101,7 @@ int ExpressionAST::CodeGen()
 
 int AssignmentExpressionAST::CodeGen()
 {
-    int result_ri=plusminus_expression->CodeGen();
+    int result_ri=logicOr_expression->CodeGen();
 
     if(variable.is_valid)
         CodeGenerator::Store(variable,result_ri,false);

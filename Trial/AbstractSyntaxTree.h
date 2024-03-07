@@ -133,14 +133,74 @@ class AssignmentExpressionAST: public ASTNode
 {
 public:
     Token variable;
-    ASTNode* plusminus_expression;
+    ASTNode* logicOr_expression;
 
-    AssignmentExpressionAST():plusminus_expression(nullptr){}
+    AssignmentExpressionAST():logicOr_expression(nullptr){}
     
     int CodeGen() override;
 
     void Print(int depth) override;
 };
+
+
+
+class LogicOrExpressionAST: public ASTNode
+{
+public:
+    ASTNode* logicAnd_expression;
+    vector<ASTNode*> logicAnd_expressions;
+
+    LogicOrExpressionAST():logicAnd_expression(nullptr){}
+        
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+class LogicAndExpressionAST: public ASTNode
+{
+public:
+    ASTNode* equality_expression;
+    vector<ASTNode*> equality_expressions;
+
+    LogicAndExpressionAST():equality_expression(nullptr){}
+
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+
+
+class EqualityExpressionAST: public ASTNode
+{
+public:
+    ASTNode* relational_expression;
+    vector<Token> infix_operators;
+    vector<ASTNode*> relational_expressions;
+
+    EqualityExpressionAST():relational_expression(nullptr){}
+
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+class RelationalExpressionAST: public ASTNode
+{
+public:
+    ASTNode* plusminus_expression;
+    vector<Token> infix_operators;
+    vector<ASTNode*> plusminus_expressions;
+
+    RelationalExpressionAST():plusminus_expression(nullptr){}
+    
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+
 
 class PlusMinusExpressionAST: public ASTNode
 {
@@ -171,6 +231,8 @@ public:
 
     void Print(int depth) override;
 };
+
+
 
 class UnaryExpressionAST: public ASTNode
 {

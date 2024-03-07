@@ -1,0 +1,119 @@
+DataType:
+    int: 123 -999 0 ...
+    dec: 3.1415926 -9.666 0.0 ...
+    str: "Hello!" "Knight" ...
+    bool: true false
+
+Rule:
+Assign =    <Unsupport commutative law>
+    int=int -> int
+    int=dec -> int=(int)dec -> int
+-   int=str -> error
+    int=bool-> int=(int)bool-> int  (true->1,false->0)
+
+    dec=int -> dec=(dec)int -> dec
+    dec=dec -> dec
+-   dec=str -> error
+-   dec=bool-> error
+
+-   str=int -> error
+-   str=dec -> error
+    str=str -> str
+-   str=bool-> error
+
+    bool=int-> bool=(bool)int -> bool (0->false,others->true)
+    bool=dec-> bool=(bool)dec -> bool (0.0->false,others->true)
+-   bool=str-> error
+    bool=bool->bool
+
+
+Logic or and    <Commutative law>
+    int op int -> (bool)int op (bool)int -> bool op bool -> bool
+    int op dec -> (bool)int op (bool)dec -> bool op bool -> bool
+-   int op str -> error
+    int op bool-> (bool)int op bool -> bool op bool -> bool
+    dec op dec -> (bool)dec op (bool)dec -> bool op bool -> bool
+-   dec op str -> error
+    dec op bool-> (bool)dec op bool -> bool op bool -> bool
+-   str op str -> error
+-   str op bool-> error
+    bool op bool -> bool
+
+
+Equality ?= !=  <Commutative law>
+    int op int -> bool
+    int op dec -> (dec)int op dec -> dec op dec -> bool
+-   int op str -> error
+    int op bool-> (bool)int op bool -> bool op bool -> bool
+    dec op dec -> bool
+-   dec op str -> error
+    dec op bool-> (bool)dec op bool -> bool op bool -> bool
+    str op str -> bool
+-   str op bool-> error
+    bool op bool -> bool
+
+
+Relational < <= > >=    <Commutative law>
+    int op int -> bool
+    int op dec -> (dec)int op dec -> dec op dec -> bool
+-   int op str -> error
+-   int op bool-> error
+    dec op dec -> bool
+-   dec op str -> error
+-   dec op bool-> error
+-   str op str -> error
+-   str op bool-> error
+-   bool op bool->error
+
+
+Plus +  <Commutative law>
+    int + int -> int
+    int + dec -> (dec)int op dec -> dec op dec -> dec
+-   int + str -> error
+-   int + bool-> error
+    dec + dec -> dec
+-   dec + str -> error
+-   dec + bool-> error
+    str + str -> str
+-   str + bool-> error
+-   bool + bool->error
+
+
+Minus Mul Div - * / <Commutative law>
+    int op int -> int
+    int op dec -> (dec)int op dec -> dec op dec -> dec
+-   int op str -> error
+-   int op bool-> error
+    dec op dec -> dec
+-   dec op str -> error
+-   dec op bool-> error
+-   str op str -> error
+-   str op bool-> error
+-   bool op bool->error
+
+
+Mod %   <Commutative law>
+    int % int -> int
+-   int % dec -> error
+-   int % str -> error
+-   int % bool-> error
+-   dec % dec -> error
+-   dec % str -> error
+-   dec % bool-> error
+-   str % str -> error
+-   str % bool-> error
+-   bool % bool->error
+
+
+Neg -   <Unary>
+    -int -> int
+    -dec -> dec
+-   -str -> error
+-   -bool-> error
+
+
+Logic not   <Unary>
+    not int -> not (bool)int -> not bool -> bool
+    not dec -> not (bool)dec -> not bool -> bool
+-   not str -> error
+    not bool-> bool

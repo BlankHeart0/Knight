@@ -15,11 +15,18 @@
 
 # Expression
 <Expression> ::= <Assignment_Expression>
-<Assignment_Expression> ::= [IDENTIFIER "="] <PlusMinus_Expression>
+<Assignment_Expression> ::= [IDENTIFIER "="] <LogicOr_Expression>
+
+<LogicOr_Expression> ::= <LogicAnd_Expression>{"or"<LogicAnd_Expression>}
+<LogicAnd_Expression> ::= <Equality_Expression>{"and"<Equality_Expression>}
+
+<Equality_Expression> ::= <Relational_Expression>{("?=" | "!=")<Relational_Expression>}
+<Relational_Expression> ::= <PlusMinus_Expression>{("<" | "<=" | ">" | ">=")<PlusMinus_Expression>}
+
 <PlusMinus_Expression> ::= <MulDiv_Expression>{("+" | "-")<MulDiv_Expression>}
 <MulDiv_Expression> ::= <Unary_Expression>{("*" | "/" | "%")<Unary_Expression>}
 
-<Unary_Expression> ::= ["-"]<Primary_Expression> 
+<Unary_Expression> ::= ["-" | "not"]<Primary_Expression> 
 <Primary_Expression> ::= "("<Expression>")" | IDENTIFIER |
-                        | CONSTANT_INT | CONSTANT_DEC | CONSTANT_STR | TRUE | FALSE 
+                        | CONSTANT_INT | CONSTANT_DEC | CONSTANT_STR | "true" | "false" 
                         

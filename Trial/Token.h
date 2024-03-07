@@ -26,6 +26,7 @@ enum TokenType
     EQUAL, NOT_EQUAL,       // ?= !=
     LESS, LESS_EQUAL,       // <  <=
     GREATER, GREATER_EQUAL, // >  >=
+    NOT, AND, OR,       //not and or
 
     //Constant
     CONSTANT_INT, CONSTANT_DEC, CONSTANT_STR,
@@ -58,6 +59,7 @@ static vector<string>TokenType_text
     "EQUAL", "NOT_EQUAL",       // ?= !=
     "LESS", "LESS_EQUAL",       // <  <=
     "GREATER", "GREATER_EQUAL", // >  >=
+    "NOT", "AND", "OR",     //not and or
 
     //Constant
     "CONSTANT_INT", "CONSTANT_DEC", "CONSTANT_STR",
@@ -71,7 +73,8 @@ static unordered_map<string,TokenType>Keyword_map
     {"int",INT}, {"dec",DEC}, {"str",STR},
     {"bool",BOOL}, {"true", TRUE}, {"false",FALSE},
     {"if",IF}, {"else",ELSE}, {"while",WHILE},
-    {"print",PRINT},{"ret",RET}
+    {"print",PRINT}, {"ret",RET},
+    {"not",NOT}, {"and",AND}, {"or",OR}
 };
 
 class Token{

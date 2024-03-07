@@ -100,8 +100,62 @@ void AssignmentExpressionAST::Print(int depth)
     cout<<"Assignment_Expression";
 
     if(variable.is_valid)cout<<" variable:"<<variable.lexeme;
-    plusminus_expression->Print(depth+1);    
+    logicOr_expression->Print(depth+1);    
 }
+
+
+
+void LogicOrExpressionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"LogicOr_Expression";
+
+    logicAnd_expression->Print(depth+1);
+    for(ASTNode* ast_ptr:logicAnd_expressions)
+        ast_ptr->Print(depth+1);
+}
+
+void LogicAndExpressionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"LogicAnd_Expression";
+
+    equality_expression->Print(depth+1);
+    for(ASTNode* ast_ptr:equality_expressions)
+        ast_ptr->Print(depth+1);
+}
+
+
+
+void EqualityExpressionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Equality_Expression";
+
+    relational_expression->Print(depth+1);
+    for(int i=0;i<infix_operators.size();i++)
+    {
+        PrintTab(depth+1);
+        cout<<" infix_operator:"<<infix_operators[i].lexeme;
+        relational_expressions[i]->Print(depth+1);
+    }
+}
+
+void RelationalExpressionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Relational_Expression";
+
+    plusminus_expression->Print(depth+1);
+    for(int i=0;i<infix_operators.size();i++)
+    {
+        PrintTab(depth+1);
+        cout<<" infix_operator:"<<infix_operators[i].lexeme;
+        plusminus_expressions[i]->Print(depth+1);
+    }
+}
+
+
 
 void PlusMinusExpressionAST::Print(int depth)
 {
@@ -130,6 +184,8 @@ void MulDivExpressionAST::Print(int depth)
         unary_expressions[i]->Print(depth+1);
     }
 }
+
+
 
 void UnaryExpressionAST::Print(int depth)
 {

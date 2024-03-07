@@ -170,10 +170,82 @@ ASTNode* Parser::Parse_Assignment_Expression()
         Match(ASSIGN);
     }
 
-    node->plusminus_expression=Parse_PlusMinus_Expression();
+    node->logicOr_expression=Parse_LogicOr_Expression();
 
     return (ASTNode*)node;
 }
+
+
+
+ASTNode* Parser::Parse_LogicOr_Expression()
+{
+    diagnostor.WhoAmI("Parse_LogicOr_Expression");
+
+    LogicOrExpressionAST* node=new LogicOrExpressionAST();
+
+    node->logicAnd_expression=Parse_LogicAnd_Expression();
+    while(Match(OR))
+    {
+        AddChildToVector(node->logicAnd_expressions,
+                        Parse_LogicAnd_Expression());
+    }
+
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_LogicAnd_Expression()
+{
+    diagnostor.WhoAmI("Parse_LogicAnd_Expression");
+
+    LogicAndExpressionAST* node=new LogicAndExpressionAST();
+
+    node->equality_expression=Parse_Equality_Expression();
+    while(Match(AND))
+    {
+        AddChildToVector(node->equality_expressions,
+                        Parse_Equality_Expression());
+    }
+
+    return (ASTNode*)node;
+}
+
+
+
+ASTNode* Parser::Parse_Equality_Expression()
+{
+    diagnostor.WhoAmI("Parse_Equality_Expression");
+
+    EqualityExpressionAST* node=new EqualityExpressionAST();
+
+    node->relational_expression=Parse_Relational_Expression();
+    while(Match(EQUAL)||Match(NOT_EQUAL))
+    {
+        node->infix_operators.push_back(PreviousToken());   
+        AddChildToVector(node->relational_expressions,
+                        Parse_Relational_Expression());
+    }
+    
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_Relational_Expression()
+{
+    diagnostor.WhoAmI("Parse_Relational_Expression");
+
+    RelationalExpressionAST* node=new RelationalExpressionAST();
+
+    node->plusminus_expression=Parse_PlusMinus_Expression();
+    while(Match(LESS)||Match(LESS_EQUAL)||Match(GREATER)||Match(GREATER_EQUAL))
+    {
+        node->infix_operators.push_back(PreviousToken());   
+        AddChildToVector(node->plusminus_expressions,
+                        Parse_PlusMinus_Expression());
+    }
+
+    return (ASTNode*)node;
+}
+
+
 
 ASTNode* Parser::Parse_PlusMinus_Expression()
 {
@@ -209,13 +281,15 @@ ASTNode* Parser::Parse_MulDiv_Expression()
     return (ASTNode*)node;
 }
 
+
+
 ASTNode* Parser::Parse_Unary_Expression()
 {
     diagnostor.WhoAmI("Parse_Unary_Expression");
 
     UnaryExpressionAST* node=new UnaryExpressionAST();
 
-    if(Match(MINUS))
+    if(Match(MINUS)||Match(NOT))
     {
         node->prefix_operator=PreviousToken();
     }

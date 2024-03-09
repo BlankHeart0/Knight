@@ -111,8 +111,12 @@ void LogicOrExpressionAST::Print(int depth)
     cout<<"LogicOr_Expression";
 
     logicAnd_expression->Print(depth+1);
-    for(ASTNode* ast_ptr:logicAnd_expressions)
-        ast_ptr->Print(depth+1);
+    for(int i=0;i<infix_operators.size();i++)
+    {
+        PrintTab(depth+1);
+        cout<<" infix_operator:"<<infix_operators[i].lexeme;
+        logicAnd_expressions[i]->Print(depth+1);
+    }
 }
 
 void LogicAndExpressionAST::Print(int depth)
@@ -121,8 +125,12 @@ void LogicAndExpressionAST::Print(int depth)
     cout<<"LogicAnd_Expression";
 
     equality_expression->Print(depth+1);
-    for(ASTNode* ast_ptr:equality_expressions)
-        ast_ptr->Print(depth+1);
+    for(int i=0;i<infix_operators.size();i++)
+    {
+        PrintTab(depth+1);
+        cout<<" infix_operator:"<<infix_operators[i].lexeme;
+        equality_expressions[i]->Print(depth+1);
+    }
 }
 
 

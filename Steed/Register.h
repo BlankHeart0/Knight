@@ -42,7 +42,7 @@ public:
     void Set(int register_i,double dec_val);
     void Set(int register_i,string str_val);
 
-    Register& GetRegister(int register_i);
+    Register& GetReg(int register_i);
 
     void Grow(int n);
 };

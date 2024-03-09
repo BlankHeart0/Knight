@@ -7,7 +7,7 @@
 enum ErrorModule
 {
     E_SCANNER,E_PARSER,E_REGISTER,
-    E_FILEMANAGER,E_SYMBOL
+    E_FILEMANAGER,E_SYMBOL,E_TYPE
 };
 
 class Diagnostor
@@ -21,3 +21,4 @@ public:
 };
 
 extern Diagnostor diagnostor;
+extern bool is_upper;

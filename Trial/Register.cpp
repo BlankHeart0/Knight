@@ -1,5 +1,7 @@
 #include "Register.h"
 
+GeneralRegister general_register;
+
 string GeneralRegister::Name(int register_i)
 {
     string register_name="";
@@ -7,15 +9,14 @@ string GeneralRegister::Name(int register_i)
     if(register_i>=0&&register_i<table.size()
                     &&!table[register_i].free)
     {
-        register_name+="R"+to_string(register_i);
+        register_name+=(is_upper?"R":"r")+to_string(register_i);
         register_name+="(";
-        switch(table[register_i].store_type)
+        switch(table[register_i].data_type)
         {
-            case S_NULL:register_name+="NULL";break;
-            case S_INT: register_name+="INT"; break;
-            case S_DEC: register_name+="DEC"; break;
-            case S_STR: register_name+="STR"; break;
-            case S_BOOL:register_name+="BOOL";break;
+            case D_INT: register_name+=(is_upper?"INT":"int");  break;
+            case D_DEC: register_name+=(is_upper?"DEC":"dec");  break;
+            case D_STR: register_name+=(is_upper?"STR":"str");  break;
+            case D_BOOL:register_name+=(is_upper?"BOOL":"bool");break;
         }
         register_name+=")";
     }
@@ -25,7 +26,14 @@ string GeneralRegister::Name(int register_i)
     return register_name;
 }
 
-int GeneralRegister::Alloc(StoreType store_type)
+Register& GeneralRegister::GetReg(int register_i)
+{
+    return table[register_i];
+}
+
+
+
+int GeneralRegister::Alloc(DataType data_type)
 {
     int register_i=0;
     
@@ -33,7 +41,7 @@ int GeneralRegister::Alloc(StoreType store_type)
     {
         if(table[register_i].free)
         {
-            table[register_i].store_type=store_type;
+            table[register_i].data_type=data_type;
             table[register_i].free=false;
             break;
         }
@@ -43,7 +51,7 @@ int GeneralRegister::Alloc(StoreType store_type)
     if(register_i>=table.size())
     {
         Grow();
-        table[register_i].store_type=store_type;
+        table[register_i].data_type=data_type;
         table[register_i].free=false;
     }
 
@@ -55,12 +63,7 @@ void GeneralRegister::Free(int register_i)
     if(table[register_i].free)
         REGISTER_ERROR("Can not free a free general regisgter");
     
-    else 
-    {
-        table[register_i].free=true;
-        table[register_i].store_type=S_NULL;
-    }
-
+    else table[register_i].free=true;
 }
 
 void GeneralRegister::Grow()
@@ -81,10 +84,12 @@ void GeneralRegister::Print()
     for(int i=0;i<table.size();i++)
     {
         cout<<"R"<<i<<" Free:";
-        if(table[i].free)cout<<"YES";
-        else cout<<"NO ";
-        
-        cout<<" StoreType:"<<StoreType_text[table[i].store_type]<<endl;
+        if(table[i].free)
+        {
+            cout<<"YES";
+            cout<<" DataType:"<<DataType_Text[table[i].data_type]<<endl;
+        }
+        else cout<<"NO "<<endl;
     }
     
     cout<<endl;

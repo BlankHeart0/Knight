@@ -1,6 +1,5 @@
 #include "CodeGenerator.h"
 
-GeneralRegister CodeGenerator::general_register;
 VariableTable CodeGenerator::vartable;
 
 void CodeGenerator::CodeGen()
@@ -84,7 +83,7 @@ int ExpressionStatementAST::CodeGen()
     if(expression)
     {
         int expression_i=expression->CodeGen();
-        CodeGenerator::general_register.Free(expression_i);
+        general_register.Free(expression_i);
     }
     return NOTHING;
 }
@@ -108,6 +107,72 @@ int AssignmentExpressionAST::CodeGen()
     
     return result_ri;
 }
+
+
+
+int LogicOrExpressionAST::CodeGen()
+{
+    int result_ri=logicAnd_expression->CodeGen();
+
+    for(int i=0;i<logicAnd_expressions.size();i++)
+    {
+        int temp_ri=logicAnd_expressions[i]->CodeGen();
+
+        result_ri=CodeGenerator::
+        BinaryInstruction(result_ri,infix_operators[i],temp_ri);
+    }
+
+    return result_ri;
+}
+
+int LogicAndExpressionAST::CodeGen()
+{
+    int result_ri=equality_expression->CodeGen();
+
+    for(int i=0;i<equality_expressions.size();i++)
+    {
+        int temp_ri=equality_expressions[i]->CodeGen();
+
+        result_ri=CodeGenerator::
+        BinaryInstruction(result_ri,infix_operators[i],temp_ri);
+    }
+
+    return result_ri;
+}
+
+
+
+int EqualityExpressionAST::CodeGen()
+{
+    int result_ri=relational_expression->CodeGen();
+
+    for(int i=0;i<relational_expressions.size();i++)
+    {
+        int temp_ri=relational_expressions[i]->CodeGen();
+
+        result_ri=CodeGenerator::
+        BinaryInstruction(result_ri,infix_operators[i],temp_ri);
+    }
+
+    return result_ri;
+}
+
+int RelationalExpressionAST::CodeGen()
+{
+    int result_ri=plusminus_expression->CodeGen();
+
+    for(int i=0;i<plusminus_expressions.size();i++)
+    {
+        int temp_ri=plusminus_expressions[i]->CodeGen();
+
+        result_ri=CodeGenerator::
+        BinaryInstruction(result_ri,infix_operators[i],temp_ri);
+    }
+    
+    return result_ri;
+}
+
+
 
 int PlusMinusExpressionAST::CodeGen()
 {
@@ -138,6 +203,8 @@ int MulDivExpressionAST::CodeGen()
 
     return result_ri;
 }
+
+
 
 int UnaryExpressionAST::CodeGen()
 {

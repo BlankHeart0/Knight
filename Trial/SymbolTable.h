@@ -2,12 +2,8 @@
 
 #include "System.h"
 #include "Token.h"
+#include "Type.h"
 #include "Diagnostor.h"
-
-enum DataType
-{
-    D_INT,D_DEC,D_STR,D_BOOL
-};
 
 class Variable
 {

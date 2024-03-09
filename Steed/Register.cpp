@@ -31,7 +31,7 @@ void GeneralRegister::Set(int register_i,string str_val)
 
 
 
-Register& GeneralRegister::GetRegister(int register_i)
+Register& GeneralRegister::GetReg(int register_i)
 {
     return table[register_i];
 }

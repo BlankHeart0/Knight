@@ -1,6 +1,7 @@
 #include "Diagnostor.h"
 
 Diagnostor diagnostor;
+bool is_upper=false;
 
 void Diagnostor::ErrorHead(ErrorModule error_module)
 {
@@ -20,6 +21,9 @@ void Diagnostor::ErrorHead(ErrorModule error_module)
             break;
         case E_SYMBOL:
             cout<<"Symbol Error: ";
+            break;
+        case E_TYPE:
+            cout<<"Type Error: ";
             break;
     }
 }

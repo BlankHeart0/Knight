@@ -186,6 +186,7 @@ ASTNode* Parser::Parse_LogicOr_Expression()
     node->logicAnd_expression=Parse_LogicAnd_Expression();
     while(Match(OR))
     {
+        node->infix_operators.push_back(PreviousToken());
         AddChildToVector(node->logicAnd_expressions,
                         Parse_LogicAnd_Expression());
     }
@@ -202,6 +203,7 @@ ASTNode* Parser::Parse_LogicAnd_Expression()
     node->equality_expression=Parse_Equality_Expression();
     while(Match(AND))
     {
+        node->infix_operators.push_back(PreviousToken());
         AddChildToVector(node->equality_expressions,
                         Parse_Equality_Expression());
     }

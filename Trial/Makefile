@@ -1,6 +1,6 @@
 objects = 	Driver.o FileManager.o Scanner.o Parser.o 				\
 			Register.o SymbolTable.o CodeGenerator.o Instruction.o	\
-			ASTPrinter.o Diagnostor.o 
+			TypeChecker.o ASTPrinter.o Diagnostor.o 
 
 trial: $(objects)
 	g++ -o trial $(objects)
@@ -18,6 +18,7 @@ SymbolTable.o: SymbolTable.h
 CodeGenerator.o: CodeGenerator.h
 Instruction.o: CodeGenerator.h
 
+TypeChecker.o: Type.h Register.h CodeGenerator.h
 ASTPrinter.o: AbstractSyntaxTree.h
 Diagnostor.o: Diagnostor.h
 

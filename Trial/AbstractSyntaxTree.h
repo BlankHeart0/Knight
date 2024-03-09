@@ -148,6 +148,7 @@ class LogicOrExpressionAST: public ASTNode
 {
 public:
     ASTNode* logicAnd_expression;
+    vector<Token> infix_operators;
     vector<ASTNode*> logicAnd_expressions;
 
     LogicOrExpressionAST():logicAnd_expression(nullptr){}
@@ -161,6 +162,7 @@ class LogicAndExpressionAST: public ASTNode
 {
 public:
     ASTNode* equality_expression;
+    vector<Token> infix_operators;
     vector<ASTNode*> equality_expressions;
 
     LogicAndExpressionAST():equality_expression(nullptr){}

@@ -1,33 +1,16 @@
 #pragma once
 
 #include "System.h"
+#include "Type.h"
 #include "Diagnostor.h"
-
-enum StoreType
-{
-    S_NULL,
-    S_INT,
-    S_DEC,
-    S_STR,
-    S_BOOL
-};
-
-static vector<string> StoreType_text
-{
-    "S_NULL",
-    "S_INT",
-    "S_DEC",
-    "S_STR",
-    "S_BOOL"
-};
 
 class Register
 {
 public:
-    StoreType store_type;
+    DataType data_type;
     bool free;
 
-    Register():store_type(S_NULL),free(true){}
+    Register():free(true){}
 };
 
 class GeneralRegister
@@ -37,13 +20,17 @@ public:
 
     GeneralRegister():table(8){}
     
-    string Name(int register_i); 
-    int Alloc(StoreType store_type);
+    string Name(int register_i);
+    Register& GetReg(int register_i);
+
+    int Alloc(DataType data_type);
     void Free(int register_i);
     void Grow();
 
     void Print();
 };
+
+extern GeneralRegister general_register;
 
 #define REGISTER_ERROR(error_message)                     \
         do{                                               \

@@ -27,6 +27,10 @@ public:
     // Statement
     ASTNode* Parse_Statement();
     ASTNode* Parse_Compound_Statement();
+
+    ASTNode* Parse_If_Statement();
+    ASTNode* Parse_While_Statement();
+
     ASTNode* Parse_Print_Statement();
     ASTNode* Parse_Expression_Statement();
 

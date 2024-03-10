@@ -67,12 +67,40 @@ void CompoundStatementAST::Print(int depth)
         ast_ptr->Print(depth+1);
 }
 
+
+
+void IfStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"If_Statement";
+
+    expression->Print(depth+1);
+    true_statement->Print(depth+1);
+    if(false_statement)
+    {
+        PrintTab(depth);
+        cout<<"else";
+        false_statement->Print(depth+1);
+    }
+}
+
+void WhileStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"While_Statement";
+
+    expression->Print(depth+1);
+    statement->Print(depth+1);
+}
+
+
+
 void PrintStatementAST::Print(int depth)
 {
     PrintTab(depth);
     cout<<"Print_Statement";
 
-    expression->Print(depth);
+    expression->Print(depth+1);
 }
 
 void ExpressionStatementAST::Print(int depth)

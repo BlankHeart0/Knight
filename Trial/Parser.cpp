@@ -88,28 +88,16 @@ ASTNode* Parser::Parse_Statement()
 
     if(Peek(LEFT_BRACE)) 
         node->X_statement=Parse_Compound_Statement();
+    else if(Peek(IF))
+        node->X_statement=Parse_If_Statement();
+    else if(Peek(WHILE))
+        node->X_statement=Parse_While_Statement();
     else if(Peek(PRINT))
         node->X_statement=Parse_Print_Statement();
     else if(Peek(INT)||Peek(DEC)||Peek(STR)||Peek(BOOL))
         node->X_statement=Parse_LocalVariable_Definition();
     else
         node->X_statement=Parse_Expression_Statement();
-
-    return (ASTNode*)node;
-}
-
-ASTNode* Parser::Parse_Print_Statement()
-{
-    diagnostor.WhoAmI("Parse_Print_Statement");
-
-    PrintStatementAST* node=new PrintStatementAST();
-
-    if(Match(PRINT))
-    {
-        node->expression=Parse_Expression();
-        MatchSemicolon();
-    }
-    else PARSE_ERROR("Keyword 'print' loss");
 
     return (ASTNode*)node;
 }
@@ -131,6 +119,78 @@ ASTNode* Parser::Parse_Compound_Statement()
             PARSE_ERROR("Right barce '}' loss");
     }
     else PARSE_ERROR("Left barce '{' loss");
+
+    return (ASTNode*)node;
+}
+
+
+
+ASTNode* Parser::Parse_If_Statement()
+{
+    diagnostor.WhoAmI("Parse_If_Statement");
+
+    IfStatementAST* node=new IfStatementAST();
+
+    if(Match(IF))
+    {
+        if(Match(LEFT_PAREN))
+        {
+            node->expression=Parse_Expression();
+            if(Match(RIGHT_PAREN))
+            {
+                node->true_statement=Parse_Statement();
+                if(Match(ELSE))
+                {
+                    node->false_statement=Parse_Statement();
+                }
+            }
+            else PARSE_ERROR("Right paren ')' loss");
+        }
+        else PARSE_ERROR("Left paren '(' loss");
+    }
+    else PARSE_ERROR("Keyword 'if' loss");
+
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_While_Statement()
+{
+    diagnostor.WhoAmI("Parse_While_Statement");
+
+    WhileStatementAST* node=new WhileStatementAST();
+
+    if(Match(WHILE))
+    {
+        if(Match(LEFT_PAREN))
+        {
+            node->expression=Parse_Expression();
+            if(Match(RIGHT_PAREN))
+            {
+                node->statement=Parse_Statement();
+            }
+            else PARSE_ERROR("Right paren ')' loss");
+        }
+        else PARSE_ERROR("Left paren '(' loss");
+    }
+    else PARSE_ERROR("Keyword 'while' loss");
+
+    return (ASTNode*)node;
+}
+
+
+
+ASTNode* Parser::Parse_Print_Statement()
+{
+    diagnostor.WhoAmI("Parse_Print_Statement");
+
+    PrintStatementAST* node=new PrintStatementAST();
+
+    if(Match(PRINT))
+    {
+        node->expression=Parse_Expression();
+        MatchSemicolon();
+    }
+    else PARSE_ERROR("Keyword 'print' loss");
 
     return (ASTNode*)node;
 }

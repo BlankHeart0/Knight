@@ -91,16 +91,48 @@ public:
     void Print(int depth) override;
 };
 
+
+
+class IfStatementAST: public ASTNode
+{
+public:
+    ASTNode* expression;
+    ASTNode* true_statement;
+    ASTNode* false_statement;
+
+    IfStatementAST():expression(nullptr),
+        true_statement(nullptr),false_statement(nullptr){}
+
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+class WhileStatementAST: public ASTNode
+{
+public:
+    ASTNode* expression;
+    ASTNode* statement;
+
+    WhileStatementAST():expression(nullptr),statement(nullptr){}
+
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+
+
 class PrintStatementAST: public ASTNode
 {
 public:
     ASTNode* expression;
+
     PrintStatementAST():expression(nullptr){}
 
     int CodeGen() override;
 
     void Print(int depth) override;
-
 };
 
 class ExpressionStatementAST: public ASTNode

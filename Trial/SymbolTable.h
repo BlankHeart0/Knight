@@ -41,11 +41,14 @@ public:
     string name;
     VariableTable vartable;
 
+    int lable_id;
+    int NewLable();
+
     Function(){}
     Function(string name):
-        is_void(true),name(name){}
+        is_void(true),name(name),lable_id(0){}
     Function(DataType ret_type,string name):
-        is_void(false),ret_type(ret_type),name(name){}
+        is_void(false),ret_type(ret_type),name(name),lable_id(0){}
 };
 
 class FunctionTable

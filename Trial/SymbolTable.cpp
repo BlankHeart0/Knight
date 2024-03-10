@@ -72,6 +72,11 @@ Variable& VariableTable::Visit(Token variable)
 
 
 
+int Function::NewLable()
+{
+    return lable_id++;
+}
+
 bool FunctionTable::Exist(string function_name)
 {
     if(table.find(function_name)==table.end())

@@ -14,9 +14,6 @@ private:
 
 public:
     string source;
-    int instruction_line;
-
-    FileManager():instruction_line(0){}
 
     void Initialize(string input_file_name);
     void Initialize(string input_file_name,string output_file_name);

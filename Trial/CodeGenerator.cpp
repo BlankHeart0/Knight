@@ -40,7 +40,6 @@ int FunctionDefinitionAST::CodeGen()
 {
     CodeGenerator::Func(ret_type,function_name.lexeme);
     CodeGenerator::gen_fucntion=function_name.lexeme;
-    file_manager.instruction_line=0;
     
     compound_statement->CodeGen();
 
@@ -80,6 +79,51 @@ int CompoundStatementAST::CodeGen()
 
     return NOTHING;
 }
+
+
+
+int IfStatementAST::CodeGen()
+{
+    int expression_ri=expression->CodeGen();
+
+    int lable_ifEnd=CodeGenerator::NowInFunction().NewLable();
+    CodeGenerator::JumpFalse(lable_ifEnd,expression_ri);
+
+    true_statement->CodeGen();
+
+    //else
+    if(false_statement)
+    {
+        int lable_elseEnd=CodeGenerator::NowInFunction().NewLable();
+        CodeGenerator::Jump(lable_elseEnd);
+
+        CodeGenerator::Lable(lable_ifEnd);
+        false_statement->CodeGen();
+        CodeGenerator::Lable(lable_elseEnd);
+    }
+    else CodeGenerator::Lable(lable_ifEnd);
+
+    return NOTHING;
+}
+
+int WhileStatementAST::CodeGen()
+{
+    int lable_begin=CodeGenerator::NowInFunction().NewLable();
+    int lable_end=CodeGenerator::NowInFunction().NewLable();
+
+    CodeGenerator::Lable(lable_begin);
+    int expression_ri=expression->CodeGen();
+    CodeGenerator::JumpFalse(lable_end,expression_ri);
+
+    statement->CodeGen();
+    
+    CodeGenerator::Jump(lable_begin);
+    CodeGenerator::Lable(lable_end);
+
+    return NOTHING;
+}
+
+
 
 int PrintStatementAST::CodeGen()
 {

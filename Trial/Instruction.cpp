@@ -208,6 +208,65 @@ void CodeGenerator::Print(int register_i)
 
 
 
+//Control Flow
+void CodeGenerator::Lable(int lable_id)
+{
+    // Opcode
+    file_manager.Write(is_upper?"LABLE":"lable");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(to_string(lable_id));
+    file_manager.WriteEndl();
+}  
+
+void CodeGenerator::Jump(int lable_id)
+{
+    // Opcode
+    file_manager.Write(is_upper?"JMP":"jmp");
+    file_manager.Write("\t\t");
+
+    // Operand1
+    file_manager.Write(to_string(lable_id));
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::JumpTrue(int lable_id,int register_i)
+{
+    // Opcode
+    file_manager.Write(is_upper?"JMPT":"jmpt");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(to_string(lable_id));
+    file_manager.WriteComma();
+
+    // Operand2
+    WriteGeneralRegisterName(register_i);
+    file_manager.WriteEndl();
+
+    general_register.Free(register_i);
+}
+
+void CodeGenerator::JumpFalse(int lable_id,int register_i)
+{
+    // Opcode
+    file_manager.Write(is_upper?"JMPF":"jmpf");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(to_string(lable_id));
+    file_manager.WriteComma();
+
+    // Operand2
+    WriteGeneralRegisterName(register_i);
+    file_manager.WriteEndl();
+
+    general_register.Free(register_i);
+}
+
+
+
 // Binary
 int CodeGenerator::BinaryInstruction(int r1_i,Token Operator,int r2_i)
 {   

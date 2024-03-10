@@ -23,18 +23,24 @@ public:
     static string gen_fucntion;
     static Function& NowInFunction();
     static FunctionTable functable;
-     
-    // Instruction
-    static void Func(Token type,string function_name);
-    static void Var(Token type,string variable_name); // VAR var
 
-    static int LoadConstant(Token constant);          // LOAD load
-    static int LoadVariable(Token variable);          // LOAD load
+    // Instruction
+    static void Func(Token type,string function_name);  // FUNC func
+    static void Var(Token type,string variable_name);   // VAR var
+
+    static int LoadConstant(Token constant);            // LOAD load
+    static int LoadVariable(Token variable);            // LOAD load
     static void Store(Token variable,int register_i,bool need_free);// STORE store
     static void Convert(int register_i,DataType to_dataType);       // CVT cvt
 
-    static void Print(int register_i);                // PRINT print
-
+    static void Print(int register_i);                  // PRINT print
+    
+    //Control Flow
+    static void Lable(int lable_id);                    // LABLE lable  
+    static void Jump(int lable_id);                     // JMP jmp
+    static void JumpTrue(int lable_id,int register_i);  // JMPT jmpt
+    static void JumpFalse(int lable_id,int register_i); // JMPF jmpf
+    
     // Binary
     static int BinaryInstruction(int r1_i,Token Operator,int r2_i);
     // Logic

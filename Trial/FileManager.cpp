@@ -57,6 +57,7 @@ void FileManager::WriteComma()
 void FileManager::WriteEndl()
 {
     output_file<<endl;
+    instruction_line++;
 }
 
 void FileManager::Close()

@@ -31,7 +31,8 @@ void FunctionDefinitionAST::Print(int depth)
 {
     PrintTab(depth);
     cout<<"Function_Definition";
-    
+    if(ret_type.is_valid)
+        cout<<" return_type:"<<ret_type.lexeme;
     cout<<" function_name:"<<function_name.lexeme;
     compound_statement->Print(depth+1);
 }

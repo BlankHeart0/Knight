@@ -1,6 +1,14 @@
 #include "CodeGenerator.h"
 
-VariableTable CodeGenerator::vartable;
+FunctionTable CodeGenerator::functable;
+string CodeGenerator::gen_fucntion;
+
+Function& CodeGenerator::NowInFunction()
+{
+    return functable.Visit(gen_fucntion);
+}
+
+
 
 void CodeGenerator::CodeGen()
 {
@@ -30,7 +38,10 @@ int TranslationUnitAST::CodeGen()
 // Definition
 int FunctionDefinitionAST::CodeGen()
 {
-    //file_manager.Write(function_name.lexeme+":\n");
+    CodeGenerator::Func(ret_type,function_name.lexeme);
+    CodeGenerator::gen_fucntion=function_name.lexeme;
+    file_manager.instruction_line=0;
+    
     compound_statement->CodeGen();
 
     return NOTHING;
@@ -38,6 +49,7 @@ int FunctionDefinitionAST::CodeGen()
 
 int LocalVariableDefinitionAST::CodeGen()
 {
+    //@Bug:may data_type should is type
     CodeGenerator::Var(data_type,variable_name.lexeme);
     //Initialize
     if(expression)
@@ -61,10 +73,10 @@ int StatementAST::CodeGen()
 
 int CompoundStatementAST::CodeGen()
 {        
-    CodeGenerator::vartable.EnterScope();
+    CodeGenerator::NowInFunction().vartable.EnterScope();
     for(ASTNode* ast_ptr:statements)
         ast_ptr->CodeGen();    
-    CodeGenerator::vartable.LeaveScope();
+    CodeGenerator::NowInFunction().vartable.LeaveScope();
 
     return NOTHING;
 }

@@ -28,8 +28,40 @@ public:
     void LeaveScope();
     int ScopeSize();
     void Add(Token type,string variable_name);
-    Variable Visit(Token variable);
+    Variable& Visit(Token variable);
 };
+
+
+
+class Function
+{
+public:
+    DataType ret_type;
+    bool is_void;
+    string name;
+    VariableTable vartable;
+
+    Function(){}
+    Function(string name):
+        is_void(true),name(name){}
+    Function(DataType ret_type,string name):
+        is_void(false),ret_type(ret_type),name(name){}
+};
+
+class FunctionTable
+{
+private:
+    unordered_map<string,Function> table;
+    bool Exist(string function_name);
+
+public:
+    void Add(Token type,string function_name);
+    Function& Visit(Token function);
+    Function& Visit(string function_name);
+};
+
+
+
 
 #define SYMBOL_ERROR(error_message)                             \
         do{                                                     \

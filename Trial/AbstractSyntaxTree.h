@@ -41,6 +41,7 @@ public:
 class FunctionDefinitionAST: public ASTNode
 {
 public:
+    Token ret_type;
     Token function_name;
     ASTNode* compound_statement;
 

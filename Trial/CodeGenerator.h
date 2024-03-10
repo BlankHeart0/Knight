@@ -14,15 +14,18 @@ class CodeGenerator
 {
 public:
     AST abstract_syntax_tree;
-
+    
     CodeGenerator(AST abstract_syntax_tree):
                       abstract_syntax_tree(abstract_syntax_tree){}
 
     void CodeGen();
 
-    static VariableTable vartable;
-    
+    static string gen_fucntion;
+    static Function& NowInFunction();
+    static FunctionTable functable;
+     
     // Instruction
+    static void Func(Token type,string function_name);
     static void Var(Token type,string variable_name); // VAR var
 
     static int LoadConstant(Token constant);          // LOAD load

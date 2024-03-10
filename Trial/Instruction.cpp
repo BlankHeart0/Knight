@@ -1,9 +1,36 @@
 #include "CodeGenerator.h"
 
+void CodeGenerator::Func(Token type,string function_name)
+{
+    functable.Add(type,function_name);
+
+    // Opcode
+    file_manager.Write(is_upper?"FUNC":"func");
+    file_manager.Write("\t");
+
+    // Operand1
+    if(type.is_valid)
+    {
+        switch(type.token_type)
+        {
+            case INT: file_manager.Write(is_upper?"INT":"int");  break;
+            case DEC: file_manager.Write(is_upper?"DEC":"dec");  break;
+            case STR: file_manager.Write(is_upper?"STR":"str");  break;
+            case BOOL:file_manager.Write(is_upper?"BOOL":"bool");break;
+        }
+    }
+    else file_manager.Write(is_upper?"VOID":"void");
+    file_manager.WriteComma();
+
+    // Operand2
+    file_manager.Write(function_name);
+    file_manager.WriteEndl();
+}
+
 void CodeGenerator::Var(Token type,string variable_name)
 {
-    vartable.Add(type,variable_name);
-    int scope_i=vartable.ScopeSize()-1;
+    NowInFunction().vartable.Add(type,variable_name);
+    int scope_i=NowInFunction().vartable.ScopeSize()-1;
     
     // Opcode
     file_manager.Write(is_upper?"VAR":"var");
@@ -70,7 +97,7 @@ int CodeGenerator::LoadVariable(Token variable)
 {
     int register_i=-1;
 
-    Variable target=vartable.Visit(variable);
+    Variable target=NowInFunction().vartable.Visit(variable);
 
     switch(target.data_type)
     {
@@ -108,7 +135,7 @@ int CodeGenerator::LoadVariable(Token variable)
 
 void CodeGenerator::Store(Token variable,int register_i,bool need_free)
 { 
-    Variable target=vartable.Visit(variable);
+    Variable target=NowInFunction().vartable.Visit(variable);
     TypeChecker::Check_Store(target.data_type,register_i,variable.line);
 
     // Opcode

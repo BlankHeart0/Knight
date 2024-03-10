@@ -32,6 +32,11 @@ ASTNode* Parser::Parse_Function_Definition()
 
     FunctionDefinitionAST* node=new FunctionDefinitionAST();
     
+    if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
+    {
+        node->ret_type=PreviousToken();
+    }
+
     if(Match(IDENTIFIER))
     {
         node->function_name=PreviousToken();

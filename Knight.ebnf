@@ -4,7 +4,7 @@
 <Translation_Unit> ::= {<Function_Definition>} CODE_EOF
 
 # Definition
-<Function_Definition> ::= IDENTIFIER "(" ")" <Compound_Statement>
+<Function_Definition> ::= [INT | DEC | STR | BOOL] IDENTIFIER "(" ")" <Compound_Statement>
 <LocalVariable_Definition> ::= (INT | DEC | STR | BOOL) IDENTIFIER [":"<Expression>]";"
 
 #Statement

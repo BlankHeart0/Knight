@@ -4,16 +4,20 @@
 <Translation_Unit> ::= {<Function_Definition>} CODE_EOF
 
 # Definition
-<Function_Definition> ::= [INT | DEC | STR | BOOL] IDENTIFIER "(" ")" <Compound_Statement>
-<LocalVariable_Definition> ::= (INT | DEC | STR | BOOL) IDENTIFIER [":"<Expression>]";"
+<Function_Definition> ::= [<DataType>] IDENTIFIER "("[<Parameter_List>]")" "{"{<Statement>}"}"
+<DataType> ::= INT | DEC | STR | BOOL
+<LocalVariable_Definition> ::= <DataType> IDENTIFIER [":"<Expression>]";"
+<Parameter_List> ::= <LocalVariable_Definition>{","<LocalVariable_Definition>}
 
 #Statement
 <Statement> ::= <Compound_Statement> | <LocalVariable_Definition> | <If_Statement> | <While_Statement> |
-              | <Print_Statement> | <Expression_Statement> 
+              | <Return_Statement> | <Print_Statement> | <Expression_Statement> 
 <Compound_Statement> ::= "{"{<Statement>}"}"
 
 <If_Statement> ::= IF"("<Expression>")"<Statement>[ELSE<Statement>]
 <While_Statement> ::= WHILE"("<Expression>")"<Statement>
+
+<Return_Statement> ::= RET [<Expression>] ";"
 
 <Print_Statement> ::= PRINT <Expression> ";"
 <Expression_Statement> ::= [<Expression>]";"
@@ -31,7 +35,7 @@
 <PlusMinus_Expression> ::= <MulDiv_Expression>{("+" | "-")<MulDiv_Expression>}
 <MulDiv_Expression> ::= <Unary_Expression>{("*" | "/" | "%")<Unary_Expression>}
 
-<Unary_Expression> ::= ["-" | "not"]<Primary_Expression> 
+<Unary_Expression> ::= ["-" | "not"] (<Primary_Expression> | <FunctionCall_Expression>) 
 <Primary_Expression> ::= "("<Expression>")" | IDENTIFIER |
                         | CONSTANT_INT | CONSTANT_DEC | CONSTANT_STR | "true" | "false" 
-                        
+<FunctionCall_Expression>::= IDENTIFIER "(" [<Expression>{","<Expression>}] ")"                      

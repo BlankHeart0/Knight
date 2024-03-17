@@ -41,14 +41,36 @@ public:
 class FunctionDefinitionAST: public ASTNode
 {
 public:
-    Token ret_type;
+    Token ret_data_type;
     Token function_name;
-    ASTNode* compound_statement;
+    ASTNode* parameter_list;
+    vector<ASTNode*>statements;
 
-    FunctionDefinitionAST():compound_statement(nullptr){}
+    FunctionDefinitionAST():parameter_list(nullptr){}
 
     int CodeGen() override;
 
+    void Print(int depth) override;
+};
+
+class ParameterAST: public ASTNode
+{
+public:
+    Token data_type;
+    Token parameter_name;
+     
+    int CodeGen() override;
+    
+    void Print(int depth) override;
+};
+
+class ParameterListAST: public ASTNode
+{
+public:
+    vector<ASTNode*> parameters;
+ 
+    int CodeGen() override;
+    
     void Print(int depth) override;
 };
 
@@ -116,6 +138,21 @@ public:
 
     WhileStatementAST():expression(nullptr),statement(nullptr){}
 
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+
+
+class ReturnStatementAST: public ASTNode
+{
+public:
+    Token ret;
+    ASTNode* expression;
+
+    ReturnStatementAST():expression(nullptr){}
+        
     int CodeGen() override;
 
     void Print(int depth) override;
@@ -274,8 +311,10 @@ class UnaryExpressionAST: public ASTNode
 public:
     Token prefix_operator;
     ASTNode* primary_expression;
+    ASTNode* functioncall_expression;
 
-    UnaryExpressionAST():primary_expression(nullptr){}
+    UnaryExpressionAST():
+        primary_expression(nullptr),functioncall_expression(nullptr){}
 
     int CodeGen() override;
 
@@ -290,6 +329,17 @@ public:
     Token variable;
 
     PrimaryExpressionAST():expression(nullptr){}
+
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+class FunctionCallExpressionAST: public ASTNode
+{
+public:
+    Token function;
+    vector<ASTNode*> expressions;
 
     int CodeGen() override;
 

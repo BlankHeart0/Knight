@@ -25,21 +25,30 @@ public:
     static FunctionTable functable;
 
     // Instruction
-    static void Func(Token type,string function_name);  // FUNC func
+    // Variable
     static void Var(Token type,string variable_name);   // VAR var
-
     static int LoadConstant(Token constant);            // LOAD load
     static int LoadVariable(Token variable);            // LOAD load
-    static void Store(Token variable,int register_i,bool need_free);// STORE store
-    static void Convert(int register_i,DataType to_dataType);       // CVT cvt
-
-    static void Print(int register_i);                  // PRINT print
+    static void Store(Token variable,int r_i,bool need_free);// STORE store
+    static void Convert(int r_i,DataType to_dataType);       // CVT cvt
     
-    //Control Flow
+    // Function    
+    static void Func(Token type,string function_name);  // FUNC func
+    static int TransX2R(int x_i);                       // TRANS trans
+    static void TransR2X(int x_i,int r_i);              // TRANS trans
+    static void TransY2R(int r_i);                      // TRANS trans
+    static void TransR2Y(int r_i,int line);             // TRANS trans
+    static int Call(Token function);                    // CALL call
+    static void Ret();                                  // RET ret
+    static void Push(int r_i);                          // PUSH push
+    static void Pop(int r_i);                           // POP pop
+    static void Print(int r_i);                         // PRINT print
+    
+    // Control Flow
     static void Lable(int lable_id);                    // LABLE lable  
     static void Jump(int lable_id);                     // JMP jmp
-    static void JumpTrue(int lable_id,int register_i);  // JMPT jmpt
-    static void JumpFalse(int lable_id,int register_i); // JMPF jmpf
+    static void JumpTrue(int lable_id,int r_i);         // JMPT jmpt
+    static void JumpFalse(int lable_id,int r_i);        // JMPF jmpf
     
     // Binary
     static int BinaryInstruction(int r1_i,Token Operator,int r2_i);
@@ -60,8 +69,8 @@ public:
     static int Mod(int r1_i,int r2_i,int line);         // MOD mod
 
     // Unary
-    static int UnaryInstruction(Token Operator,int register_i);
-    static int Neg(int register_i,int line);            // NEG neg
-    static int Not(int register_i,int line);            // NOT not
+    static int UnaryInstruction(Token Operator,int r_i);
+    static int Neg(int r_i,int line);                   // NEG neg
+    static int Not(int r_i,int line);                   // NOT not
 
 };

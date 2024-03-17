@@ -1,6 +1,7 @@
 #pragma once
 
 #include "System.h"
+#include "Token.h"
 #include "Diagnostor.h"
 
 enum DataType
@@ -13,15 +14,17 @@ static vector<string> DataType_Text
     "D_INT","D_DEC","D_STR","D_BOOL"
 };
 
+DataType TokenToType(Token data_type);
+
 class TypeChecker
 {
 public:
     //DataType Checker
-    static void Check_Store(DataType data_type,int register_i,int line);
+    static void Check_Store(DataType data_type,int r_i,int line);
     // Logic
     static void Check_Or(int r1_i,int r2_i,int line);
     static void Check_And(int r1_i,int r2_i,int line);
-    static void Check_Not(int register_i,int line);
+    static void Check_Not(int r_i,int line);
     static void Check_Equal(int r1_i,int r2_i,int line);
     static void Check_NotEqual(int r1_i,int r2_i,int line);
     static void Check_Less(int r1_i,int r2_i,int line);
@@ -35,7 +38,7 @@ public:
     static void Check_Mul(int r1_i,int r2_i,int line);
     static void Check_Div(int r1_i,int r2_i,int line);
     static void Check_Mod(int r1_i,int r2_i,int line);
-    static void Check_Neg(int register_i,int line);
+    static void Check_Neg(int r_i,int line);
 };
 
 #define TYPE_ERROR(error_message)                             \

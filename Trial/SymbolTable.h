@@ -33,12 +33,24 @@ public:
 
 
 
+class Parameter
+{
+public:
+    DataType data_type;
+    Token name;
+
+    Parameter(){}
+    Parameter(DataType data_type,Token name):
+        data_type(data_type),name(name){}
+};
+
 class Function
 {
 public:
-    DataType ret_type;
+    DataType ret_data_type;
     bool is_void;
     string name;
+    vector<Parameter> parameters; 
     VariableTable vartable;
 
     int lable_id;
@@ -47,8 +59,8 @@ public:
     Function(){}
     Function(string name):
         is_void(true),name(name),lable_id(0){}
-    Function(DataType ret_type,string name):
-        is_void(false),ret_type(ret_type),name(name),lable_id(0){}
+    Function(DataType ret_data_type,string name):
+        is_void(false),ret_data_type(ret_data_type),name(name),lable_id(0){}
 };
 
 class FunctionTable

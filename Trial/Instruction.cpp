@@ -1,32 +1,6 @@
 #include "CodeGenerator.h"
 
-void CodeGenerator::Func(Token type,string function_name)
-{
-    functable.Add(type,function_name);
-
-    // Opcode
-    file_manager.Write(is_upper?"FUNC":"func");
-    file_manager.Write("\t");
-
-    // Operand1
-    if(type.is_valid)
-    {
-        switch(type.token_type)
-        {
-            case INT: file_manager.Write(is_upper?"INT":"int");  break;
-            case DEC: file_manager.Write(is_upper?"DEC":"dec");  break;
-            case STR: file_manager.Write(is_upper?"STR":"str");  break;
-            case BOOL:file_manager.Write(is_upper?"BOOL":"bool");break;
-        }
-    }
-    else file_manager.Write(is_upper?"VOID":"void");
-    file_manager.WriteComma();
-
-    // Operand2
-    file_manager.Write(function_name);
-    file_manager.WriteEndl();
-}
-
+// Variable
 void CodeGenerator::Var(Token type,string variable_name)
 {
     NowInFunction().vartable.Add(type,variable_name);
@@ -54,26 +28,24 @@ void CodeGenerator::Var(Token type,string variable_name)
     file_manager.WriteEndl();
 }
 
-
-
 //@Todo:Reduce load and store (from dragon book)
 int CodeGenerator::LoadConstant(Token constant)
 {   
-    int register_i=-1;
+    int r_i=-1;
 
     switch(constant.token_type)
     {
         case CONSTANT_INT:
-            register_i= general_register.Alloc(D_INT);
+            r_i= general_register.Alloc(D_INT);
             break;
         case CONSTANT_DEC:
-            register_i= general_register.Alloc(D_DEC);
+            r_i= general_register.Alloc(D_DEC);
             break;
         case CONSTANT_STR:
-            register_i= general_register.Alloc(D_STR);
+            r_i= general_register.Alloc(D_STR);
             break;
         case TRUE:case FALSE:
-            register_i= general_register.Alloc(D_BOOL);
+            r_i= general_register.Alloc(D_BOOL);
             break;
     }
 
@@ -83,35 +55,35 @@ int CodeGenerator::LoadConstant(Token constant)
     file_manager.Write("\t");
 
     // Operand1
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteComma();
 
     // Operand2
     file_manager.Write(constant.lexeme);
     file_manager.WriteEndl();
 
-    return register_i;
+    return r_i;
 }
 
 int CodeGenerator::LoadVariable(Token variable)
 {
-    int register_i=-1;
+    int r_i=-1;
 
     Variable target=NowInFunction().vartable.Visit(variable);
 
     switch(target.data_type)
     {
         case D_INT:
-            register_i= general_register.Alloc(D_INT);
+            r_i= general_register.Alloc(D_INT);
             break;
         case D_DEC:
-            register_i= general_register.Alloc(D_DEC);
+            r_i= general_register.Alloc(D_DEC);
             break;
         case D_STR:
-            register_i= general_register.Alloc(D_STR);
+            r_i= general_register.Alloc(D_STR);
             break;
         case D_BOOL:
-            register_i= general_register.Alloc(D_BOOL);
+            r_i= general_register.Alloc(D_BOOL);
             break;
     }
 
@@ -120,7 +92,7 @@ int CodeGenerator::LoadVariable(Token variable)
     file_manager.Write("\t");
 
     // Operand1
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteComma();
 
     // Operand2
@@ -130,13 +102,13 @@ int CodeGenerator::LoadVariable(Token variable)
     file_manager.Write(")");
     file_manager.WriteEndl();
 
-    return register_i;
+    return r_i;
 }
 
-void CodeGenerator::Store(Token variable,int register_i,bool need_free)
+void CodeGenerator::Store(Token variable,int r_i,bool need_free)
 { 
     Variable target=NowInFunction().vartable.Visit(variable);
-    TypeChecker::Check_Store(target.data_type,register_i,variable.line);
+    TypeChecker::Check_Store(target.data_type,r_i,variable.line);
 
     // Opcode
     file_manager.Write(is_upper?"STORE":"store");
@@ -150,22 +122,22 @@ void CodeGenerator::Store(Token variable,int register_i,bool need_free)
     file_manager.WriteComma();
 
     // Operand2
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 
-    if(need_free)general_register.Free(register_i);
+    if(need_free)general_register.Free(r_i);
 }
 
-void CodeGenerator::Convert(int register_i,DataType to_dataType)
+void CodeGenerator::Convert(int r_i,DataType to_dataType)
 {
-    Register& R=general_register.GetReg(register_i);
+    Register& R=general_register.GetReg(r_i);
 
     // Opcode
     file_manager.Write(is_upper?"CVT":"cvt");
     file_manager.Write("\t\t");
 
     // Operand1
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteComma();
 
     // Operand2
@@ -193,22 +165,199 @@ void CodeGenerator::Convert(int register_i,DataType to_dataType)
 
 
 
-void CodeGenerator::Print(int register_i)
+// Fucntion
+void CodeGenerator::Func(Token type,string function_name)
+{
+    functable.Add(type,function_name);
+
+    // Opcode
+    file_manager.Write(is_upper?"FUNC":"func");
+    file_manager.Write("\t");
+
+    // Operand1
+    if(type.is_valid)
+    {
+        switch(type.token_type)
+        {
+            case INT: file_manager.Write(is_upper?"INT":"int");  break;
+            case DEC: file_manager.Write(is_upper?"DEC":"dec");  break;
+            case STR: file_manager.Write(is_upper?"STR":"str");  break;
+            case BOOL:file_manager.Write(is_upper?"BOOL":"bool");break;
+        }
+    }
+    else file_manager.Write(is_upper?"VOID":"void");
+    file_manager.WriteComma();
+
+    // Operand2
+    file_manager.Write(function_name);
+    file_manager.WriteEndl();
+}
+
+int CodeGenerator::TransX2R(int x_i)
+{
+    Parameter& parameter=NowInFunction().parameters[x_i];
+
+    int r_i= general_register.Alloc(parameter.data_type);
+    
+    // Opcode
+    file_manager.Write(is_upper?"TRANS":"trans");
+    file_manager.Write("\t");
+
+    // Operand1
+    WriteGeneralRegisterName(r_i);
+    file_manager.WriteComma();
+
+    // Operand2
+    file_manager.Write(is_upper?"X":"x");
+    file_manager.Write(to_string(x_i));
+    file_manager.WriteEndl();
+
+    return r_i;
+}
+
+void CodeGenerator::TransR2X(int x_i,int r_i)
+{
+    // Opcode
+    file_manager.Write(is_upper?"TRANS":"trans");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(is_upper?"X":"x");
+    file_manager.Write(to_string(x_i));
+    file_manager.WriteComma();
+    
+    // Operand2
+    WriteGeneralRegisterName(r_i);
+    file_manager.WriteEndl();
+
+    general_register.Free(r_i);
+}
+
+void CodeGenerator::TransY2R(int r_i)
+{
+    // Opcode
+    file_manager.Write(is_upper?"TRANS":"trans");
+    file_manager.Write("\t");
+    
+    // Operand1
+    WriteGeneralRegisterName(r_i);
+    file_manager.WriteComma();
+
+    // Operand2
+    file_manager.Write(is_upper?"Y":"y");
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::TransR2Y(int r_i,int line)
+{
+    if(NowInFunction().is_void)TYPE_ERROR("Function ret type is void");
+
+    TypeChecker::Check_Store(NowInFunction().ret_data_type,r_i,line);
+
+    // Opcode
+    file_manager.Write(is_upper?"TRANS":"trans");
+    file_manager.Write("\t");
+    
+    // Operand1
+    file_manager.Write(is_upper?"Y":"y");
+    file_manager.WriteComma();
+    
+    // Operand2
+    WriteGeneralRegisterName(r_i);
+    file_manager.WriteEndl();
+
+    general_register.Free(r_i);
+}
+
+int CodeGenerator::Call(Token function)
+{
+    Function& called_function=CodeGenerator::functable.Visit(function);
+
+    // save used general register
+    vector<int>used_ri;
+    for(int r_i=0;r_i<general_register.table.size();r_i++)
+    {
+        if(!general_register.table[r_i].free)
+        {
+            used_ri.push_back(r_i);
+            Push(r_i);
+            general_register.Free(r_i);
+        }
+    }
+
+    // Opcode
+    file_manager.Write(is_upper?"CALL":"call");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(called_function.name);
+    file_manager.WriteEndl();
+
+    // recover used general register
+    for(int i=used_ri.size()-1;i>=0;i--)
+    {
+        Pop(used_ri[i]);
+        general_register.table[used_ri[i]].free=false;
+    }
+
+    // get the ret value
+    if(!called_function.is_void)
+    {
+        int r_i= general_register.Alloc(called_function.ret_data_type);
+        TransY2R(r_i);
+        return r_i;
+    }
+
+    return NOTHING;
+}
+
+void CodeGenerator::Ret()
+{
+    // Opcode
+    file_manager.Write(is_upper?"RET":"ret");
+    file_manager.Write("\t\t");
+
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::Push(int r_i)
+{
+    // Opcode
+    file_manager.Write(is_upper?"PUSH":"push");
+    file_manager.Write("\t");
+
+    // Operand1
+    WriteGeneralRegisterName(r_i);
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::Pop(int r_i)
+{
+    // Opcode
+    file_manager.Write(is_upper?"POP":"pop");
+    file_manager.Write("\t\t");
+
+    // Operand1
+    WriteGeneralRegisterName(r_i);
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::Print(int r_i)
 {
     // Opcode
     file_manager.Write(is_upper?"PRINT":"print");
     file_manager.Write("\t");
 
     // Operand1
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 
-    general_register.Free(register_i);
+    general_register.Free(r_i);
 }
 
 
 
-//Control Flow
+// Control Flow
 void CodeGenerator::Lable(int lable_id)
 {
     // Opcode
@@ -231,7 +380,7 @@ void CodeGenerator::Jump(int lable_id)
     file_manager.WriteEndl();
 }
 
-void CodeGenerator::JumpTrue(int lable_id,int register_i)
+void CodeGenerator::JumpTrue(int lable_id,int r_i)
 {
     // Opcode
     file_manager.Write(is_upper?"JMPT":"jmpt");
@@ -242,13 +391,13 @@ void CodeGenerator::JumpTrue(int lable_id,int register_i)
     file_manager.WriteComma();
 
     // Operand2
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 
-    general_register.Free(register_i);
+    general_register.Free(r_i);
 }
 
-void CodeGenerator::JumpFalse(int lable_id,int register_i)
+void CodeGenerator::JumpFalse(int lable_id,int r_i)
 {
     // Opcode
     file_manager.Write(is_upper?"JMPF":"jmpf");
@@ -259,10 +408,10 @@ void CodeGenerator::JumpFalse(int lable_id,int register_i)
     file_manager.WriteComma();
 
     // Operand2
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 
-    general_register.Free(register_i);
+    general_register.Free(r_i);
 }
 
 
@@ -571,43 +720,43 @@ int CodeGenerator::Mod(int r1_i,int r2_i,int line)
 
 
 // Unary
-int CodeGenerator::UnaryInstruction(Token Operator,int register_i)
+int CodeGenerator::UnaryInstruction(Token Operator,int r_i)
 {
     switch(Operator.token_type)
     {
-        case MINUS:return Neg(register_i,Operator.line);
-        case NOT:  return Not(register_i,Operator.line);
+        case MINUS:return Neg(r_i,Operator.line);
+        case NOT:  return Not(r_i,Operator.line);
     }
 
     return -1;
 }
 
-int CodeGenerator::Neg(int register_i,int line)
+int CodeGenerator::Neg(int r_i,int line)
 {   
-    TypeChecker::Check_Neg(register_i,line);
+    TypeChecker::Check_Neg(r_i,line);
 
     // Opcode
     file_manager.Write((is_upper?"Neg":"neg"));
     file_manager.Write("\t\t");
 
     // Operand1
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 
-    return register_i;
+    return r_i;
 }
 
-int CodeGenerator::Not(int register_i,int line)
+int CodeGenerator::Not(int r_i,int line)
 {
-    TypeChecker::Check_Not(register_i,line);
+    TypeChecker::Check_Not(r_i,line);
 
     // Opcode
     file_manager.Write((is_upper?"Not":"not"));
     file_manager.Write("\t\t");
 
     // Operand1
-    WriteGeneralRegisterName(register_i);
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 
-    return register_i;
+    return r_i;
 }

@@ -20,11 +20,11 @@ public:
 
     GeneralRegister():table(8){}
     
-    string Name(int register_i);
-    Register& GetReg(int register_i);
+    string Name(int r_i);
+    Register& GetReg(int r_i);
 
     int Alloc(DataType data_type);
-    void Free(int register_i);
+    void Free(int r_i);
     void Grow();
 
     void Print();

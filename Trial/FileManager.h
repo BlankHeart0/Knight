@@ -33,7 +33,7 @@ extern FileManager file_manager;
             diagnostor.Error(E_FILEMANAGER,error_message);\
         }while(0)
 
-#define WriteGeneralRegisterName(register_i)                        \
+#define WriteGeneralRegisterName(r_i)                        \
         do{                                                         \
-            file_manager.Write(general_register.Name(register_i));  \
+            file_manager.Write(general_register.Name(r_i));  \
         }while(0)

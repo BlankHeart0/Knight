@@ -38,23 +38,59 @@ int TranslationUnitAST::CodeGen()
 // Definition
 int FunctionDefinitionAST::CodeGen()
 {
-    CodeGenerator::Func(ret_type,function_name.lexeme);
+    CodeGenerator::Func(ret_data_type,function_name.lexeme);
     CodeGenerator::gen_fucntion=function_name.lexeme;
     
-    compound_statement->CodeGen();
+    CodeGenerator::NowInFunction().vartable.EnterScope();
+   
+    // register parameters
+    if(parameter_list)parameter_list->CodeGen();
+
+    // load parameters
+    int parameters_size=CodeGenerator::NowInFunction().parameters.size();
+    for(int x_i=0;x_i<parameters_size;x_i++)
+    {
+        Parameter& parameter=CodeGenerator::NowInFunction().parameters[x_i];
+        int r_i=CodeGenerator::TransX2R(x_i);
+        CodeGenerator::Store(parameter.name,r_i,true);
+    }
+
+    for(ASTNode* ast_ptr:statements)
+        ast_ptr->CodeGen();    
+    
+    CodeGenerator::NowInFunction().vartable.LeaveScope();
+    
+    return NOTHING;
+}
+
+int ParameterAST::CodeGen()
+{
+    CodeGenerator::Var(data_type,parameter_name.lexeme);
+    
+    DataType parameter_data_type=TokenToType(data_type);
+
+    CodeGenerator::NowInFunction().parameters.push_back
+        (Parameter(parameter_data_type,parameter_name));
 
     return NOTHING;
 }
 
+int ParameterListAST::CodeGen()
+{
+    for(ASTNode* ast_ptr:parameters)
+        ast_ptr->CodeGen();
+
+    return NOTHING;    
+}
+
 int LocalVariableDefinitionAST::CodeGen()
 {
-    //@Bug:may data_type should is type
     CodeGenerator::Var(data_type,variable_name.lexeme);
     //Initialize
     if(expression)
     {
-        int expression_i=expression->CodeGen();
-        CodeGenerator::Store(variable_name,expression_i,true);
+        int expression_ri=expression->CodeGen();
+        CodeGenerator::Store(variable_name,expression_ri,true);
     }
 
     return NOTHING;
@@ -125,6 +161,25 @@ int WhileStatementAST::CodeGen()
 
 
 
+int ReturnStatementAST::CodeGen()
+{
+    int line=ret.line;
+
+    if(expression)
+    {
+        int expression_ri=expression->CodeGen();
+        CodeGenerator::TransR2Y(expression_ri,line);
+    }
+    else if(!CodeGenerator::NowInFunction().is_void)
+        TYPE_ERROR("Function ret type is not void");
+    
+    CodeGenerator::Ret();
+
+    return NOTHING;
+}
+
+
+
 int PrintStatementAST::CodeGen()
 {
     int expression_ri=expression->CodeGen();
@@ -138,8 +193,8 @@ int ExpressionStatementAST::CodeGen()
     //@Todo:it breaks the packing
     if(expression)
     {
-        int expression_i=expression->CodeGen();
-        general_register.Free(expression_i);
+        int expression_ri=expression->CodeGen();
+        general_register.Free(expression_ri);
     }
     return NOTHING;
 }
@@ -264,7 +319,11 @@ int MulDivExpressionAST::CodeGen()
 
 int UnaryExpressionAST::CodeGen()
 {
-    int result_ri=primary_expression->CodeGen();
+    int result_ri=NOTHING;
+    if(primary_expression)
+        result_ri=primary_expression->CodeGen();
+    else if(functioncall_expression)
+        result_ri=functioncall_expression->CodeGen();
 
     if(!prefix_operator.is_valid) return result_ri;
     
@@ -280,4 +339,27 @@ int PrimaryExpressionAST::CodeGen()
         return CodeGenerator::LoadConstant(constant);
     
     return CodeGenerator::LoadVariable(variable);
+}
+
+int FunctionCallExpressionAST::CodeGen()
+{
+    int line=function.line;
+    Function& called_function=CodeGenerator::functable.Visit(function);
+
+    if(called_function.parameters.size()!=expressions.size())
+        TYPE_ERROR("Parameter and Argument number not match");
+
+    // store argument
+    vector<int> r_is;
+    for(int i=0;i<expressions.size();i++)
+        r_is.push_back(expressions[i]->CodeGen());
+
+    for(int i=0;i<expressions.size();i++)
+    {
+        TypeChecker::Check_Store(called_function.parameters[i].data_type,
+                                r_is[i],line);
+        CodeGenerator::TransR2X(i,r_is[i]);
+    }
+
+    return CodeGenerator::Call(function);
 }

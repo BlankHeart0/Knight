@@ -31,10 +31,31 @@ void FunctionDefinitionAST::Print(int depth)
 {
     PrintTab(depth);
     cout<<"Function_Definition";
-    if(ret_type.is_valid)
-        cout<<" return_type:"<<ret_type.lexeme;
+
+    cout<<" ret_data_type:"<<ret_data_type.lexeme;
     cout<<" function_name:"<<function_name.lexeme;
-    compound_statement->Print(depth+1);
+    if(parameter_list)parameter_list->Print(depth+1);
+    
+    for(ASTNode* ast_ptr:statements)
+        ast_ptr->Print(depth+1);
+}
+
+void ParameterAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Parameter";
+
+    cout<<" data_type:"<<data_type.lexeme;
+    cout<<" parameter_name:"<<parameter_name.lexeme;
+}
+
+void ParameterListAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Parameter_List";
+
+    for(ASTNode* ast_ptr:parameters)
+        ast_ptr->Print(depth+1);
 }
 
 void LocalVariableDefinitionAST::Print(int depth)
@@ -42,7 +63,7 @@ void LocalVariableDefinitionAST::Print(int depth)
     PrintTab(depth);
     cout<<"LocalVariable_Definition";
 
-    cout<<" type:"<<data_type.lexeme;
+    cout<<" data_type:"<<data_type.lexeme;
     cout<<" variable_name:"<<variable_name.lexeme;
     if(expression)expression->Print(depth+1);
 }
@@ -91,6 +112,16 @@ void WhileStatementAST::Print(int depth)
 
     expression->Print(depth+1);
     statement->Print(depth+1);
+}
+
+
+
+void ReturnStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Return_Statement";
+
+    if(expression)expression->Print(depth+1);
 }
 
 
@@ -231,7 +262,11 @@ void UnaryExpressionAST::Print(int depth)
 
     if(prefix_operator.is_valid)
         cout<<" prefix_operator:"<<prefix_operator.lexeme;
-    primary_expression->Print(depth+1);
+    
+    if(primary_expression)
+        primary_expression->Print(depth+1);
+    else if(functioncall_expression)
+        functioncall_expression->Print(depth+1);
 }
 
 void PrimaryExpressionAST::Print(int depth)
@@ -255,4 +290,15 @@ void PrimaryExpressionAST::Print(int depth)
     {
         cout<<" variable:"<<variable.lexeme;
     }
+}
+
+void FunctionCallExpressionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"FunctionCall_Expression";
+
+    cout<<" function:"<<function.lexeme;
+
+    for(ASTNode* ast_ptr:expressions)
+        ast_ptr->Print(depth+1);
 }

@@ -34,20 +34,73 @@ ASTNode* Parser::Parse_Function_Definition()
     
     if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
     {
-        node->ret_type=PreviousToken();
+        node->ret_data_type=PreviousToken();
     }
 
     if(Match(IDENTIFIER))
     {
         node->function_name=PreviousToken();
 
-        if(!Match(LEFT_PAREN))PARSE_ERROR("Left paren '(' loss");
-        if(!Match(RIGHT_PAREN))PARSE_ERROR("Right paren ')' loss");
+        if(Match(LEFT_PAREN))
+        {
+            if(!Peek(RIGHT_PAREN))
+                node->parameter_list=Parse_Parameter_List();
 
-        node->compound_statement=Parse_Compound_Statement();
+            if(Match(RIGHT_PAREN))
+            {
+                if(Match(LEFT_BRACE))
+                {
+                    while(!Match(RIGHT_BRACE))
+                    {
+                        AddChildToVector(node->statements,
+                                        Parse_Statement());
+                    }
+
+                    if(PreviousToken().token_type!=RIGHT_BRACE)
+                        PARSE_ERROR("Right barce '}' loss");
+                }
+                else PARSE_ERROR("Left barce '{' loss");
+            }
+            else PARSE_ERROR("Right paren ')' loss");
+        }
+        else PARSE_ERROR("Left paren '(' loss");
     }
     else PARSE_ERROR("Function identifier loss");
 
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_Parameter()
+{
+    diagnostor.WhoAmI("Parse_Parameter");
+
+    ParameterAST* node=new ParameterAST();
+
+    if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
+    {
+        node->data_type=PreviousToken();
+        if(Match(IDENTIFIER))
+        {
+            node->parameter_name=PreviousToken();
+        }
+        else PARSE_ERROR("Parameter identifier loss");
+    }
+    else PARSE_ERROR("Parameter type loss");
+
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_Parameter_List()
+{
+    diagnostor.WhoAmI("Parse_Parameter_List");
+
+    ParameterListAST* node=new ParameterListAST();
+
+    AddChildToVector(node->parameters,Parse_Parameter());
+
+    while(Match(COMMA))
+        AddChildToVector(node->parameters,Parse_Parameter());
+    
     return (ASTNode*)node;
 }
 
@@ -92,6 +145,8 @@ ASTNode* Parser::Parse_Statement()
         node->X_statement=Parse_If_Statement();
     else if(Peek(WHILE))
         node->X_statement=Parse_While_Statement();
+    else if(Peek(RET))
+        node->X_statement=Parse_Return_Statement();
     else if(Peek(PRINT))
         node->X_statement=Parse_Print_Statement();
     else if(Peek(INT)||Peek(DEC)||Peek(STR)||Peek(BOOL))
@@ -174,6 +229,27 @@ ASTNode* Parser::Parse_While_Statement()
     }
     else PARSE_ERROR("Keyword 'while' loss");
 
+    return (ASTNode*)node;
+}
+
+
+
+ASTNode* Parser::Parse_Return_Statement()
+{
+    diagnostor.WhoAmI("Parse_Return_Statement");
+
+    ReturnStatementAST* node=new ReturnStatementAST();
+
+    if(Match(RET))
+    {
+        node->ret=PreviousToken();
+
+        if(!Peek(SEMICOLON)) node->expression=Parse_Expression();
+        
+        MatchSemicolon();
+    }
+    else PARSE_ERROR("Keyword 'ret' loss");
+    
     return (ASTNode*)node;
 }
 
@@ -361,7 +437,10 @@ ASTNode* Parser::Parse_Unary_Expression()
         node->prefix_operator=PreviousToken();
     }
 
-    node->primary_expression=Parse_Primary_Expression();
+    if(Peek(IDENTIFIER)&&Peek(LEFT_PAREN,2))
+        node->functioncall_expression=Parse_FunctionCall_Expression();
+    else
+        node->primary_expression=Parse_Primary_Expression();
 
     return (ASTNode*)node;
 }
@@ -387,6 +466,38 @@ ASTNode* Parser::Parse_Primary_Expression()
         node->variable=PreviousToken();
     }
     else PARSE_ERROR("Primary character loss");
+
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_FunctionCall_Expression()
+{
+    diagnostor.WhoAmI("Parse_FunctionCall_Expression");
+
+    FunctionCallExpressionAST* node=new FunctionCallExpressionAST();
+
+    if(Match(IDENTIFIER))
+    {
+        node->function=PreviousToken();
+        if(Match(LEFT_PAREN))
+        {
+            if(!Peek(RIGHT_PAREN))
+            {
+                AddChildToVector(node->expressions,
+                                Parse_Expression());
+                
+                while(Match(COMMA))
+                {
+                    AddChildToVector(node->expressions,
+                                    Parse_Expression());
+                }
+            }
+
+            if(!Match(RIGHT_PAREN))PARSE_ERROR("Right paren ')' loss");
+        }
+        else PARSE_ERROR("Left paren '(' loss");
+    }
+    else PARSE_ERROR("Function identifier loss");
 
     return (ASTNode*)node;
 }

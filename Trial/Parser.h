@@ -22,7 +22,10 @@ public:
 
     // Definition
     ASTNode* Parse_Function_Definition();
+    ASTNode* Parse_Parameter();
+    ASTNode* Parse_Parameter_List();
     ASTNode* Parse_LocalVariable_Definition();
+    
 
     // Statement
     ASTNode* Parse_Statement();
@@ -30,6 +33,8 @@ public:
 
     ASTNode* Parse_If_Statement();
     ASTNode* Parse_While_Statement();
+
+    ASTNode* Parse_Return_Statement();
 
     ASTNode* Parse_Print_Statement();
     ASTNode* Parse_Expression_Statement();
@@ -49,6 +54,7 @@ public:
     
     ASTNode* Parse_Unary_Expression();
     ASTNode* Parse_Primary_Expression();
+    ASTNode* Parse_FunctionCall_Expression();
 
     void AddChildToVector(vector<ASTNode*>& vec, ASTNode* child );
     bool IsAtEnd();

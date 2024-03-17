@@ -1,3 +1,5 @@
 --dec is possible to lose precision when use to_string(double)
 --memory free
 --Scope char in ks file
+--Type's name is in mess
+--Void function call's value use

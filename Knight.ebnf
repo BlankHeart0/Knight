@@ -4,10 +4,10 @@
 <Translation_Unit> ::= {<Function_Definition>} CODE_EOF
 
 # Definition
-<Function_Definition> ::= [<DataType>] IDENTIFIER "("[<Parameter_List>]")" "{"{<Statement>}"}"
-<DataType> ::= INT | DEC | STR | BOOL
-<LocalVariable_Definition> ::= <DataType> IDENTIFIER [":"<Expression>]";"
-<Parameter_List> ::= <LocalVariable_Definition>{","<LocalVariable_Definition>}
+<Function_Definition> ::= [INT | DEC | STR | BOOL] IDENTIFIER "("[<Parameter_List>]")" "{"{<Statement>}"}" 
+<Parameter> ::= (INT | DEC | STR | BOOL) IDENTIFIER
+<Parameter_List> ::= <Parameter>{","<Parameter>}
+<LocalVariable_Definition> ::= (INT | DEC | STR | BOOL) IDENTIFIER [":"<Expression>]";"
 
 #Statement
 <Statement> ::= <Compound_Statement> | <LocalVariable_Definition> | <If_Statement> | <While_Statement> |

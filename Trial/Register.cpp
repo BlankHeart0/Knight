@@ -2,16 +2,15 @@
 
 GeneralRegister general_register;
 
-string GeneralRegister::Name(int register_i)
+string GeneralRegister::Name(int r_i)
 {
     string register_name="";
 
-    if(register_i>=0&&register_i<table.size()
-                    &&!table[register_i].free)
+    if(r_i>=0&&r_i<table.size())
     {
-        register_name+=(is_upper?"R":"r")+to_string(register_i);
+        register_name+=(is_upper?"R":"r")+to_string(r_i);
         register_name+="(";
-        switch(table[register_i].data_type)
+        switch(table[r_i].data_type)
         {
             case D_INT: register_name+=(is_upper?"INT":"int");  break;
             case D_DEC: register_name+=(is_upper?"DEC":"dec");  break;
@@ -20,50 +19,47 @@ string GeneralRegister::Name(int register_i)
         }
         register_name+=")";
     }
-    else
-        REGISTER_ERROR("Can not visit this general register");
+    else REGISTER_ERROR("You visit a void value");
     
     return register_name;
 }
 
-Register& GeneralRegister::GetReg(int register_i)
+Register& GeneralRegister::GetReg(int r_i)
 {
-    return table[register_i];
+    return table[r_i];
 }
 
 
 
 int GeneralRegister::Alloc(DataType data_type)
 {
-    int register_i=0;
+    int r_i=0;
     
-    for(;register_i<table.size();register_i++)
+    for(;r_i<table.size();r_i++)
     {
-        if(table[register_i].free)
+        if(table[r_i].free)
         {
-            table[register_i].data_type=data_type;
-            table[register_i].free=false;
+            table[r_i].data_type=data_type;
+            table[r_i].free=false;
             break;
         }
     }
 
     //Insufficient
-    if(register_i>=table.size())
+    if(r_i>=table.size())
     {
         Grow();
-        table[register_i].data_type=data_type;
-        table[register_i].free=false;
+        table[r_i].data_type=data_type;
+        table[r_i].free=false;
     }
 
-    return register_i;
+    return r_i;
 }
 
-void GeneralRegister::Free(int register_i)
+void GeneralRegister::Free(int r_i)
 {
-    if(table[register_i].free)
-        REGISTER_ERROR("Can not free a free general regisgter");
-    
-    else table[register_i].free=true;
+    if(r_i>=0&&r_i<table.size()&&!table[r_i].free)
+        table[r_i].free=true;
 }
 
 void GeneralRegister::Grow()

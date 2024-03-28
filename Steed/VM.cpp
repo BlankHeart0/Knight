@@ -16,7 +16,12 @@ void VirtualMachine::Load()
     while(line_str!="")
     {   
         Parser parser(line_str);
-        main.instructions.push_back(parser.Parse());
+        Instruction* instruction=parser.Parse();
+
+        //Directive
+        if(instruction->is_directive)instruction->Excute();
+        //Instruction
+        else functions.LoadInstruction(nowInfunction,instruction);
         
         line_str=file_manager.ReadLine();
     }
@@ -26,6 +31,20 @@ void VirtualMachine::Load()
 
 void VirtualMachine::Run()
 {
-    cout<<"------Running------"<<endl;
-    main.Excute();
+    cout<<"------Running------"<<endl<<endl;
+
+    pc.function_name="main";
+    pc.instruction_id=0;
+
+    while(pc.instruction_id<NowExcuteFunction().instructions.size())
+    {
+        NowExcuteFunction().instructions[pc.instruction_id]->Excute();
+    }
+
+    cout<<"------ Done ------"<<endl<<endl;
+}
+
+Function& VirtualMachine::NowExcuteFunction()
+{
+    return functions.Get(pc.function_name);
 }

@@ -1,50 +1,41 @@
 #pragma once
 
 #include "System.h"
-
-// Maybe it can be replace to DataType
-enum StoreType
-{
-    S_NULL,
-    S_INT,
-    S_DEC,
-    S_STR
-};
-
-static vector<string> StoreType_text
-{
-    "S_NULL",
-    "S_INT",
-    "S_DEC",
-    "S_STR"
-};
+#include "Type.h"
 
 class Register
 {
 public:
-    StoreType store_type;
+    DataType data_type;
     
     int INT_val;
     double DEC_val;
     string STR_val;
+    bool BOOL_val;
 
-    Register():store_type(S_NULL){}
+    void Set(int int_val);
+    void Set(double dec_val);
+    void Set(string str_val);
+    void Set(bool bool_val);
 };
 
-class GeneralRegister
+class RegisterTable
 {
-public:
+private:
     vector<Register> table;
+    void Grow(int n);
 
-    GeneralRegister():table(0){}
+public:
+    RegisterTable():table(0){}
 
     void Set(int register_i,int int_val);
     void Set(int register_i,double dec_val);
     void Set(int register_i,string str_val);
+    void Set(int register_i,bool bool_val);
 
-    Register& GetReg(int register_i);
-
-    void Grow(int n);
+    Register& Get(int register_i);
 };
 
-extern GeneralRegister general_register;
+extern RegisterTable general_register;
+extern RegisterTable argument_register;
+extern Register      retvalue_register;

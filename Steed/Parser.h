@@ -1,68 +1,118 @@
 #pragma once
 
 #include "System.h"
-#include "Instruction.h"
 #include "Operand.h"
+#include "Instruction.h"
 
 class Parser
 {
-public: 
-    string knightASM_code;
-    int current;
+private:
+    string line_code;
 
-    string opcode;
-    string operand1;
-    string operand2;
+    string opcode_str;
+    string operand1_str;
+    string operand2_str;
 
-    Parser(string knightASM_code):
-        knightASM_code(knightASM_code),current(0){}
+public:
+    Parser(string line_code):line_code(line_code){}
 
     Instruction* Parse();
 };
 
+
+
 // Operand
 OperandConstant Parse_OperandConstant(string& operand_str);
 OperandRegister Parse_OperandRegister(string& operand_str);
-OperandType Parse_OperandType(string& operand_str);
+OperandType     Parse_OperandType    (string& operand_str);
+OperandFunction Parse_OperandFunction(string& operand_str);
 OperandVariable Parse_OperandVariable(string& operand_str);
+OperandLable    Parse_OperandLable   (string& operand_str);
 
-// Var
-Instruction* Parse_Var(string& operand1,string& operand2);
-// Load&Store
-Instruction* Parse_Load(string& operand1,string& operand2);
-Instruction* Parse_Store(string& operand1,string& operand2);
 
-// Print
-Instruction* Parse_Print(string& operand1,string& operand2);
+
+// Instruction
+// Variable
+Instruction* Parse_Var  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Load (string& operand1_str,string& operand2_str);
+Instruction* Parse_Store(string& operand1_str,string& operand2_str);
+Instruction* Parse_Cvt  (string& operand1_str,string& operand2_str);
+
+// Function    
+Instruction* Parse_Func (string& operand1_str,string& operand2_str);
+Instruction* Parse_Trans(string& operand1_str,string& operand2_str);
+Instruction* Parse_Call (string& operand1_str,string& operand2_str);
+Instruction* Parse_Ret  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Push (string& operand1_str,string& operand2_str);
+Instruction* Parse_Pop  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Print(string& operand1_str,string& operand2_str);
+
+// Control Flow
+Instruction* Parse_Lable(string& operand1_str,string& operand2_str);
+Instruction* Parse_Jmp  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Jmpt (string& operand1_str,string& operand2_str);
+Instruction* Parse_Jmpf (string& operand1_str,string& operand2_str);
 
 // Binary
-Instruction* Parse_Add(string& operand1,string& operand2);
-Instruction* Parse_Sub(string& operand1,string& operand2);
-Instruction* Parse_Mul(string& operand1,string& operand2);
-Instruction* Parse_Div(string& operand1,string& operand2);
-Instruction* Parse_Mod(string& operand1,string& operand2);
+Instruction* Parse_Or   (string& operand1_str,string& operand2_str);
+Instruction* Parse_And  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Equ  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Nequ (string& operand1_str,string& operand2_str);
+Instruction* Parse_Les  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Lequ (string& operand1_str,string& operand2_str);
+Instruction* Parse_Gre  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Gequ (string& operand1_str,string& operand2_str);
+Instruction* Parse_Add  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Sub  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Mul  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Div  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Mod  (string& operand1_str,string& operand2_str);
 
 // Unary
-Instruction* Parse_Neg(string& operand1,string& operand2);
+Instruction* Parse_Neg  (string& operand1_str,string& operand2_str);
+Instruction* Parse_Not  (string& operand1_str,string& operand2_str);
 
 
-static unordered_map<string,Instruction* (*)(string&,string&)> ParseFunction_map
+
+static unordered_map<string,Instruction* (*)(string&,string&)> ParseInstruction_map
 {   
     // Var
-    {"Var",Parse_Var},
-    // Load
-    {"Load",Parse_Load},
-    {"Store",Parse_Store},
-    // Print
-    {"Print",Parse_Print},
+    {"VAR",Parse_Var},    {"var",Parse_Var},
+    {"LOAD",Parse_Load},  {"load",Parse_Load},
+    {"STORE",Parse_Store},{"store",Parse_Store},
+    {"CVT",Parse_Cvt},    {"cvt",Parse_Cvt},
+
+    // Function
+    {"FUNC",Parse_Func},  {"func",Parse_Func},
+    {"TRANS",Parse_Trans},{"trans",Parse_Trans},
+    {"CALL",Parse_Call},  {"call",Parse_Call},
+    {"RET",Parse_Ret},    {"ret",Parse_Ret},
+    {"PUSH",Parse_Push},  {"push",Parse_Push},
+    {"POP",Parse_Pop},    {"pop",Parse_Pop},
+    {"PRINT",Parse_Print},{"print",Parse_Print},
+
+    // Control Flow
+    {"LABLE",Parse_Lable},{"lable",Parse_Lable},
+    {"JMP",Parse_Jmp},    {"jmp",Parse_Jmp},
+    {"JMPT",Parse_Jmpt},  {"jmpt",Parse_Jmpt},
+    {"JMPF",Parse_Jmpf},  {"jmpf",Parse_Jmpf},
 
     // Binary
-    {"Add",Parse_Add},
-    {"Sub",Parse_Sub},
-    {"Mul",Parse_Mul},
-    {"Div",Parse_Div},
-    {"Mod",Parse_Mod},
+    {"OR",Parse_Or},      {"or",Parse_Or},
+    {"AND",Parse_And},    {"and",Parse_And},
+    {"EQU",Parse_Equ},    {"equ",Parse_Equ},
+    {"NEQU",Parse_Nequ},  {"nequ",Parse_Nequ},
+    {"LES",Parse_Les},    {"les",Parse_Les},
+    {"LEQU",Parse_Lequ},  {"lequ",Parse_Lequ},
+    {"GRE",Parse_Gre},    {"gre",Parse_Gre},
+    {"GEQU",Parse_Gequ},  {"gequ",Parse_Gequ},
+    {"ADD",Parse_Add},    {"add",Parse_Add},
+    {"SUB",Parse_Sub},    {"sub",Parse_Sub},
+    {"MUL",Parse_Mul},    {"mul",Parse_Mul},
+    {"DIV",Parse_Div},    {"div",Parse_Div},
+    {"MOD",Parse_Mod},    {"mod",Parse_Mod},
 
     //Unary
-    {"Neg",Parse_Neg}
+    {"NEG",Parse_Neg},    {"neg",Parse_Neg},
+    {"NOT",Parse_Not},    {"not",Parse_Not},
 };

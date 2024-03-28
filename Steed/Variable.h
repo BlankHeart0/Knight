@@ -1,11 +1,7 @@
 #pragma once
 
 #include "System.h"
-
-enum DataType
-{
-    D_INT,D_DEC,D_STR
-};
+#include "Type.h"
 
 class Variable{
 public:
@@ -15,6 +11,7 @@ public:
     int INT_val;
     double DEC_val;
     string STR_val;
+    bool BOOL_val;
 
     Variable(){}
     Variable(string name,int int_val):
@@ -23,19 +20,21 @@ public:
         data_type(D_DEC),name(name),DEC_val(dec_val){}
     Variable(string name,string str_val):
         data_type(D_STR),name(name),STR_val(str_val){}
+    Variable(string name,bool bool_val):
+        data_type(D_BOOL),name(name),BOOL_val(bool_val){}
 };
 
 class VariableTable
 {
 private:
     vector<unordered_map<string,Variable>> table;
+    void Grow(int n);
 
 public:
     void Set(int scope_i,string name,int int_val);
     void Set(int scope_i,string name,double dec_val);
     void Set(int scope_i,string name,string str_val);
+    void Set(int scope_i,string name,bool bool_val);
     
-    Variable& GetVariable(int scope_i,string name);
-    
-    void Grow(int n);
+    Variable& Get(int scope_i,string name);
 };

@@ -31,11 +31,11 @@ void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
                 // int=int -> int
                 case D_INT:return;                                      break;
                 // int=dec -> int=(int)dec -> int=int -> int
-                case D_DEC:CodeGenerator::Convert(r_i,D_INT);    break;
+                case D_DEC:CodeGenerator::Convert(D_INT,r_i);           break;
                 // int=str -> error
                 case D_STR:TYPE_ERROR("int = str");                     break;
                 // int=bool-> int=(int)bool-> int=int -> int
-                case D_BOOL:CodeGenerator::Convert(r_i,D_INT);   break;
+                case D_BOOL:CodeGenerator::Convert(D_INT,r_i);          break;
             }
             break;
         
@@ -43,7 +43,7 @@ void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
             switch(R.data_type)
             {
                 // dec=int -> dec=(dec)int -> dec=dec -> dec
-                case D_INT:CodeGenerator::Convert(r_i,D_DEC);    break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r_i);           break;
                 // dec=dec -> dec
                 case D_DEC:return;                                      break;
                 // dec=str -> error
@@ -71,9 +71,9 @@ void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
             switch(R.data_type)
             {
                 // bool=int-> bool=(bool)int -> bool=bool -> bool 
-                case D_INT:CodeGenerator::Convert(r_i,D_BOOL);   break;
+                case D_INT:CodeGenerator::Convert(D_BOOL,r_i);          break;
                 // bool=dec-> bool=(bool)dec -> bool=bool -> bool 
-                case D_DEC:CodeGenerator::Convert(r_i,D_BOOL);   break;
+                case D_DEC:CodeGenerator::Convert(D_BOOL,r_i);          break;
                 // bool=str-> error
                 case D_STR:TYPE_ERROR("bool = str");                    break;
                 // bool=bool->bool
@@ -100,13 +100,13 @@ void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
                 // int or dec -> (bool)int or (bool)dec -> bool or bool -> bool
                 case D_INT: 
                 case D_DEC:
-                    CodeGenerator::Convert(r1_i,D_BOOL);
-                    CodeGenerator::Convert(r2_i,D_BOOL);
+                    CodeGenerator::Convert(D_BOOL,r1_i);
+                    CodeGenerator::Convert(D_BOOL,r2_i);
                     break;
                 // int or str -> error
                 case D_STR:TYPE_ERROR("int or str");                break;
                 // int or bool-> (bool)int or bool -> bool or bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
 
@@ -117,13 +117,13 @@ void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
                 // dec or dec -> (bool)dec or (bool)dec -> bool or bool -> bool
                 case D_INT: 
                 case D_DEC:
-                    CodeGenerator::Convert(r1_i,D_BOOL);
-                    CodeGenerator::Convert(r2_i,D_BOOL);
+                    CodeGenerator::Convert(D_BOOL,r1_i);
+                    CodeGenerator::Convert(D_BOOL,r2_i);
                     break;
                 // dec or str -> error
                 case D_STR:TYPE_ERROR("dec or str");                break;
                 // dec or bool-> (bool)dec or bool -> bool or bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
         
@@ -145,9 +145,9 @@ void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // bool or int -> bool or (bool)int -> bool or bool -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool or dec -> bool or (bool)dec -> bool or bool -> bool
-                case D_DEC:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_DEC:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool or str-> error
                 case D_STR:TYPE_ERROR("bool or str");               break;
                 // bool or bool-> bool
@@ -171,13 +171,13 @@ void TypeChecker::Check_And(int r1_i,int r2_i,int line)
                 // int and dec -> (bool)int and (bool)dec -> bool and bool -> bool
                 case D_INT: 
                 case D_DEC:
-                    CodeGenerator::Convert(r1_i,D_BOOL);
-                    CodeGenerator::Convert(r2_i,D_BOOL);
+                    CodeGenerator::Convert(D_BOOL,r1_i);
+                    CodeGenerator::Convert(D_BOOL,r2_i);
                     break;
                 // int and str -> error
                 case D_STR:TYPE_ERROR("int and str");               break;
                 // int and bool-> (bool)int and bool -> bool and bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
 
@@ -188,13 +188,13 @@ void TypeChecker::Check_And(int r1_i,int r2_i,int line)
                 // dec and dec -> (bool)dec and (bool)dec -> bool and bool -> bool
                 case D_INT: 
                 case D_DEC:
-                    CodeGenerator::Convert(r1_i,D_BOOL);
-                    CodeGenerator::Convert(r2_i,D_BOOL);
+                    CodeGenerator::Convert(D_BOOL,r1_i);
+                    CodeGenerator::Convert(D_BOOL,r2_i);
                     break;
                 // dec and str -> error
                 case D_STR:TYPE_ERROR("dec and str");               break;
                 // dec and bool-> (bool)dec and bool -> bool and bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
         
@@ -216,9 +216,9 @@ void TypeChecker::Check_And(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // bool and int -> bool and (bool)int -> bool and bool -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool and dec -> bool and (bool)dec -> bool and bool -> bool
-                case D_DEC:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_DEC:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool and str-> error
                 case D_STR:TYPE_ERROR("bool and str");              break;
                 // bool and bool-> bool
@@ -235,9 +235,9 @@ void TypeChecker::Check_Not(int r_i,int line)
     switch(R.data_type)
     {
         // not int -> not (bool)int -> not bool -> bool
-        case D_INT:CodeGenerator::Convert(r_i,D_BOOL);       break;
+        case D_INT:CodeGenerator::Convert(D_BOOL,r_i);              break;
         // not dec -> not (bool)dec -> not bool -> bool
-        case D_DEC:CodeGenerator::Convert(r_i,D_BOOL);       break;
+        case D_DEC:CodeGenerator::Convert(D_BOOL,r_i);              break;
         // not str -> error
         case D_STR:TYPE_ERROR("not str");                           break;
         // not bool-> bool
@@ -258,11 +258,11 @@ void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
                 // int ?= int -> bool
                 case D_INT:return;                                  break;
                 // int ?= dec -> (dec)int ?= dec -> dec ?= dec -> bool
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int ?= str -> error
                 case D_STR:TYPE_ERROR("int ?= str");                break;
                 // int ?= bool-> (bool)int ?= bool -> bool ?= bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
 
@@ -270,13 +270,13 @@ void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec ?= int -> dec ?= (dec)int -> dec ?= dec -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec ?= dec -> bool
                 case D_DEC:return;                                  break;
                 // dec ?= str -> error
                 case D_STR:TYPE_ERROR("dec ?= str");                break;
                 // dec ?= bool-> (bool)dec ?= bool -> bool ?= bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
 
@@ -298,9 +298,9 @@ void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // bool ?= int -> bool ?= (bool)int -> bool ?= bool -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool ?= dec -> bool ?= (bool)dec -> bool ?= bool -> bool
-                case D_DEC:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_DEC:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool ?= str -> error
                 case D_STR:TYPE_ERROR("bool ?= str");               break;
                 // bool ?= bool-> bool
@@ -323,11 +323,11 @@ void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
                 // int != int -> bool
                 case D_INT:return;                                  break;
                 // int != dec -> (dec)int != dec -> dec != dec -> bool
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int != str -> error
                 case D_STR:TYPE_ERROR("int != str");                break;
                 // int != bool-> (bool)int != bool -> bool != bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
 
@@ -335,13 +335,13 @@ void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec != int -> dec != (dec)int -> dec != dec -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec != dec -> bool
                 case D_DEC:return;                                  break;
                 // dec != str -> error
                 case D_STR:TYPE_ERROR("dec != str");                break;
                 // dec != bool-> (bool)dec != bool -> bool != bool -> bool
-                case D_BOOL:CodeGenerator::Convert(r1_i,D_BOOL);    break;
+                case D_BOOL:CodeGenerator::Convert(D_BOOL,r1_i);    break;
             }
             break;
 
@@ -363,9 +363,9 @@ void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // bool != int -> bool != (bool)int -> bool != bool -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool != dec -> bool != (bool)dec -> bool != bool -> bool
-                case D_DEC:CodeGenerator::Convert(r2_i,D_BOOL);     break;
+                case D_DEC:CodeGenerator::Convert(D_BOOL,r2_i);     break;
                 // bool != str -> error
                 case D_STR:TYPE_ERROR("bool != str");               break;
                 // bool != bool-> bool
@@ -388,7 +388,7 @@ void TypeChecker::Check_Less(int r1_i,int r2_i,int line)
                 // int < int -> bool
                 case D_INT:return;                                  break;   
                 // int < dec -> (dec)int < dec -> dec < dec -> bool
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int < str -> error
                 case D_STR:TYPE_ERROR("int < str");                 break;            
                 // int < bool-> error
@@ -400,7 +400,7 @@ void TypeChecker::Check_Less(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec < int -> dec < (dec)int -> dec < dec -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec < dec -> bool
                 case D_DEC:return;                                  break;
                 // dec < str -> error
@@ -453,7 +453,7 @@ void TypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
                 // int <= int -> bool
                 case D_INT:return;                                  break;   
                 // int <= dec -> (dec)int <= dec -> dec <= dec -> bool
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int <= str -> error
                 case D_STR:TYPE_ERROR("int <= str");                break;            
                 // int <= bool-> error
@@ -465,7 +465,7 @@ void TypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec <= int -> dec <= (dec)int -> dec <= dec -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec <= dec -> bool
                 case D_DEC:return;                                  break;
                 // dec <= str -> error
@@ -518,7 +518,7 @@ void TypeChecker::Check_Greater(int r1_i,int r2_i,int line)
                 // int > int -> bool
                 case D_INT:return;                                  break;   
                 // int > dec -> (dec)int > dec -> dec > dec -> bool
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int > str -> error
                 case D_STR:TYPE_ERROR("int > str");                 break;            
                 // int > bool-> error
@@ -530,7 +530,7 @@ void TypeChecker::Check_Greater(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec > int -> dec > (dec)int -> dec > dec -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec > dec -> bool
                 case D_DEC:return;                                  break;
                 // dec > str -> error
@@ -583,7 +583,7 @@ void TypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
                 // int >= int -> bool
                 case D_INT:return;                                  break;   
                 // int >= dec -> (dec)int >= dec -> dec >= dec -> bool
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int >= str -> error
                 case D_STR:TYPE_ERROR("int >= str");                break;            
                 // int >= bool-> error
@@ -595,7 +595,7 @@ void TypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec >= int -> dec >= (dec)int -> dec >= dec -> bool
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec >= dec -> bool
                 case D_DEC:return;                                  break;
                 // dec >= str -> error
@@ -651,7 +651,7 @@ void TypeChecker::Check_Add(int r1_i,int r2_i,int line)
                 // int + int -> int
                 case D_INT:return;                                  break;
                 // int + dec -> (dec)int + dec -> dec + dec -> dec
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int + str -> error
                 case D_STR:TYPE_ERROR("int + str");                 break;
                 // int + bool-> error
@@ -663,7 +663,7 @@ void TypeChecker::Check_Add(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec + int -> dec + (dec)int -> dec + dec -> dec 
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec + dec -> dec
                 case D_DEC:return;                                  break;
                 // dec + str -> error
@@ -716,7 +716,7 @@ void TypeChecker::Check_Sub(int r1_i,int r2_i,int line)
                 // int - int -> int
                 case D_INT:return;                                  break;
                 // int - dec -> (dec)int - dec -> dec - dec -> dec
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int - str -> error
                 case D_STR:TYPE_ERROR("int - str");                 break;
                 // int - bool-> error
@@ -728,7 +728,7 @@ void TypeChecker::Check_Sub(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec - int -> dec - (dec)int -> dec - dec -> dec 
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec - dec -> dec
                 case D_DEC:return;                                  break;
                 // dec - str -> error
@@ -781,7 +781,7 @@ void TypeChecker::Check_Mul(int r1_i,int r2_i,int line)
                 // int * int -> int
                 case D_INT:return;                                  break;
                 // int * dec -> (dec)int * dec -> dec * dec -> dec
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int * str -> error
                 case D_STR:TYPE_ERROR("int * str");                 break;
                 // int * bool-> error
@@ -793,7 +793,7 @@ void TypeChecker::Check_Mul(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec * int -> dec * (dec)int -> dec * dec -> dec 
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec * dec -> dec
                 case D_DEC:return;                                  break;
                 // dec * str -> error
@@ -846,7 +846,7 @@ void TypeChecker::Check_Div(int r1_i,int r2_i,int line)
                 // int / int -> int
                 case D_INT:return;                                  break;
                 // int / dec -> (dec)int / dec -> dec / dec -> dec
-                case D_DEC:CodeGenerator::Convert(r1_i,D_DEC);      break;
+                case D_DEC:CodeGenerator::Convert(D_DEC,r1_i);      break;
                 // int / str -> error
                 case D_STR:TYPE_ERROR("int / str");                 break;
                 // int / bool-> error
@@ -858,7 +858,7 @@ void TypeChecker::Check_Div(int r1_i,int r2_i,int line)
             switch(R2.data_type)
             {
                 // dec / int -> dec / (dec)int -> dec / dec -> dec 
-                case D_INT:CodeGenerator::Convert(r2_i,D_DEC);      break;
+                case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
                 // dec / dec -> dec
                 case D_DEC:return;                                  break;
                 // dec / str -> error

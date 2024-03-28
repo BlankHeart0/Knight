@@ -27,18 +27,18 @@ public:
     // Instruction
     // Variable
     static void Var(Token type,string variable_name);   // VAR var
-    static int LoadConstant(Token constant);            // LOAD load
-    static int LoadVariable(Token variable);            // LOAD load
+    static int  LoadConstant(Token constant);           // LOAD load
+    static int  LoadVariable(Token variable);           // LOAD load
     static void Store(Token variable,int r_i,bool need_free);// STORE store
-    static void Convert(int r_i,DataType to_dataType);       // CVT cvt
+    static void Convert(DataType to_dataType,int r_i);       // CVT cvt
     
     // Function    
     static void Func(Token type,string function_name);  // FUNC func
-    static int TransX2R(int x_i);                       // TRANS trans
+    static int  TransX2R(int x_i);                      // TRANS trans
     static void TransR2X(int x_i,int r_i);              // TRANS trans
     static void TransY2R(int r_i);                      // TRANS trans
     static void TransR2Y(int r_i,int line);             // TRANS trans
-    static int Call(Token function);                    // CALL call
+    static int  Call(Token function);                   // CALL call
     static void Ret();                                  // RET ret
     static void Push(int r_i);                          // PUSH push
     static void Pop(int r_i);                           // POP pop

@@ -128,7 +128,7 @@ void CodeGenerator::Store(Token variable,int r_i,bool need_free)
     if(need_free)general_register.Free(r_i);
 }
 
-void CodeGenerator::Convert(int r_i,DataType to_dataType)
+void CodeGenerator::Convert(DataType to_dataType,int r_i)
 {
     Register& R=general_register.GetReg(r_i);
 
@@ -136,11 +136,7 @@ void CodeGenerator::Convert(int r_i,DataType to_dataType)
     file_manager.Write(is_upper?"CVT":"cvt");
     file_manager.Write("\t\t");
 
-    // Operand1
-    WriteGeneralRegisterName(r_i);
-    file_manager.WriteComma();
-
-    // Operand2
+    // Operand1    
     switch(to_dataType)
     {
         case D_INT:
@@ -160,6 +156,10 @@ void CodeGenerator::Convert(int r_i,DataType to_dataType)
             file_manager.Write(is_upper?"BOOL":"bool");
             break;
     }
+    file_manager.WriteComma();
+
+    // Operand2
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 }
 

@@ -1,27 +1,33 @@
 #include "Parser.h"
 
 Instruction* Parser::Parse()
-{
+{   
+    int current=0;
+
     // Opcode
     int end=current;
-    while(isalpha(knightASM_code[end]))end++;
-    opcode=knightASM_code.substr(0,end);
+    while(isalpha(line_code[end]))end++;
+    opcode_str=line_code.substr(current,end-current);
+
+    //skip the space
+    while(end<line_code.size()&&isspace(line_code[end]))
+        end++;
 
     // Operand1
-    while(!isalpha(knightASM_code[end]))end++;
     current=end;
-    while(end<knightASM_code.size()&&knightASM_code[end]!=',')end++;
-    operand1=knightASM_code.substr(current,end-current);
+    while(end<line_code.size()&&line_code[end]!=',')end++;
+    if(current<line_code.size())
+        operand1_str=line_code.substr(current,end-current);
 
     // Operand2
-    if(end<knightASM_code.size())
-    {
-        current=++end;
-        while(end<knightASM_code.size())end++;
-        operand2=knightASM_code.substr(current,end-current);
-    }  
+    end++;
+    current=end;
+    while(end<line_code.size())end++;
+    if(current<line_code.size())
+        operand2_str=line_code.substr(current,end-current);
 
-    return ParseFunction_map[opcode](operand1,operand2);
+
+    return ParseInstruction_map[opcode_str](operand1_str,operand2_str);
 }
 
 
@@ -54,35 +60,55 @@ OperandConstant Parse_OperandConstant(string& operand_str)
                 part_decimal+=(double)(operand_str[current]-'0')/pow(10,i);
             }
         }
-        
+        // Dec
         if(is_decimal)return OperandConstant((double)part_int+part_decimal);
+        // Int
         else return OperandConstant(part_int);
     }
 
-    // String
+    // Bool
+    if(operand_str=="true") return OperandConstant(true);
+    else if(operand_str=="false")return OperandConstant(false);
+
+    // Str
     return OperandConstant(operand_str.substr(1,operand_str.size()-2));
 }
 
 OperandRegister Parse_OperandRegister(string& operand_str)
 {
-    //@Todo:only General Register now
+    // get the register id
     int current=1;
     int register_i=0;
     while(current<operand_str.size()&&isdigit(operand_str[current]))
     {
-        register_i=register_i*10+operand_str[current]-'0';
+        register_i=register_i*10+(operand_str[current]-'0');
         current++;
     }
 
-    return OperandRegister(R_General,register_i);
+    switch(operand_str[0])
+    {
+        case 'r': case 'R': return OperandRegister(R_General,register_i);
+        case 'x': case 'X': return OperandRegister(X_Argument,register_i);
+    }
+    
+    return OperandRegister(Y_Retvalue);
 }
 
 OperandType Parse_OperandType(string& operand_str)
 {
-    if(operand_str=="INT")return OperandType(D_INT);
-    else if(operand_str=="DEC")return OperandType(D_DEC);
+    if(operand_str=="INT"||operand_str=="int")       return OperandType(D_INT);
+    else if(operand_str=="DEC" ||operand_str=="dec") return OperandType(D_DEC);
+    else if(operand_str=="STR" ||operand_str=="str") return OperandType(D_STR);
+    else if(operand_str=="BOOL"||operand_str=="bool")return OperandType(D_BOOL);
     
-    return OperandType(D_STR);
+    return OperandType();
+}
+
+OperandFunction Parse_OperandFunction(string& operand_str)
+{
+    string function_name=operand_str;
+
+    return OperandFunction(function_name);
 }
 
 OperandVariable Parse_OperandVariable(string& operand_str)
@@ -96,115 +122,333 @@ OperandVariable Parse_OperandVariable(string& operand_str)
     int scope_i=0;
     while(operand_str[current]!=')')
     {
-        scope_i=scope_i*10+operand_str[current]-'0';
+        scope_i=scope_i*10+(operand_str[current]-'0');
         current++;
     }
 
     return OperandVariable(variable_name,scope_i);
 }
 
-
-
-// Var
-Instruction* Parse_Var(string& operand1,string& operand2)
+OperandLable Parse_OperandLable(string& operand_str)
 {
-    Var* instruction=new Var
-        (Parse_OperandType(operand1),Parse_OperandVariable(operand2));
-    
-    return (Instruction*)instruction;
+    int lable_id=stoi(operand_str);
+
+    return OperandLable(lable_id);
 }
 
 
 
-// Load
-Instruction* Parse_Load(string& operand1,string& operand2)
-{   
-    // LoadConstant
-    if(isdigit(operand2[0])||operand2[0]=='\"')
-    {
-        LoadConstant* instruction=new LoadConstant
-            (Parse_OperandRegister(operand1),Parse_OperandConstant(operand2));
+// Instruction
+// Variable
+Instruction* Parse_Var(string& operand1_str,string& operand2_str)
+{
+    OperandType     operand1_type=Parse_OperandType(operand1_str);
+    OperandVariable operand2_variable=Parse_OperandVariable(operand2_str);
 
-        return (Instruction*)instruction;
+    Var* var=new Var(operand1_type,operand2_variable);
+    
+    return (Instruction*)var;
+}
+
+Instruction* Parse_Load(string& operand1_str,string& operand2_str)
+{   
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+
+    // LoadConstant
+    if(isdigit(operand2_str[0])||operand2_str[0]=='\"'
+         ||operand2_str=="true"||operand2_str=="false")
+    {
+        OperandConstant operand2_constant=Parse_OperandConstant(operand2_str);
+        
+        LoadConstant* load=new LoadConstant(operand1_register,operand2_constant);
+
+        return (Instruction*)load;
     }
 
     // LoadVariable
-    LoadVariable* instruction=new LoadVariable
-        (Parse_OperandRegister(operand1),Parse_OperandVariable(operand2));
+    OperandVariable operand2_variable=Parse_OperandVariable(operand2_str);
+
+    LoadVariable* load=new LoadVariable(operand1_register,operand2_variable);
     
-    return (Instruction*)instruction;
+    return (Instruction*)load;
 }
 
-// Store
-Instruction* Parse_Store(string& operand1,string& operand2)
+Instruction* Parse_Store(string& operand1_str,string& operand2_str)
 {
-    Store* instruction=new Store
-        (Parse_OperandVariable(operand1),Parse_OperandRegister(operand2));
+    OperandVariable operand1_variable=Parse_OperandVariable(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Store* store=new Store(operand1_variable,operand2_register);
     
-    return (Instruction*)instruction;
+    return (Instruction*)store;
+}
+
+Instruction* Parse_Cvt(string& operand1_str,string& operand2_str)
+{
+    OperandType     operand1_type=Parse_OperandType(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Cvt* cvt=new Cvt(operand1_type,operand2_register);
+
+    return (Instruction*)cvt;
 }
 
 
 
-// Print
-Instruction* Parse_Print(string& operand1,string& operand2)
+// Function    
+Instruction* Parse_Func(string& operand1_str,string& operand2_str)
 {
-    Print* instruction=new Print
-        (Parse_OperandRegister(operand1));
+    OperandType     operand1_type=Parse_OperandType(operand1_str);
+    OperandFunction operand2_function=Parse_OperandFunction(operand2_str);
+
+    Func* func=new Func(operand1_type,operand2_function);
+
+    return (Instruction*)func;
+}
+
+Instruction* Parse_Trans(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Trans* trans=new Trans(operand1_register,operand2_register);
+
+    return (Instruction*)trans;
+}
+
+Instruction* Parse_Call(string& operand1_str,string& operand2_str)
+{
+    OperandFunction operand1_function=Parse_OperandFunction(operand1_str);
+
+    Call* call=new Call(operand1_function);
     
-    return (Instruction*)instruction;
+    return (Instruction*)call;
+}
+
+Instruction* Parse_Ret(string& operand1_str,string& operand2_str)
+{
+    Ret* ret=new Ret();
+
+    return (Instruction*)ret;
+}
+
+Instruction* Parse_Push(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+
+    Push* push=new Push(operand1_register);
+
+    return (Instruction*)push;
+}
+
+Instruction* Parse_Pop(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+
+    Pop* pop=new Pop(operand1_register);
+
+    return (Instruction*)pop;
+}
+
+Instruction* Parse_Print(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+
+    Print* print=new Print(operand1_register);
+
+    return (Instruction*)print;
+}
+
+
+
+// Control Flow
+Instruction* Parse_Lable(string& operand1_str,string& operand2_str)
+{
+    OperandLable operand1_lable=Parse_OperandLable(operand1_str);
+
+    Lable* lable=new Lable(operand1_lable);
+
+    return (Instruction*)lable;
+}
+
+Instruction* Parse_Jmp(string& operand1_str,string& operand2_str)
+{
+    OperandLable operand1_lable=Parse_OperandLable(operand1_str);
+
+    Jmp* jmp=new Jmp(operand1_lable);
+
+    return (Instruction*)jmp;
+}
+
+Instruction* Parse_Jmpt(string& operand1_str,string& operand2_str)
+{
+    OperandLable    operand1_lable=Parse_OperandLable(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Jmpt* jmpt=new Jmpt(operand1_lable,operand2_register);
+
+    return (Instruction*)jmpt;
+}
+
+Instruction* Parse_Jmpf(string& operand1_str,string& operand2_str){
+    OperandLable    operand1_lable=Parse_OperandLable(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Jmpf* jmpf=new Jmpf(operand1_lable,operand2_register);
+
+    return (Instruction*)jmpf;
 }
 
 
 
 // Binary
-Instruction* Parse_Add(string& operand1,string& operand2)
+Instruction* Parse_Or(string& operand1_str,string& operand2_str)
 {
-    Add* instruction=new Add
-        (Parse_OperandRegister(operand1),Parse_OperandRegister(operand2));
-    
-    return (Instruction*)instruction;
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Or* or_=new Or(operand1_register,operand2_register);
+
+    return (Instruction*)or_;
 }
 
-Instruction* Parse_Sub(string& operand1,string& operand2)
+Instruction* Parse_And(string& operand1_str,string& operand2_str)
 {
-    Sub* instruction=new Sub
-        (Parse_OperandRegister(operand1),Parse_OperandRegister(operand2));
-    
-    return (Instruction*)instruction;
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    And* and_=new And(operand1_register,operand2_register);
+
+    return (Instruction*)and_;
 }
 
-Instruction* Parse_Mul(string& operand1,string& operand2)
+Instruction* Parse_Equ(string& operand1_str,string& operand2_str)
 {
-    Mul* instruction=new Mul
-        (Parse_OperandRegister(operand1),Parse_OperandRegister(operand2));
-    
-    return (Instruction*)instruction;
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Equ* equ=new Equ(operand1_register,operand2_register);
+
+    return (Instruction*)equ;
 }
 
-Instruction* Parse_Div(string& operand1,string& operand2)
+Instruction* Parse_Nequ(string& operand1_str,string& operand2_str)
 {
-    Div* instruction=new Div
-        (Parse_OperandRegister(operand1),Parse_OperandRegister(operand2));
-    
-    return (Instruction*)instruction;
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Nequ* nequ=new Nequ(operand1_register,operand2_register);
+
+    return (Instruction*)nequ;
 }
 
-Instruction* Parse_Mod(string& operand1,string& operand2)
+Instruction* Parse_Les(string& operand1_str,string& operand2_str)
 {
-    Mod* instruction=new Mod
-        (Parse_OperandRegister(operand1),Parse_OperandRegister(operand2));
-    
-    return (Instruction*)instruction;
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Les* les=new Les(operand1_register,operand2_register);
+
+    return (Instruction*)les;
+}
+
+Instruction* Parse_Lequ(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Lequ* lequ=new Lequ(operand1_register,operand2_register);
+
+    return (Instruction*)lequ;
+}
+
+Instruction* Parse_Gre(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Gre* gre=new Gre(operand1_register,operand2_register);
+
+    return (Instruction*)gre;
+}
+
+Instruction* Parse_Gequ(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Gequ* gequ=new Gequ(operand1_register,operand2_register);
+
+    return (Instruction*)gequ;
+}
+
+Instruction* Parse_Add(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Add* add=new Add(operand1_register,operand2_register);
+
+    return (Instruction*)add;
+}
+
+Instruction* Parse_Sub(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Sub* sub=new Sub(operand1_register,operand2_register);
+
+    return (Instruction*)sub;
+}
+
+Instruction* Parse_Mul(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Mul* mul=new Mul(operand1_register,operand2_register);
+
+    return (Instruction*)mul;
+}
+
+Instruction* Parse_Div(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Div* div=new Div(operand1_register,operand2_register);
+
+    return (Instruction*)div;
+}
+
+Instruction* Parse_Mod(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    Mod* mod=new Mod(operand1_register,operand2_register);
+
+    return (Instruction*)mod;
 }
 
 
 
 // Unary
-Instruction* Parse_Neg(string& operand1,string& operand2)
+Instruction* Parse_Neg(string& operand1_str,string& operand2_str)
 {
-    Neg* instruction=new Neg
-        (Parse_OperandRegister(operand1));
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
-    return (Instruction*)instruction;
+    Neg* neg=new Neg(operand1_register);
+
+    return (Instruction*)neg;
+}
+
+Instruction* Parse_Not  (string& operand1_str,string& operand2_str)
+{    
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+
+    Not* not_=new Not(operand1_register);
+
+    return (Instruction*)not_;
 }

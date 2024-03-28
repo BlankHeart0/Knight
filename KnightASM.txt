@@ -1,0 +1,39 @@
+Knight Assembly
+
+var     type        variable(N)
+load    R           constant
+load    R           variable(N)
+store   variable(N) R
+cvt     type        R   
+
+func    type        function    (directive)
+trans   X           R
+trans   R           X
+trans   Y           R
+trans   R           Y  
+call    function
+ret
+push    R
+pop     R
+print   R
+
+lable   N                       (directive)
+jmp     N
+jmpt    N           R
+jmpf    N           R
+
+or      R           R
+and     R           R
+equ     R           R
+nequ    R           R
+les     R           R
+lequ    R           R
+gre     R           R
+gequ    R           R
+add     R           R
+sub     R           R
+mul     R           R
+div     R           R
+mod     R           R
+neg     R
+not     R

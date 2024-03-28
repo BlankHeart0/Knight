@@ -1,4 +1,11 @@
-#include "SymbolTable.h"
+#include "Variable.h"
+
+void VariableTable::Grow(int n)
+{
+    while(n--)table.push_back(unordered_map<string,Variable>());
+}
+
+
 
 void VariableTable::Set(int scope_i,string name,int int_val)
 {
@@ -27,15 +34,18 @@ void VariableTable::Set(int scope_i,string name,string str_val)
     table[scope_i][name].STR_val=str_val;
 }
 
-
-
-Variable& VariableTable::GetVariable(int scope_i,string name)
+void VariableTable::Set(int scope_i,string name,bool bool_val)
 {
-    return table[scope_i][name];
+    if(scope_i>=table.size())
+        Grow(scope_i+1-table.size());
+
+    table[scope_i][name].data_type=D_BOOL;
+    table[scope_i][name].BOOL_val=bool_val;
 }
 
 
-void VariableTable::Grow(int n)
+
+Variable& VariableTable::Get(int scope_i,string name)
 {
-    while(n--)table.push_back(unordered_map<string,Variable>());
+    return table[scope_i][name];
 }

@@ -1,33 +1,29 @@
 #pragma once
 
 #include "System.h"
-#include "SymbolTable.h"
-
-// Maybe it can be replace to DataType
-enum ConstantType
-{
-    C_INT,C_DEC,C_STR
-};
+#include "Type.h"
 
 class OperandConstant
 {
 public:
-    ConstantType constant_type;
+    DataType data_type;
 
-    int INT_val;
+    int    INT_val;
     double DEC_val;
     string STR_val;
+    bool   BOOL_val;
 
-    OperandConstant(int INT_val):constant_type(C_INT),INT_val(INT_val){}
-    OperandConstant(double DEC_val):constant_type(C_DEC),DEC_val(DEC_val){}
-    OperandConstant(string STR_val):constant_type(C_STR),STR_val(STR_val){}
+    OperandConstant(int INT_val):   data_type(D_INT), INT_val(INT_val)  {}
+    OperandConstant(double DEC_val):data_type(D_DEC), DEC_val(DEC_val)  {}
+    OperandConstant(string STR_val):data_type(D_STR), STR_val(STR_val)  {}
+    OperandConstant(bool BOOL_val): data_type(D_BOOL),BOOL_val(BOOL_val){}
 };
 
 
 
 enum RegisterType
 {
-    R_General
+    R_General,X_Argument,Y_Retvalue
 };
 
 class OperandRegister
@@ -36,6 +32,8 @@ public:
     RegisterType register_type;
     int register_i;
 
+    OperandRegister(RegisterType register_type):
+        register_type(register_type),register_i(-1){}
     OperandRegister(RegisterType register_type,int register_i):
         register_type(register_type),register_i(register_i){}
 };
@@ -45,10 +43,24 @@ public:
 class OperandType
 {
 public:
-    DataType data_type;
+    bool is_void;
+    DataType data_type; 
 
-    OperandType(DataType data_type):data_type(data_type){}
+    OperandType():is_void(true){}
+    OperandType(DataType data_type):data_type(data_type),is_void(false){}
 };
+
+
+
+class OperandFunction
+{
+public:
+    string name;
+
+    OperandFunction(string name):name(name){}
+};
+
+
 
 class OperandVariable
 {
@@ -58,4 +70,15 @@ public:
 
     OperandVariable(string name,int scope_i):
         name(name),scope_i(scope_i){}
+};
+
+
+
+class OperandLable
+{
+public:
+    int lable_id;
+
+    OperandLable(int lable_id):
+        lable_id(lable_id){}
 };

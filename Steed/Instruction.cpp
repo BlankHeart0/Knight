@@ -1,41 +1,40 @@
 #include "Instruction.h"
 #include "VM.h"
 
-// Var
+// Variable
 void Var::Excute()
 {   
-    VariableTable& vartable=Steed.main.vartable;
+    VariableTable& variables=Steed.NowExcuteFunction().variables;
+
+    string name=operand2_variable.name;
+    int scope_i=operand2_variable.scope_i;
+
     switch(operand1_type.data_type)
     {
-        case D_INT:
-            vartable.Set(operand2_variable.scope_i,operand2_variable.name,0);
-            break;
-        case D_DEC:
-            vartable.Set(operand2_variable.scope_i,operand2_variable.name,0.0);
-            break;
-        case D_STR:
-            vartable.Set(operand2_variable.scope_i,operand2_variable.name,"");
-            break;
+        case D_INT: variables.Set(scope_i,name,0);    break;
+        case D_DEC: variables.Set(scope_i,name,0.0);  break;
+        case D_STR: variables.Set(scope_i,name,"");   break;
+        case D_BOOL:variables.Set(scope_i,name,false);break;
     }
-    
 }
 
-
-// Load
 void LoadConstant::Excute()
 {
     int R_i=operand1_register.register_i;
 
-    switch(operand2_constant.constant_type)
+    switch(operand2_constant.data_type)
     {
-        case C_INT:
+        case D_INT:
             general_register.Set(R_i,operand2_constant.INT_val);
             break;
-        case C_DEC:
+        case D_DEC:
             general_register.Set(R_i,operand2_constant.DEC_val);
             break;
-        case C_STR:
+        case D_STR:
             general_register.Set(R_i,operand2_constant.STR_val);
+            break;
+        case D_BOOL:
+            general_register.Set(R_i,operand2_constant.BOOL_val);
             break;
     }
 }
@@ -61,7 +60,6 @@ void LoadVariable::Excute()
     }
 }
 
-// Store
 void Store::Excute()
 {
     Register& R=general_register.GetRegister(operand2_register.register_i);
@@ -78,7 +76,7 @@ void Store::Excute()
 
 
 
-// Print
+// Function    
 void Print::Excute()
 {
     Register& R=general_register.GetRegister(operand1_register.register_i);

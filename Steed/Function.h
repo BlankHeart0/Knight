@@ -5,6 +5,7 @@
 #include "Instruction.h"
 #include "Type.h"
 #include "Variable.h"
+#include "Context.h"
 
 class Function
 {
@@ -14,9 +15,7 @@ public:
     
     vector<Instruction*> instructions;
     VariableTable variables;
-    vector<int> lables;
-    
-    void Excute();
+    unordered_map<int,int> lables;
 };
 
 class FunctionTable
@@ -25,6 +24,18 @@ private:
     unordered_map<string,Function> table;
 
 public:
+    void New(string name);
     Function& Get(string name);
-    void LoadInstruction(string name,Instruction* instruction);
 };
+
+class FunctionStack
+{
+private:
+    stack<Context> context;
+
+public:
+    void Push();
+    void Pop();
+};
+
+extern FunctionStack function_stack;

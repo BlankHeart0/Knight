@@ -12,6 +12,12 @@ void Diagnostor::ErrorHead(ErrorModule error_module)
         case E_FUNCTION:
             cout<<"Function Error: ";
             break;
+        case E_TYPE:
+            cout<<"Type Error: ";
+            break;
+        case E_REGISTER:
+            cout<<"Register Error: ";
+            break;
     }
 }
 

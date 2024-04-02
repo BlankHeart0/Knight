@@ -1,12 +1,12 @@
 #include "Function.h"
+#include "VM.h"
 
-void Function::Excute()
+FunctionStack function_stack;
+
+void FunctionTable::New(string name)
 {
-    for(Instruction* instruction_ptr:instructions)
-        instruction_ptr->Excute();
+    table[name];
 }
-
-
 
 Function& FunctionTable::Get(string name)
 {
@@ -16,8 +16,21 @@ Function& FunctionTable::Get(string name)
     return table[name];
 }
 
-void FunctionTable::LoadInstruction(string name,Instruction* instruction)
+
+
+void FunctionStack::Push()
 {
-    table[name].instructions.push_back(instruction);
+    VariableTable variables=Steed.ExcutingFunction().variables;
+    context.push(Context(Steed.pc,variables));
 }
 
+void FunctionStack::Pop()
+{
+    if(context.empty())
+        diagnostor.Error(E_FUNCTION,"Function stack is empty!");
+    
+    Steed.pc=context.top().pc;
+    Steed.ExcutingFunction().variables =context.top().variables;
+
+    context.pop();
+}

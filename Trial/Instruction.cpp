@@ -131,7 +131,8 @@ void CodeGenerator::Store(Token variable,int r_i,bool need_free)
 void CodeGenerator::Convert(DataType to_dataType,int r_i)
 {
     Register& R=general_register.GetReg(r_i);
-
+    if(R.data_type==to_dataType)return;
+    
     // Opcode
     file_manager.Write(is_upper?"CVT":"cvt");
     file_manager.Write("\t\t");
@@ -439,7 +440,7 @@ int CodeGenerator::BinaryInstruction(int r1_i,Token Operator,int r2_i)
         case PERCENT:       return Mod(r1_i,r2_i,Operator.line);
     }
 
-    return -1;
+    return NOTHING;
 }
 
 // Logic
@@ -460,6 +461,8 @@ int CodeGenerator::Or(int r1_i,int r2_i,int line)
     file_manager.WriteEndl();
 
     general_register.Free(r2_i);
+
+    general_register.GetReg(r1_i).data_type=D_BOOL;
 
     return r1_i;
 }
@@ -482,6 +485,8 @@ int CodeGenerator::And(int r1_i,int r2_i,int line)
 
     general_register.Free(r2_i);
 
+    general_register.GetReg(r1_i).data_type=D_BOOL;
+
     return r1_i;
 }
 
@@ -502,6 +507,8 @@ int CodeGenerator::Equal(int r1_i,int r2_i,int line)
     file_manager.WriteEndl();
 
     general_register.Free(r2_i);
+
+    general_register.GetReg(r1_i).data_type=D_BOOL;
 
     return r1_i;
 }
@@ -524,6 +531,8 @@ int CodeGenerator::NotEqual(int r1_i,int r2_i,int line)
 
     general_register.Free(r2_i);
 
+    general_register.GetReg(r1_i).data_type=D_BOOL;
+
     return r1_i;
 }
 
@@ -544,6 +553,8 @@ int CodeGenerator::Less(int r1_i,int r2_i,int line)
     file_manager.WriteEndl();
 
     general_register.Free(r2_i);
+
+    general_register.GetReg(r1_i).data_type=D_BOOL;
 
     return r1_i;
 }
@@ -566,6 +577,8 @@ int CodeGenerator::LessEqual(int r1_i,int r2_i,int line)
 
     general_register.Free(r2_i);
 
+    general_register.GetReg(r1_i).data_type=D_BOOL;
+
     return r1_i;
 }
 
@@ -587,6 +600,8 @@ int CodeGenerator::Greater(int r1_i,int r2_i,int line)
 
     general_register.Free(r2_i);
 
+    general_register.GetReg(r1_i).data_type=D_BOOL;
+
     return r1_i;
 }
 
@@ -607,6 +622,8 @@ int CodeGenerator::GreaterEqual(int r1_i,int r2_i,int line)
     file_manager.WriteEndl();
 
     general_register.Free(r2_i);
+
+    general_register.GetReg(r1_i).data_type=D_BOOL;
 
     return r1_i;
 }

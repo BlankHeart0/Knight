@@ -121,6 +121,7 @@ int CompoundStatementAST::CodeGen()
 int IfStatementAST::CodeGen()
 {
     int expression_ri=expression->CodeGen();
+    CodeGenerator::Convert(D_BOOL,expression_ri);
 
     int lable_ifEnd=CodeGenerator::NowInFunction().NewLable();
     CodeGenerator::JumpFalse(lable_ifEnd,expression_ri);
@@ -149,6 +150,7 @@ int WhileStatementAST::CodeGen()
 
     CodeGenerator::Lable(lable_begin);
     int expression_ri=expression->CodeGen();
+    CodeGenerator::Convert(D_BOOL,expression_ri);
     CodeGenerator::JumpFalse(lable_end,expression_ri);
 
     statement->CodeGen();

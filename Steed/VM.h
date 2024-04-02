@@ -4,13 +4,7 @@
 #include "FileManager.h"
 #include "Function.h"
 #include "Parser.h"
-
-class PC
-{
-public:
-    string function_name;
-    int instruction_id;
-};
+#include "Context.h"
 
 class VirtualMachine
 {
@@ -19,14 +13,15 @@ private:
     
 public:
     FunctionTable functions;
-    string nowInfunction;
+    string parsing_function;
     PC pc;
 
     void Initialize(string knightASM_file_name);
     void Load();
     void Run();
 
-    Function& NowExcuteFunction();
+    Function& ParsingFunction();
+    Function& ExcutingFunction();
 };
 
 extern VirtualMachine Steed;

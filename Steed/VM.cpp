@@ -21,30 +21,36 @@ void VirtualMachine::Load()
         //Directive
         if(instruction->is_directive)instruction->Excute();
         //Instruction
-        else functions.LoadInstruction(nowInfunction,instruction);
+        else ParsingFunction().instructions.push_back(instruction);
         
         line_str=file_manager.ReadLine();
     }
 
     file_manager.Close();
+
+    cout<<"++++++ Done ++++++"<<endl<<endl;
+
 }
 
 void VirtualMachine::Run()
 {
-    cout<<"------Running------"<<endl<<endl;
+    cout<<endl<<"------Running------"<<endl<<endl;
 
-    pc.function_name="main";
+    pc.excuting_function="main";
     pc.instruction_id=0;
 
-    while(pc.instruction_id<NowExcuteFunction().instructions.size())
-    {
-        NowExcuteFunction().instructions[pc.instruction_id]->Excute();
-    }
+    while(pc.instruction_id<ExcutingFunction().instructions.size())
+        ExcutingFunction().instructions[pc.instruction_id]->Excute();
 
-    cout<<"------ Done ------"<<endl<<endl;
+    cout<<endl<<"------ Done ------"<<endl<<endl;
 }
 
-Function& VirtualMachine::NowExcuteFunction()
+Function& VirtualMachine::ParsingFunction()
 {
-    return functions.Get(pc.function_name);
+    return functions.Get(parsing_function);
+}
+
+Function& VirtualMachine::ExcutingFunction()
+{
+    return functions.Get(pc.excuting_function);
 }

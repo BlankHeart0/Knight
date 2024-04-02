@@ -4,6 +4,27 @@ DataType:
     str: "Hello!" "Knight" ...
     bool: true false
 
+Convert:
+    (int)int ->int
+    (dec)int ->dec
+-   (str)int ->error
+    (bool)int->bool
+
+    (int)dec ->int
+    (dec)dec ->dec
+-   (str)dec ->error
+    (bool)dec->bool
+
+-   (int)str ->error
+-   (dec)str ->error
+    (str)str ->str
+-   (bool)str->error
+
+-   (int)bool ->error
+-   (dec)bool ->error
+-   (str)bool ->error
+    (bool)bool->bool
+
 Rule:
 Assign =    <Unsupport commutative law>
     int=int -> int

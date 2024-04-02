@@ -4,7 +4,7 @@
 
 enum ErrorModule
 {
-    E_FILEMANAGER,E_FUNCTION
+    E_FILEMANAGER,E_FUNCTION,E_TYPE,E_REGISTER
 };
 
 class Diagnostor

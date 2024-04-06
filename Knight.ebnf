@@ -1,30 +1,32 @@
 # Knight's ebnf grammar
 
 # Begin
-<Translation_Unit> ::= {<Function_Definition>} CODE_EOF
+<Translation_Unit> ::= {<Permission_Definition>|<Function_Definition>} CODE_EOF
 
 # Definition
-<Function_Definition> ::= [INT | DEC | STR | BOOL] IDENTIFIER "("[<Parameter_List>]")" "{"{<Statement>}"}" 
-<Parameter> ::= (INT | DEC | STR | BOOL) IDENTIFIER
+<Permission_Definition> ::= PERMISSION IDENTIFIER{,IDENTIFIER}
+
+<Type> ::= (INT | DEC | STR | BOOL)["<"IDENTIFIER{,IDENTIFIER}">"]
+<Function_Definition> ::= [<Type>] IDENTIFIER "("[<Parameter_List>]")" "{"{<Statement>}"}" 
+<Parameter> ::= <Type> IDENTIFIER
 <Parameter_List> ::= <Parameter>{","<Parameter>}
-<LocalVariable_Definition> ::= (INT | DEC | STR | BOOL) IDENTIFIER [":"<Expression>]";"
+
+<LocalVariable_Definition> ::= <Type> IDENTIFIER [":"<Expression>]";"
 
 #Statement
 <Statement> ::= <Compound_Statement> | <LocalVariable_Definition> | <If_Statement> | <While_Statement> |
-              | <Return_Statement> | <Print_Statement> | <Expression_Statement> 
+              | <Return_Statement> | <Print_Statement> | <Assignment_Statement> | <Expression_Statement> 
 <Compound_Statement> ::= "{"{<Statement>}"}"
 
 <If_Statement> ::= IF"("<Expression>")"<Statement>[ELSE<Statement>]
 <While_Statement> ::= WHILE"("<Expression>")"<Statement>
-
 <Return_Statement> ::= RET [<Expression>] ";"
-
-<Print_Statement> ::= PRINT <Expression> ";"
-<Expression_Statement> ::= [<Expression>]";"
+<Print_Statement> ::= PRINT <Expression>{,<Expression>} ";"
+<Assignment_Statement> ::= IDENTIFIER"=" <Expression> ";"
+<Expression_Statement> ::= <Expression>";"
 
 # Expression
-<Expression> ::= <Assignment_Expression>
-<Assignment_Expression> ::= [IDENTIFIER "="] <LogicOr_Expression>
+<Expression> ::= <LogicOr_Expression>
 
 <LogicOr_Expression> ::= <LogicAnd_Expression>{"or"<LogicAnd_Expression>}
 <LogicAnd_Expression> ::= <Equality_Expression>{"and"<Equality_Expression>}

@@ -1,23 +1,4 @@
-#include "Type.h"
-#include "Register.h"
-#include "CodeGenerator.h"
-
-DataType TokenToType(Token data_type_token)
-{
-    DataType data_type;
-
-    switch(data_type_token.token_type)
-    {
-        case INT: data_type=D_INT; break;
-        case DEC: data_type=D_DEC; break;
-        case STR: data_type=D_STR; break;
-        case BOOL:data_type=D_BOOL;break;
-    }
-
-    return data_type;
-}
-
-
+#include "TypeChecker.h"
 
 void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
 {

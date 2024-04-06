@@ -1,6 +1,11 @@
 #include "CodeGenerator.h"
 
 // Variable
+void CodeGenerator::Permission(Token permission)
+{
+    
+}
+
 void CodeGenerator::Var(Token type,string variable_name)
 {
     NowInFunction().vartable.Add(type,variable_name);

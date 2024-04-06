@@ -19,7 +19,10 @@ void AST::Print()
 void TranslationUnitAST::Print(int depth)
 {
     cout<<"Translation_Unit";
-    
+
+    for(ASTNode* ast_ptr:permission_definitions)
+        ast_ptr->Print(depth+1);
+
     for(ASTNode* ast_ptr:function_definitions)
         ast_ptr->Print(depth+1);
 }
@@ -27,12 +30,23 @@ void TranslationUnitAST::Print(int depth)
 
 
 // Definition
+void PermissionDefinitionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Permission_Definition";
+
+    for(Token t:permissions)
+        cout<<t.lexeme<<" ";
+}
+
+
+
 void FunctionDefinitionAST::Print(int depth)
 {
     PrintTab(depth);
     cout<<"Function_Definition";
 
-    cout<<" ret_data_type:"<<ret_data_type.lexeme;
+    cout<<" ret_type:";ret_type.Print();
     cout<<" function_name:"<<function_name.lexeme;
     if(parameter_list)parameter_list->Print(depth+1);
     
@@ -45,7 +59,7 @@ void ParameterAST::Print(int depth)
     PrintTab(depth);
     cout<<"Parameter";
 
-    cout<<" data_type:"<<data_type.lexeme;
+    cout<<" type:";type.Print();
     cout<<" parameter_name:"<<parameter_name.lexeme;
 }
 
@@ -58,12 +72,14 @@ void ParameterListAST::Print(int depth)
         ast_ptr->Print(depth+1);
 }
 
+
+
 void LocalVariableDefinitionAST::Print(int depth)
 {
     PrintTab(depth);
     cout<<"LocalVariable_Definition";
 
-    cout<<" data_type:"<<data_type.lexeme;
+    cout<<" type:";type.Print();
     cout<<" variable_name:"<<variable_name.lexeme;
     if(expression)expression->Print(depth+1);
 }
@@ -114,8 +130,6 @@ void WhileStatementAST::Print(int depth)
     statement->Print(depth+1);
 }
 
-
-
 void ReturnStatementAST::Print(int depth)
 {
     PrintTab(depth);
@@ -124,13 +138,21 @@ void ReturnStatementAST::Print(int depth)
     if(expression)expression->Print(depth+1);
 }
 
-
-
 void PrintStatementAST::Print(int depth)
 {
     PrintTab(depth);
     cout<<"Print_Statement";
 
+    for(ASTNode* ast_ptr:expressions)
+        ast_ptr->Print(depth+1);
+}
+
+void AssignmentStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Assignment_Statement";
+
+    cout<<" variable:"<<variable.lexeme;
     expression->Print(depth+1);
 }
 
@@ -139,8 +161,7 @@ void ExpressionStatementAST::Print(int depth)
     PrintTab(depth);
     cout<<"Expression_Statement";
     
-    if(expression)expression->Print(depth+1);
-    else cout<<" __BLANK__";
+    expression->Print(depth+1);
 }
 
 
@@ -151,16 +172,7 @@ void ExpressionAST::Print(int depth)
     PrintTab(depth);
     cout<<"Expression";
 
-    assignment_expression->Print(depth+1);
-}
-
-void AssignmentExpressionAST::Print(int depth)
-{
-    PrintTab(depth);
-    cout<<"Assignment_Expression";
-
-    if(variable.is_valid)cout<<" variable:"<<variable.lexeme;
-    logicOr_expression->Print(depth+1);    
+    logicOr_expression->Print(depth+1);
 }
 
 

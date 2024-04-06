@@ -16,8 +16,12 @@ ASTNode* Parser::Parse_Translation_Unit()
 
     while(!IsAtEnd())
     {
-        AddChildToVector(node->function_definitions,
-                        Parse_Function_Definition());
+        if(Peek(PERMISSION))
+            AddChildToVector(node->permission_definitions,
+                            Parse_Permission_Definition());
+        else
+            AddChildToVector(node->function_definitions,
+                            Parse_Function_Definition());
     }
 
     return (ASTNode*)node;
@@ -26,16 +30,73 @@ ASTNode* Parser::Parse_Translation_Unit()
 
 
 // Definition
+ASTNode* Parser::Parse_Permission_Definition()
+{
+    diagnostor.WhoAmI("Parse_Permission_Definition");
+
+    PermissionDefinitionAST* node=new PermissionDefinitionAST();
+
+    if(Match(PERMISSION))
+    {
+        if(Match(IDENTIFIER))
+        {
+            node->permissions.push_back(PreviousToken());
+            while(Match(COMMA))
+            {
+                if(Match(IDENTIFIER))
+                    node->permissions.push_back(PreviousToken());
+                else PARSE_ERROR("Permission identifier loss");
+            }
+        }
+        else PARSE_ERROR("Permission identifier loss");
+    }
+    else PARSE_ERROR("Keyword 'permission' loss");
+
+    return (ASTNode*)node;
+}
+
+
+
+TypeAsToken Parser::Parse_Type()
+{
+    diagnostor.WhoAmI("Parse_Type");
+
+    Token data_token;
+    vector<Token> permissions_token;
+
+    if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
+    {
+        data_token=PreviousToken();
+    }
+    else PARSE_ERROR("Data type loss");
+
+    if(Match(LESS))
+    {
+        if(Match(IDENTIFIER))
+        {
+            permissions_token.push_back(PreviousToken());
+            while(Match(COMMA))
+            {
+                if(Match(IDENTIFIER))
+                    permissions_token.push_back(PreviousToken());
+                else PARSE_ERROR("Permission identifier loss");
+            }
+            if(!Match(GREATER))PARSE_ERROR("Greater '>' loss");
+        }
+        else PARSE_ERROR("Permission identifier loss");
+    }
+
+    return TypeAsToken(data_token,permissions_token);
+}
+
 ASTNode* Parser::Parse_Function_Definition()
 {
     diagnostor.WhoAmI("Parse_Function_Definition");
 
     FunctionDefinitionAST* node=new FunctionDefinitionAST();
     
-    if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
-    {
-        node->ret_data_type=PreviousToken();
-    }
+    if(!Peek(IDENTIFIER))
+        node->ret_type=Parse_Type();
 
     if(Match(IDENTIFIER))
     {
@@ -76,16 +137,13 @@ ASTNode* Parser::Parse_Parameter()
 
     ParameterAST* node=new ParameterAST();
 
-    if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
+    node->type=Parse_Type();
+
+    if(Match(IDENTIFIER))
     {
-        node->data_type=PreviousToken();
-        if(Match(IDENTIFIER))
-        {
-            node->parameter_name=PreviousToken();
-        }
-        else PARSE_ERROR("Parameter identifier loss");
+        node->parameter_name=PreviousToken();
     }
-    else PARSE_ERROR("Parameter type loss");
+    else PARSE_ERROR("Parameter identifier loss");
 
     return (ASTNode*)node;
 }
@@ -104,28 +162,27 @@ ASTNode* Parser::Parse_Parameter_List()
     return (ASTNode*)node;
 }
 
+
+
 ASTNode* Parser::Parse_LocalVariable_Definition()
 {
     diagnostor.WhoAmI("Parse_LocalVariable_Definition");
 
     LocalVariableDefinitionAST* node=new LocalVariableDefinitionAST();
 
-    if(Match(INT)||Match(DEC)||Match(STR)||Match(BOOL))
+    node->type=Parse_Type();
+
+    if(Match(IDENTIFIER))
     {
-        node->data_type=PreviousToken();
-        if(Match(IDENTIFIER))
+        node->variable_name=PreviousToken();
+        //Initialize
+        if(Match(COLON))
         {
-            node->variable_name=PreviousToken();
-            //Initialize
-            if(Match(COLON))
-            {
-                node->expression=Parse_Expression();
-            }
-            MatchSemicolon();
+            node->expression=Parse_Expression();
         }
-        else PARSE_ERROR("Variable identifier loss");
+        MatchSemicolon();
     }
-    else PARSE_ERROR("Variable type loss");
+    else PARSE_ERROR("Variable identifier loss");
 
     return (ASTNode*)node;
 }
@@ -149,6 +206,8 @@ ASTNode* Parser::Parse_Statement()
         node->X_statement=Parse_Return_Statement();
     else if(Peek(PRINT))
         node->X_statement=Parse_Print_Statement();
+    else if(Peek(IDENTIFIER))
+        node->X_statement=Parse_Assignment_Statement();
     else if(Peek(INT)||Peek(DEC)||Peek(STR)||Peek(BOOL))
         node->X_statement=Parse_LocalVariable_Definition();
     else
@@ -232,8 +291,6 @@ ASTNode* Parser::Parse_While_Statement()
     return (ASTNode*)node;
 }
 
-
-
 ASTNode* Parser::Parse_Return_Statement()
 {
     diagnostor.WhoAmI("Parse_Return_Statement");
@@ -253,8 +310,6 @@ ASTNode* Parser::Parse_Return_Statement()
     return (ASTNode*)node;
 }
 
-
-
 ASTNode* Parser::Parse_Print_Statement()
 {
     diagnostor.WhoAmI("Parse_Print_Statement");
@@ -263,10 +318,35 @@ ASTNode* Parser::Parse_Print_Statement()
 
     if(Match(PRINT))
     {
-        node->expression=Parse_Expression();
+        AddChildToVector(node->expressions,Parse_Expression());
+        while(Match(COMMA))
+        {
+            AddChildToVector(node->expressions,Parse_Expression());
+        }
         MatchSemicolon();
     }
     else PARSE_ERROR("Keyword 'print' loss");
+
+    return (ASTNode*)node;
+}
+
+ASTNode* Parser::Parse_Assignment_Statement()
+{
+    diagnostor.WhoAmI("Parse_Assignment_Statement");
+
+    AssignmentStatementAST* node=new AssignmentStatementAST();
+
+    if(Match(IDENTIFIER))
+    {
+        node->variable=PreviousToken();
+        if(Match(ASSIGN))
+        {
+            node->expression=Parse_Expression();
+            MatchSemicolon();
+        }
+        else PARSE_ERROR("Assign '=' loss");
+    }
+    else PARSE_ERROR("Variable identifier loss");
 
     return (ASTNode*)node;
 }
@@ -277,8 +357,7 @@ ASTNode* Parser::Parse_Expression_Statement()
 
     ExpressionStatementAST* node=new ExpressionStatementAST();
 
-    if(!Peek(SEMICOLON)) node->expression=Parse_Expression();
-    
+    node->expression=Parse_Expression();
     MatchSemicolon();
 
     return (ASTNode*)node;
@@ -293,28 +372,10 @@ ASTNode* Parser::Parse_Expression()
     
     ExpressionAST* node=new ExpressionAST();
 
-    node->assignment_expression=Parse_Assignment_Expression();
-
-    return (ASTNode*)node;
-}    
-
-ASTNode* Parser::Parse_Assignment_Expression()
-{
-    diagnostor.WhoAmI("Parse_Assignment_Expression");
-
-    AssignmentExpressionAST* node=new AssignmentExpressionAST();
-    
-    if(Peek(IDENTIFIER)&&Peek(ASSIGN,2))
-    {
-        Match(IDENTIFIER);
-        node->variable=PreviousToken();
-        Match(ASSIGN);
-    }
-
     node->logicOr_expression=Parse_LogicOr_Expression();
 
     return (ASTNode*)node;
-}
+}    
 
 
 
@@ -509,6 +570,13 @@ void Parser::AddChildToVector(vector<ASTNode*>& vec, ASTNode* child )
     vec.push_back(child);
 }
 
+Token Parser::PreviousToken()
+{
+    return tokens[current-1];
+}
+
+
+
 bool Parser::IsAtEnd()
 {
     return tokens[current].token_type==CODE_EOF;
@@ -540,9 +608,4 @@ bool Parser::Peek(TokenType expected,int n)
 {
     if(current+n-1<tokens.size()-1&&expected==tokens[current+n-1].token_type)return true;
     return false;
-}
-
-Token Parser::PreviousToken()
-{
-    return tokens[current-1];
 }

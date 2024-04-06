@@ -27,6 +27,9 @@ void AST::CodeGen()
 // Begin
 int TranslationUnitAST::CodeGen()
 {
+    for(ASTNode* ast_ptr:permission_definitions)
+        ast_ptr->CodeGen();
+
     for(ASTNode* ast_ptr:function_definitions)
         ast_ptr->CodeGen();
     
@@ -36,6 +39,11 @@ int TranslationUnitAST::CodeGen()
 
 
 // Definition
+int PermissionDefinitionAST::CodeGen()
+{
+
+}
+
 int FunctionDefinitionAST::CodeGen()
 {
     CodeGenerator::Func(ret_data_type,function_name.lexeme);

@@ -2,7 +2,6 @@
 
 #include "System.h"
 #include "Token.h"
-#include "Diagnostor.h"
 
 enum DataType
 {
@@ -14,34 +13,43 @@ static vector<string> DataType_Text
     "D_INT","D_DEC","D_STR","D_BOOL"
 };
 
-DataType TokenToType(Token data_type);
-
-class TypeChecker
+class PermissionSet
 {
-public:
-    //DataType Checker
-    static void Check_Store(DataType data_type,int r_i,int line);
-    // Logic
-    static void Check_Or(int r1_i,int r2_i,int line);
-    static void Check_And(int r1_i,int r2_i,int line);
-    static void Check_Not(int r_i,int line);
-    static void Check_Equal(int r1_i,int r2_i,int line);
-    static void Check_NotEqual(int r1_i,int r2_i,int line);
-    static void Check_Less(int r1_i,int r2_i,int line);
-    static void Check_LessEqual(int r1_i,int r2_i,int line);
-    static void Check_Greater(int r1_i,int r2_i,int line);
-    static void Check_GreaterEqual(int r1_i,int r2_i,int line);
+private:
+    unordered_set<string> permission_uset;
 
-    // Arithmetic
-    static void Check_Add(int r1_i,int r2_i,int line);
-    static void Check_Sub(int r1_i,int r2_i,int line);
-    static void Check_Mul(int r1_i,int r2_i,int line);
-    static void Check_Div(int r1_i,int r2_i,int line);
-    static void Check_Mod(int r1_i,int r2_i,int line);
-    static void Check_Neg(int r_i,int line);
+public:
+    void Print();
+    void InsertPermission(string permission);
+    bool IsEmpty();
+    bool HavePermission(string permission);
+    bool Included(PermissionSet& permissions);
+    PermissionSet Intersection(PermissionSet& permissions);
+    PermissionSet Union(PermissionSet& permissions);
+    PermissionSet operator - (PermissionSet& permissions);
+    PermissionSet operator + (PermissionSet& permissions);
 };
 
-#define TYPE_ERROR(error_message)                             \
-        do{                                                   \
-            diagnostor.Error(E_TYPE,line,error_message);      \
-        }while(0)
+class Type
+{
+public:
+    DataType data;
+    PermissionSet permissions;
+
+    Type(DataType data,PermissionSet permissions):
+        data(data),permissions(permissions){}
+};
+
+class TypeAsToken
+{
+public:
+    Token data_token;
+    vector<Token> permissions_token;
+
+    TypeAsToken(){}
+    TypeAsToken(Token data_token,vector<Token> permissions_token):
+        data_token(data_token),permissions_token(permissions_token){}
+    
+    void Print();
+    Type ToRealType();
+};

@@ -26,6 +26,7 @@ public:
 
     // Instruction
     // Variable
+    static void Permission(Token permission);           // PERM perm
     static void Var(Token type,string variable_name);   // VAR var
     static int  LoadConstant(Token constant);           // LOAD load
     static int  LoadVariable(Token variable);           // LOAD load

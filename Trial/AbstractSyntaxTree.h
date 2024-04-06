@@ -2,6 +2,7 @@
 
 #include "System.h"
 #include "Token.h"
+#include "Type.h"
 
 class ASTNode
 {
@@ -27,8 +28,9 @@ public:
 // Begin
 class TranslationUnitAST: public ASTNode
 {
-public:
-    vector<ASTNode*>function_definitions;
+public:    
+    vector<ASTNode*> permission_definitions;
+    vector<ASTNode*> function_definitions;
     
     int CodeGen() override;
 
@@ -38,13 +40,25 @@ public:
 
 
 // Definition
+class PermissionDefinitionAST: public ASTNode
+{
+public:
+    vector<Token> permissions;
+
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+
+
 class FunctionDefinitionAST: public ASTNode
 {
 public:
-    Token ret_data_type;
+    TypeAsToken ret_type;
     Token function_name;
     ASTNode* parameter_list;
-    vector<ASTNode*>statements;
+    vector<ASTNode*> statements;
 
     FunctionDefinitionAST():parameter_list(nullptr){}
 
@@ -56,7 +70,7 @@ public:
 class ParameterAST: public ASTNode
 {
 public:
-    Token data_type;
+    TypeAsToken type;
     Token parameter_name;
      
     int CodeGen() override;
@@ -74,10 +88,12 @@ public:
     void Print(int depth) override;
 };
 
+
+
 class LocalVariableDefinitionAST: public ASTNode
 {
 public:
-    Token data_type;
+    TypeAsToken type;
     Token variable_name;
     ASTNode* expression;
 
@@ -106,7 +122,7 @@ public:
 class CompoundStatementAST: public ASTNode
 {
 public:
-    vector<ASTNode*>statements;
+    vector<ASTNode*> statements;
 
     int CodeGen() override;
 
@@ -143,8 +159,6 @@ public:
     void Print(int depth) override;
 };
 
-
-
 class ReturnStatementAST: public ASTNode
 {
 public:
@@ -158,14 +172,23 @@ public:
     void Print(int depth) override;
 };
 
-
-
 class PrintStatementAST: public ASTNode
 {
 public:
+    vector<ASTNode*> expressions;
+
+    int CodeGen() override;
+
+    void Print(int depth) override;
+};
+
+class AssignmentStatementAST: public ASTNode
+{
+public:
+    Token variable;
     ASTNode* expression;
 
-    PrintStatementAST():expression(nullptr){}
+    AssignmentStatementAST():expression(nullptr){}
 
     int CodeGen() override;
 
@@ -190,22 +213,9 @@ public:
 class ExpressionAST: public ASTNode
 {
 public:
-    ASTNode* assignment_expression;
-
-    ExpressionAST():assignment_expression(nullptr){}
-    
-    int CodeGen() override;
-
-    void Print(int depth) override;
-};
-
-class AssignmentExpressionAST: public ASTNode
-{
-public:
-    Token variable;
     ASTNode* logicOr_expression;
 
-    AssignmentExpressionAST():logicOr_expression(nullptr){}
+    ExpressionAST():logicOr_expression(nullptr){}
     
     int CodeGen() override;
 

@@ -19,10 +19,10 @@ void Trial()
     //Parse
     Parser parser(scanner.tokens);
     parser.Parse();
-    parser.abstract_syntax_tree.Print();
+    abstract_syntax_tree.Print();
 
     //CodeGen
-    CodeGenerator code_generator(parser.abstract_syntax_tree);
+    CodeGenerator code_generator;
     code_generator.CodeGen();
 }
 

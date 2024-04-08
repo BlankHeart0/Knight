@@ -7,7 +7,7 @@
 class Register
 {
 public:
-    DataType data_type;
+    Type type;
     bool free;
 
     Register():free(true){}
@@ -23,7 +23,7 @@ public:
     string Name(int r_i);
     Register& GetReg(int r_i);
 
-    int Alloc(DataType data_type);
+    int Alloc(Type type);
     void Free(int r_i);
     void Grow();
 
@@ -31,8 +31,3 @@ public:
 };
 
 extern GeneralRegister general_register;
-
-#define REGISTER_ERROR(error_message)                     \
-        do{                                               \
-            diagnostor.Error(E_REGISTER,error_message);   \
-        }while(0)

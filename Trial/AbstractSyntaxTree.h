@@ -15,13 +15,13 @@ public:
 class AST
 {
 public:
-    ASTNode* translation_unit;
-
-    AST():translation_unit(nullptr){}
+    unique_ptr<ASTNode> translation_unit;
 
     void CodeGen();
     void Print();
 };
+
+extern AST abstract_syntax_tree;
 
 
 
@@ -29,11 +29,10 @@ public:
 class TranslationUnitAST: public ASTNode
 {
 public:    
-    vector<ASTNode*> permission_definitions;
-    vector<ASTNode*> function_definitions;
+    vector<unique_ptr<ASTNode>> permission_definitions;
+    vector<unique_ptr<ASTNode>> function_definitions;
     
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -46,7 +45,6 @@ public:
     vector<Token> permissions;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -57,13 +55,10 @@ class FunctionDefinitionAST: public ASTNode
 public:
     TypeAsToken ret_type;
     Token function_name;
-    ASTNode* parameter_list;
-    vector<ASTNode*> statements;
-
-    FunctionDefinitionAST():parameter_list(nullptr){}
+    unique_ptr<ASTNode> parameter_list;
+    vector<unique_ptr<ASTNode>> statements;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -74,17 +69,15 @@ public:
     Token parameter_name;
      
     int CodeGen() override;
-    
     void Print(int depth) override;
 };
 
 class ParameterListAST: public ASTNode
 {
 public:
-    vector<ASTNode*> parameters;
+    vector<unique_ptr<ASTNode>> parameters;
  
     int CodeGen() override;
-    
     void Print(int depth) override;
 };
 
@@ -95,12 +88,9 @@ class LocalVariableDefinitionAST: public ASTNode
 public:
     TypeAsToken type;
     Token variable_name;
-    ASTNode* expression;
-
-    LocalVariableDefinitionAST():expression(nullptr){}
+    unique_ptr<ASTNode> expression;
     
     int CodeGen() override;
-    
     void Print(int depth) override;
 };
 
@@ -110,22 +100,18 @@ public:
 class StatementAST: public ASTNode
 {
 public:
-    ASTNode* X_statement;
-
-    StatementAST():X_statement(nullptr){}
+    unique_ptr<ASTNode> X_statement;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class CompoundStatementAST: public ASTNode
 {
 public:
-    vector<ASTNode*> statements;
+    vector<unique_ptr<ASTNode>> statements;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -134,28 +120,21 @@ public:
 class IfStatementAST: public ASTNode
 {
 public:
-    ASTNode* expression;
-    ASTNode* true_statement;
-    ASTNode* false_statement;
-
-    IfStatementAST():expression(nullptr),
-        true_statement(nullptr),false_statement(nullptr){}
+    unique_ptr<ASTNode> expression;
+    unique_ptr<ASTNode> true_statement;
+    unique_ptr<ASTNode> false_statement;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class WhileStatementAST: public ASTNode
 {
 public:
-    ASTNode* expression;
-    ASTNode* statement;
-
-    WhileStatementAST():expression(nullptr),statement(nullptr){}
+    unique_ptr<ASTNode> expression;
+    unique_ptr<ASTNode> statement;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -163,22 +142,19 @@ class ReturnStatementAST: public ASTNode
 {
 public:
     Token ret;
-    ASTNode* expression;
-
-    ReturnStatementAST():expression(nullptr){}
+    unique_ptr<ASTNode> expression;
         
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class PrintStatementAST: public ASTNode
 {
 public:
-    vector<ASTNode*> expressions;
+    Token print;
+    vector<unique_ptr<ASTNode>> expressions;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -186,24 +162,18 @@ class AssignmentStatementAST: public ASTNode
 {
 public:
     Token variable;
-    ASTNode* expression;
-
-    AssignmentStatementAST():expression(nullptr){}
+    unique_ptr<ASTNode> expression;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class ExpressionStatementAST: public ASTNode
 {
 public:
-    ASTNode* expression;
-
-    ExpressionStatementAST():expression(nullptr){}
+    unique_ptr<ASTNode> expression;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -213,12 +183,9 @@ public:
 class ExpressionAST: public ASTNode
 {
 public:
-    ASTNode* logicOr_expression;
-
-    ExpressionAST():logicOr_expression(nullptr){}
+    unique_ptr<ASTNode> logicOr_expression;
     
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -227,28 +194,22 @@ public:
 class LogicOrExpressionAST: public ASTNode
 {
 public:
-    ASTNode* logicAnd_expression;
+    unique_ptr<ASTNode> logicAnd_expression;
     vector<Token> infix_operators;
-    vector<ASTNode*> logicAnd_expressions;
-
-    LogicOrExpressionAST():logicAnd_expression(nullptr){}
+    vector<unique_ptr<ASTNode>> logicAnd_expressions;
         
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class LogicAndExpressionAST: public ASTNode
 {
 public:
-    ASTNode* equality_expression;
+    unique_ptr<ASTNode> equality_expression;
     vector<Token> infix_operators;
-    vector<ASTNode*> equality_expressions;
-
-    LogicAndExpressionAST():equality_expression(nullptr){}
+    vector<unique_ptr<ASTNode>> equality_expressions;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -257,28 +218,22 @@ public:
 class EqualityExpressionAST: public ASTNode
 {
 public:
-    ASTNode* relational_expression;
+    unique_ptr<ASTNode> relational_expression;
     vector<Token> infix_operators;
-    vector<ASTNode*> relational_expressions;
-
-    EqualityExpressionAST():relational_expression(nullptr){}
+    vector<unique_ptr<ASTNode>> relational_expressions;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class RelationalExpressionAST: public ASTNode
 {
 public:
-    ASTNode* plusminus_expression;
+    unique_ptr<ASTNode> plusminus_expression;
     vector<Token> infix_operators;
-    vector<ASTNode*> plusminus_expressions;
-
-    RelationalExpressionAST():plusminus_expression(nullptr){}
+    vector<unique_ptr<ASTNode>> plusminus_expressions;
     
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -287,30 +242,22 @@ public:
 class PlusMinusExpressionAST: public ASTNode
 {
 public:
-    ASTNode* muldiv_expression;
-    
+    unique_ptr<ASTNode> muldiv_expression;
     vector<Token> infix_operators;
-    vector<ASTNode*> muldiv_expressions;
-
-    PlusMinusExpressionAST():muldiv_expression(nullptr){}
+    vector<unique_ptr<ASTNode>> muldiv_expressions;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class MulDivExpressionAST: public ASTNode
 {
 public:
-    ASTNode* unary_expression;
-
+    unique_ptr<ASTNode> unary_expression;
     vector<Token> infix_operators;
-    vector<ASTNode*> unary_expressions;
-
-    MulDivExpressionAST():unary_expression(nullptr){}
+    vector<unique_ptr<ASTNode>> unary_expressions;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -320,28 +267,21 @@ class UnaryExpressionAST: public ASTNode
 {
 public:
     Token prefix_operator;
-    ASTNode* primary_expression;
-    ASTNode* functioncall_expression;
-
-    UnaryExpressionAST():
-        primary_expression(nullptr),functioncall_expression(nullptr){}
+    unique_ptr<ASTNode> primary_expression;
+    unique_ptr<ASTNode> functioncall_expression;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
 class PrimaryExpressionAST: public ASTNode
 {
 public:
-    ASTNode* expression;
+    unique_ptr<ASTNode> expression;
     Token constant;
     Token variable;
 
-    PrimaryExpressionAST():expression(nullptr){}
-
     int CodeGen() override;
-
     void Print(int depth) override;
 };
 
@@ -349,9 +289,8 @@ class FunctionCallExpressionAST: public ASTNode
 {
 public:
     Token function;
-    vector<ASTNode*> expressions;
+    vector<unique_ptr<ASTNode>> expressions;
 
     int CodeGen() override;
-
     void Print(int depth) override;
 };

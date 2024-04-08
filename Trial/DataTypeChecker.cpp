@@ -1,13 +1,14 @@
-#include "TypeChecker.h"
+#include "DataTypeChecker.h"
 
-void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
+// Assignment
+void DataTypeChecker::Check_Store(DataType data,int r_i,int line)
 {
     Register& R=general_register.GetReg(r_i);
 
-    switch(data_type)
+    switch(data)
     {
         case D_INT:
-            switch(R.data_type)
+            switch(R.type.data)
             {
                 // int=int -> int
                 case D_INT:return;                                      break;
@@ -21,7 +22,7 @@ void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
             break;
         
         case D_DEC:
-            switch(R.data_type)
+            switch(R.type.data)
             {
                 // dec=int -> dec=(dec)int -> dec=dec -> dec
                 case D_INT:CodeGenerator::Convert(D_DEC,r_i);           break;
@@ -35,7 +36,7 @@ void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
             break;
         
         case D_STR:
-            switch(R.data_type)
+            switch(R.type.data)
             {
                 // str=int -> error
                 case D_INT:TYPE_ERROR("str = int");                     break;
@@ -49,7 +50,7 @@ void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
             break;
 
         case D_BOOL:
-            switch(R.data_type)
+            switch(R.type.data)
             {
                 // bool=int-> bool=(bool)int -> bool=bool -> bool 
                 case D_INT:CodeGenerator::Convert(D_BOOL,r_i);          break;
@@ -67,15 +68,15 @@ void TypeChecker::Check_Store(DataType data_type,int r_i,int line)
 
 
 // Logic
-void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Or(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {   
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int or int -> (bool)int or (bool)int -> bool or bool -> bool
                 // int or dec -> (bool)int or (bool)dec -> bool or bool -> bool
@@ -92,7 +93,7 @@ void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
             break;
 
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec or int -> (bool)dec or (bool)int -> bool or bool -> bool
                 // dec or dec -> (bool)dec or (bool)dec -> bool or bool -> bool
@@ -109,7 +110,7 @@ void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str or int -> error
                 case D_INT:TYPE_ERROR("str or int");                break;
@@ -123,7 +124,7 @@ void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool or int -> bool or (bool)int -> bool or bool -> bool
                 case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
@@ -138,15 +139,15 @@ void TypeChecker::Check_Or(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_And(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_And(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {   
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int and int -> (bool)int and (bool)int -> bool and bool -> bool
                 // int and dec -> (bool)int and (bool)dec -> bool and bool -> bool
@@ -163,7 +164,7 @@ void TypeChecker::Check_And(int r1_i,int r2_i,int line)
             break;
 
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec and int -> (bool)dec and (bool)int -> bool and bool -> bool
                 // dec and dec -> (bool)dec and (bool)dec -> bool and bool -> bool
@@ -180,7 +181,7 @@ void TypeChecker::Check_And(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str and int -> error
                 case D_INT:TYPE_ERROR("str and int");               break;
@@ -194,7 +195,7 @@ void TypeChecker::Check_And(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool and int -> bool and (bool)int -> bool and bool -> bool
                 case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
@@ -209,11 +210,11 @@ void TypeChecker::Check_And(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Not(int r_i,int line)
+void DataTypeChecker::Check_Not(int r_i,int line)
 {
     Register& R=general_register.GetReg(r_i);
     
-    switch(R.data_type)
+    switch(R.type.data)
     {
         // not int -> not (bool)int -> not bool -> bool
         case D_INT:CodeGenerator::Convert(D_BOOL,r_i);              break;
@@ -226,15 +227,15 @@ void TypeChecker::Check_Not(int r_i,int line)
     }
 }
 
-void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Equal(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int ?= int -> bool
                 case D_INT:return;                                  break;
@@ -248,7 +249,7 @@ void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
             break;
 
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec ?= int -> dec ?= (dec)int -> dec ?= dec -> bool
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -262,7 +263,7 @@ void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
             break;
 
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str ?= int -> error
                 case D_INT:TYPE_ERROR("str ?= int");                break;
@@ -276,7 +277,7 @@ void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
             break;
 
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool ?= int -> bool ?= (bool)int -> bool ?= bool -> bool
                 case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
@@ -291,15 +292,15 @@ void TypeChecker::Check_Equal(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int != int -> bool
                 case D_INT:return;                                  break;
@@ -313,7 +314,7 @@ void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
             break;
 
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec != int -> dec != (dec)int -> dec != dec -> bool
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -327,7 +328,7 @@ void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
             break;
 
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str != int -> error
                 case D_INT:TYPE_ERROR("str != int");                break;
@@ -341,7 +342,7 @@ void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
             break;
 
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool != int -> bool != (bool)int -> bool != bool -> bool
                 case D_INT:CodeGenerator::Convert(D_BOOL,r2_i);     break;
@@ -356,15 +357,15 @@ void TypeChecker::Check_NotEqual(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Less(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Less(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int < int -> bool
                 case D_INT:return;                                  break;   
@@ -378,7 +379,7 @@ void TypeChecker::Check_Less(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec < int -> dec < (dec)int -> dec < dec -> bool
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -392,7 +393,7 @@ void TypeChecker::Check_Less(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str < int -> error
                 case D_INT:TYPE_ERROR("str < int");                 break;
@@ -406,7 +407,7 @@ void TypeChecker::Check_Less(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool < int -> error
                 case D_INT:TYPE_ERROR("bool < int");                break;
@@ -421,15 +422,15 @@ void TypeChecker::Check_Less(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int <= int -> bool
                 case D_INT:return;                                  break;   
@@ -443,7 +444,7 @@ void TypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec <= int -> dec <= (dec)int -> dec <= dec -> bool
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -457,7 +458,7 @@ void TypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str <= int -> error
                 case D_INT:TYPE_ERROR("str <= int");                break;
@@ -471,7 +472,7 @@ void TypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool <= int -> error
                 case D_INT:TYPE_ERROR("bool <= int");               break;
@@ -486,15 +487,15 @@ void TypeChecker::Check_LessEqual(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Greater(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Greater(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int > int -> bool
                 case D_INT:return;                                  break;   
@@ -508,7 +509,7 @@ void TypeChecker::Check_Greater(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec > int -> dec > (dec)int -> dec > dec -> bool
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -522,7 +523,7 @@ void TypeChecker::Check_Greater(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str > int -> error
                 case D_INT:TYPE_ERROR("str > int");                 break;
@@ -536,7 +537,7 @@ void TypeChecker::Check_Greater(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool > int -> error
                 case D_INT:TYPE_ERROR("bool > int");                break;
@@ -551,15 +552,15 @@ void TypeChecker::Check_Greater(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
 
-    switch(R1.data_type)
+    switch(R1.type.data)
     {
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int >= int -> bool
                 case D_INT:return;                                  break;   
@@ -573,7 +574,7 @@ void TypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec >= int -> dec >= (dec)int -> dec >= dec -> bool
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -587,7 +588,7 @@ void TypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str >= int -> error
                 case D_INT:TYPE_ERROR("str >= int");                break;
@@ -601,7 +602,7 @@ void TypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool >= int -> error
                 case D_INT:TYPE_ERROR("bool >= int");               break;
@@ -619,15 +620,15 @@ void TypeChecker::Check_GreaterEqual(int r1_i,int r2_i,int line)
 
 
 // Arithmetic
-void TypeChecker::Check_Add(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Add(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
     
-    switch(R1.data_type)
+    switch(R1.type.data)
     {
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int + int -> int
                 case D_INT:return;                                  break;
@@ -641,7 +642,7 @@ void TypeChecker::Check_Add(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec + int -> dec + (dec)int -> dec + dec -> dec 
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -655,7 +656,7 @@ void TypeChecker::Check_Add(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str + int -> error
                 case D_INT:TYPE_ERROR("str + int");                 break;
@@ -669,7 +670,7 @@ void TypeChecker::Check_Add(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool + int-> error
                 case D_INT:TYPE_ERROR("bool + int");                break;
@@ -684,15 +685,15 @@ void TypeChecker::Check_Add(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Sub(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Sub(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
     
-    switch(R1.data_type)
+    switch(R1.type.data)
     {   
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int - int -> int
                 case D_INT:return;                                  break;
@@ -706,7 +707,7 @@ void TypeChecker::Check_Sub(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec - int -> dec - (dec)int -> dec - dec -> dec 
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -720,7 +721,7 @@ void TypeChecker::Check_Sub(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str - int -> error
                 case D_INT:TYPE_ERROR("str - int");                 break;
@@ -734,7 +735,7 @@ void TypeChecker::Check_Sub(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool - int-> error
                 case D_INT:TYPE_ERROR("bool - int");                break;
@@ -749,15 +750,15 @@ void TypeChecker::Check_Sub(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Mul(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Mul(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
     
-    switch(R1.data_type)
+    switch(R1.type.data)
     {   
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int * int -> int
                 case D_INT:return;                                  break;
@@ -771,7 +772,7 @@ void TypeChecker::Check_Mul(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec * int -> dec * (dec)int -> dec * dec -> dec 
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -785,7 +786,7 @@ void TypeChecker::Check_Mul(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str * int -> error
                 case D_INT:TYPE_ERROR("str * int");                 break;
@@ -799,7 +800,7 @@ void TypeChecker::Check_Mul(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool * int-> error
                 case D_INT:TYPE_ERROR("bool * int");                break;
@@ -814,15 +815,15 @@ void TypeChecker::Check_Mul(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Div(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Div(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
     
-    switch(R1.data_type)
+    switch(R1.type.data)
     {   
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int / int -> int
                 case D_INT:return;                                  break;
@@ -836,7 +837,7 @@ void TypeChecker::Check_Div(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec / int -> dec / (dec)int -> dec / dec -> dec 
                 case D_INT:CodeGenerator::Convert(D_DEC,r2_i);      break;
@@ -850,7 +851,7 @@ void TypeChecker::Check_Div(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str / int -> error
                 case D_INT:TYPE_ERROR("str / int");                 break;
@@ -864,7 +865,7 @@ void TypeChecker::Check_Div(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool / int-> error
                 case D_INT:TYPE_ERROR("bool / int");                break;
@@ -879,15 +880,15 @@ void TypeChecker::Check_Div(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Mod(int r1_i,int r2_i,int line)
+void DataTypeChecker::Check_Mod(int r1_i,int r2_i,int line)
 {
     Register& R1=general_register.GetReg(r1_i);
     Register& R2=general_register.GetReg(r2_i);
     
-    switch(R1.data_type)
+    switch(R1.type.data)
     {   
         case D_INT:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // int % int -> int
                 case D_INT:return;                                  break;
@@ -901,7 +902,7 @@ void TypeChecker::Check_Mod(int r1_i,int r2_i,int line)
             break;
         
         case D_DEC:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // dec % int -> error
                 case D_INT:TYPE_ERROR("dec % int");                 break;
@@ -915,7 +916,7 @@ void TypeChecker::Check_Mod(int r1_i,int r2_i,int line)
             break;
         
         case D_STR:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // str % int -> error
                 case D_INT:TYPE_ERROR("str % int");                 break;
@@ -929,7 +930,7 @@ void TypeChecker::Check_Mod(int r1_i,int r2_i,int line)
             break;
         
         case D_BOOL:
-            switch(R2.data_type)
+            switch(R2.type.data)
             {
                 // bool % int-> error
                 case D_INT:TYPE_ERROR("bool % int");                break;
@@ -944,11 +945,11 @@ void TypeChecker::Check_Mod(int r1_i,int r2_i,int line)
     }
 }
 
-void TypeChecker::Check_Neg(int r_i,int line)
+void DataTypeChecker::Check_Neg(int r_i,int line)
 {
     Register& R=general_register.GetReg(r_i);
     
-    switch(R.data_type)
+    switch(R.type.data)
     {   
         // - int -> int
         case D_INT:return;                                          break;

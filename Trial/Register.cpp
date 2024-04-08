@@ -6,21 +6,13 @@ string GeneralRegister::Name(int r_i)
 {
     string register_name="";
 
-    if(r_i>=0&&r_i<table.size())
-    {
-        register_name+=(is_upper?"R":"r")+to_string(r_i);
-        register_name+="(";
-        switch(table[r_i].data_type)
-        {
-            case D_INT: register_name+=(is_upper?"INT":"int");  break;
-            case D_DEC: register_name+=(is_upper?"DEC":"dec");  break;
-            case D_STR: register_name+=(is_upper?"STR":"str");  break;
-            case D_BOOL:register_name+=(is_upper?"BOOL":"bool");break;
-        }
-        register_name+=")";
-    }
-    else REGISTER_ERROR("You visit a void value");
-    
+    register_name+=(is_upper?"R":"r")+to_string(r_i);
+
+    //unnecessary
+    register_name+="(";
+    register_name+=GetReg(r_i).type.Str();
+    register_name+=")";
+
     return register_name;
 }
 
@@ -31,7 +23,7 @@ Register& GeneralRegister::GetReg(int r_i)
 
 
 
-int GeneralRegister::Alloc(DataType data_type)
+int GeneralRegister::Alloc(Type type)
 {
     int r_i=0;
     
@@ -39,7 +31,7 @@ int GeneralRegister::Alloc(DataType data_type)
     {
         if(table[r_i].free)
         {
-            table[r_i].data_type=data_type;
+            table[r_i].type=type;
             table[r_i].free=false;
             break;
         }
@@ -49,7 +41,7 @@ int GeneralRegister::Alloc(DataType data_type)
     if(r_i>=table.size())
     {
         Grow();
-        table[r_i].data_type=data_type;
+        table[r_i].type=type;
         table[r_i].free=false;
     }
 
@@ -58,8 +50,7 @@ int GeneralRegister::Alloc(DataType data_type)
 
 void GeneralRegister::Free(int r_i)
 {
-    if(r_i>=0&&r_i<table.size()&&!table[r_i].free)
-        table[r_i].free=true;
+    table[r_i].free=true;
 }
 
 void GeneralRegister::Grow()
@@ -80,12 +71,11 @@ void GeneralRegister::Print()
     for(int i=0;i<table.size();i++)
     {
         cout<<"R"<<i<<" Free:";
-        if(table[i].free)
-        {
-            cout<<"YES";
-            cout<<" DataType:"<<DataType_Text[table[i].data_type]<<endl;
-        }
-        else cout<<"NO "<<endl;
+
+        if(table[i].free)cout<<"YES";
+        else cout<<"NO Type:"<<table[i].type.Str();
+
+        cout<<endl;
     }
     
     cout<<endl;

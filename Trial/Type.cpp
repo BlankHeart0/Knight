@@ -1,13 +1,21 @@
 #include "Type.h"
 
-void PermissionSet::Print()
+string PermissionSet::Str()
 {
-    cout<<permission_uset.size()<<" permissions: ";
+    string result="";
+    result+="<";
 
+    int i=0;
     for (string permission:permission_uset)
-        cout<<permission<<" ";
+    {
+        result+=permission;
+        if(i<permission_uset.size()-1)
+            result+=",";
+        i++;
+    }
 
-    cout<<endl;
+    result+=">";
+    return result;
 }
 
 void PermissionSet::InsertPermission(string permission)
@@ -53,6 +61,7 @@ PermissionSet PermissionSet::Intersection(PermissionSet& permissions)
 
     return result_set;
 }
+
 PermissionSet PermissionSet::Union(PermissionSet& permissions)
 {
     PermissionSet result_set;
@@ -65,6 +74,7 @@ PermissionSet PermissionSet::Union(PermissionSet& permissions)
 
     return result_set;
 }
+
 PermissionSet PermissionSet::operator - (PermissionSet& permissions)
 {
     PermissionSet result_set;
@@ -83,23 +93,46 @@ PermissionSet PermissionSet::operator + (PermissionSet& permissions)
     return Union(permissions);
 }
 
+void PermissionSet::operator += (PermissionSet& permissions)
+{
+    for(string permission:permissions.permission_uset)
+    {
+        this->InsertPermission(permission);
+    }
+}
+
+
+
+string Type::Str()
+{
+    string result="";
+
+    switch(data)
+    {
+        case D_INT: result+=(is_upper?"INT":"int");  break;
+        case D_DEC: result+=(is_upper?"DEC":"dec");  break;
+        case D_STR: result+=(is_upper?"STR":"str");  break;
+        case D_BOOL:result+=(is_upper?"BOOL":"bool");break;
+    }
+
+    result+=permissions.Str();
+
+    return result;
+}
+
 
 
 void TypeAsToken::Print()
 {
     cout<<data_token.lexeme;
 
-    if(permissions_token.size()>0)
+    cout<<"<";
+    for(int i=0;i<permissions_token.size();i++)
     {
-        cout<<"<";
-        for(int i=0;i<permissions_token.size();i++)
-        {
-            cout<<permissions_token[i].lexeme;
-            if(i<permissions_token.size()-1)cout<<",";
-        }
-        cout<<">";
+        cout<<permissions_token[i].lexeme;
+        if(i<permissions_token.size()-1)cout<<",";
     }
-    
+    cout<<">";
 }
 
 Type TypeAsToken::ToRealType()
@@ -113,7 +146,7 @@ Type TypeAsToken::ToRealType()
         case BOOL:data=D_BOOL;break;
     }
 
-    PermissionSet permissions;
+    PermissionType permissions;
     for(Token t:permissions_token)
     {
         permissions.InsertPermission(t.lexeme);

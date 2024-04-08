@@ -13,9 +13,6 @@ void Diagnostor::ErrorHead(ErrorModule error_module)
         case E_PARSER:
             cout<<"Parse Error: ";
             break;
-        case E_REGISTER:
-            cout<<"Register Error: ";
-            break;
         case E_FILEMANAGER:
             cout<<"FileManager Error: ";
             break;

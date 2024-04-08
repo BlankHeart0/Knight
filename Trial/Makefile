@@ -1,6 +1,6 @@
-objects = 	Driver.o FileManager.o Scanner.o Parser.o 				\
-			Register.o SymbolTable.o CodeGenerator.o Instruction.o	\
-			TypeChecker.o ASTPrinter.o Diagnostor.o 
+objects = 	Driver.o FileManager.o Scanner.o Parser.o ASTPrinter.o	\
+			Type.o DataTypeChecker.o Register.o SymbolTable.o		\
+			Instruction.o CodeGenerator.o Diagnostor.o
 
 trial: $(objects)
 	g++ -o trial $(objects)
@@ -8,20 +8,17 @@ trial: $(objects)
 
 
 Driver.o: System.h FileManager.h Scanner.h Parser.h CodeGenerator.h
-
-Scanner.o: Scanner.h
 FileManager.o: FileManager.h
+Scanner.o: Scanner.h
 Parser.o: Parser.h
-
+ASTPrinter.o: AbstractSyntaxTree.h
+Type.o: Type.h
+DataTypeChecker.o: DataTypeChecker.h
 Register.o: Register.h
 SymbolTable.o: SymbolTable.h
-CodeGenerator.o: CodeGenerator.h
 Instruction.o: CodeGenerator.h
-
-TypeChecker.o: Type.h Register.h CodeGenerator.h
-ASTPrinter.o: AbstractSyntaxTree.h
+CodeGenerator.o: CodeGenerator.h
 Diagnostor.o: Diagnostor.h
-
 
 
 .PHONY: clean

@@ -1,5 +1,6 @@
 #include "CodeGenerator.h"
 
+PermissionSet CodeGenerator::program_permissions;
 FunctionTable CodeGenerator::functable;
 string CodeGenerator::gen_fucntion;
 
@@ -27,10 +28,10 @@ void AST::CodeGen()
 // Begin
 int TranslationUnitAST::CodeGen()
 {
-    for(ASTNode* ast_ptr:permission_definitions)
+    for(unique_ptr<ASTNode>& ast_ptr:permission_definitions)
         ast_ptr->CodeGen();
 
-    for(ASTNode* ast_ptr:function_definitions)
+    for(unique_ptr<ASTNode>& ast_ptr:function_definitions)
         ast_ptr->CodeGen();
     
     return NOTHING;
@@ -40,13 +41,28 @@ int TranslationUnitAST::CodeGen()
 
 // Definition
 int PermissionDefinitionAST::CodeGen()
-{
+{   
+    for(Token t:permissions)
+    {
+        if(!CodeGenerator::program_permissions.HavePermission(t.lexeme))
+        {
+            CodeGenerator::Permission(t.lexeme);
+            CodeGenerator::program_permissions.InsertPermission(t.lexeme);
+        }
+    }
 
+    return NOTHING;
 }
+
+
 
 int FunctionDefinitionAST::CodeGen()
 {
-    CodeGenerator::Func(ret_data_type,function_name.lexeme);
+    if(ret_type.is_valid)
+        CodeGenerator::Func(ret_type.ToRealType(),function_name.lexeme,function_name.line);
+    else 
+        CodeGenerator::Func(function_name.lexeme,function_name.line);
+
     CodeGenerator::gen_fucntion=function_name.lexeme;
     
     CodeGenerator::NowInFunction().vartable.EnterScope();
@@ -60,10 +76,21 @@ int FunctionDefinitionAST::CodeGen()
     {
         Parameter& parameter=CodeGenerator::NowInFunction().parameters[x_i];
         int r_i=CodeGenerator::TransX2R(x_i);
-        CodeGenerator::Store(parameter.name,r_i,true);
+
+        PermissionSet var_permissions=parameter.type.permissions;
+        PermissionSet r_permissions=general_register.GetReg(r_i).type.permissions;
+    
+        int test_ri=CodeGenerator::Test(r_permissions-var_permissions,function_name.line);
+    
+        int lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
+        CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
+    
+        CodeGenerator::Store(parameter.name,r_i,function_name.line);
+    
+        CodeGenerator::Lable(lable_storeEnd);
     }
 
-    for(ASTNode* ast_ptr:statements)
+    for(unique_ptr<ASTNode>& ast_ptr:statements)
         ast_ptr->CodeGen();    
     
     CodeGenerator::NowInFunction().vartable.LeaveScope();
@@ -73,19 +100,17 @@ int FunctionDefinitionAST::CodeGen()
 
 int ParameterAST::CodeGen()
 {
-    CodeGenerator::Var(data_type,parameter_name.lexeme);
+    CodeGenerator::Var(type.ToRealType(),parameter_name.lexeme,parameter_name.line);
     
-    DataType parameter_data_type=TokenToType(data_type);
-
     CodeGenerator::NowInFunction().parameters.push_back
-        (Parameter(parameter_data_type,parameter_name));
+        (Parameter(type.ToRealType(),parameter_name.lexeme));
 
     return NOTHING;
 }
 
 int ParameterListAST::CodeGen()
 {
-    for(ASTNode* ast_ptr:parameters)
+    for(unique_ptr<ASTNode>& ast_ptr:parameters)
         ast_ptr->CodeGen();
 
     return NOTHING;    
@@ -93,12 +118,24 @@ int ParameterListAST::CodeGen()
 
 int LocalVariableDefinitionAST::CodeGen()
 {
-    CodeGenerator::Var(data_type,variable_name.lexeme);
+    CodeGenerator::Var(type.ToRealType(),variable_name.lexeme,variable_name.line);
+    
     //Initialize
     if(expression)
     {
         int expression_ri=expression->CodeGen();
-        CodeGenerator::Store(variable_name,expression_ri,true);
+
+        PermissionSet var_permissions=CodeGenerator::NowInFunction().vartable.Visit(variable_name.lexeme,variable_name.line).type.permissions;
+        PermissionSet r_permissions=general_register.GetReg(expression_ri).type.permissions;
+    
+        int test_ri=CodeGenerator::Test(r_permissions-var_permissions,variable_name.line);
+    
+        int lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
+        CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
+    
+        CodeGenerator::Store(variable_name.lexeme,expression_ri,variable_name.line);
+    
+        CodeGenerator::Lable(lable_storeEnd);
     }
 
     return NOTHING;
@@ -117,8 +154,10 @@ int StatementAST::CodeGen()
 int CompoundStatementAST::CodeGen()
 {        
     CodeGenerator::NowInFunction().vartable.EnterScope();
-    for(ASTNode* ast_ptr:statements)
+
+    for(unique_ptr<ASTNode>& ast_ptr:statements)
         ast_ptr->CodeGen();    
+
     CodeGenerator::NowInFunction().vartable.LeaveScope();
 
     return NOTHING;
@@ -169,8 +208,6 @@ int WhileStatementAST::CodeGen()
     return NOTHING;
 }
 
-
-
 int ReturnStatementAST::CodeGen()
 {
     int line=ret.line;
@@ -188,13 +225,45 @@ int ReturnStatementAST::CodeGen()
     return NOTHING;
 }
 
-
-
 int PrintStatementAST::CodeGen()
 {
-    int expression_ri=expression->CodeGen();
-    CodeGenerator::Print(expression_ri);
+    for(unique_ptr<ASTNode>& ast_ptr:expressions)
+    {
+        int expression_ri=ast_ptr->CodeGen();
 
+        PermissionSet r_permissions=general_register.GetReg(expression_ri).type.permissions;
+        
+        int test_ri=CodeGenerator::Test(r_permissions,print.line);
+        
+        int lable_printEnd=CodeGenerator::NowInFunction().NewLable();
+        CodeGenerator::JumpFalse(lable_printEnd,test_ri);
+        
+        CodeGenerator::Print(expression_ri);
+
+        CodeGenerator::Lable(lable_printEnd);
+    }
+
+    CodeGenerator::Print(NOTHING);
+    
+    return NOTHING;
+}
+
+int AssignmentStatementAST::CodeGen()
+{
+    int expression_ri=expression->CodeGen();
+
+    PermissionSet var_permissions=CodeGenerator::NowInFunction().vartable.Visit(variable.lexeme,variable.line).type.permissions;
+    PermissionSet r_permissions=general_register.GetReg(expression_ri).type.permissions;
+    
+    int test_ri=CodeGenerator::Test(r_permissions-var_permissions,variable.line);
+    
+    int lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
+    CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
+    
+    CodeGenerator::Store(variable.lexeme,expression_ri,variable.line);
+    
+    CodeGenerator::Lable(lable_storeEnd);
+    
     return NOTHING;
 }
 
@@ -206,6 +275,7 @@ int ExpressionStatementAST::CodeGen()
         int expression_ri=expression->CodeGen();
         general_register.Free(expression_ri);
     }
+
     return NOTHING;
 }
 
@@ -214,17 +284,7 @@ int ExpressionStatementAST::CodeGen()
 // Expression
 int ExpressionAST::CodeGen()
 {
-    int result_ri=assignment_expression->CodeGen();
-    
-    return result_ri;
-}
-
-int AssignmentExpressionAST::CodeGen()
-{
     int result_ri=logicOr_expression->CodeGen();
-
-    if(variable.is_valid)
-        CodeGenerator::Store(variable,result_ri,false);
     
     return result_ri;
 }
@@ -348,13 +408,13 @@ int PrimaryExpressionAST::CodeGen()
     else if(constant.is_valid)
         return CodeGenerator::LoadConstant(constant);
     
-    return CodeGenerator::LoadVariable(variable);
+    return CodeGenerator::LoadVariable(variable.lexeme,variable.line);
 }
 
 int FunctionCallExpressionAST::CodeGen()
 {
     int line=function.line;
-    Function& called_function=CodeGenerator::functable.Visit(function);
+    Function& called_function=CodeGenerator::functable.Visit(function.lexeme,line);
 
     if(called_function.parameters.size()!=expressions.size())
         TYPE_ERROR("Parameter and Argument number not match");
@@ -366,10 +426,10 @@ int FunctionCallExpressionAST::CodeGen()
 
     for(int i=0;i<expressions.size();i++)
     {
-        TypeChecker::Check_Store(called_function.parameters[i].data_type,
+        DataTypeChecker::Check_Store(called_function.parameters[i].type.data,
                                 r_is[i],line);
         CodeGenerator::TransR2X(i,r_is[i]);
     }
 
-    return CodeGenerator::Call(function);
+    return CodeGenerator::Call(function.lexeme,function.line);
 }

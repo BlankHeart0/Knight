@@ -1,16 +1,19 @@
 Knight Assembly
 
+perm    permission  N   (0/1)
+test    R           permissions
+cvt     type        R    
+
 var     type        variable(N)
 load    R           constant
 load    R           variable(N)
 store   variable(N) R
-cvt     type        R   
 
 func    type        function    (directive)
 trans   X           R
 trans   R           X
 trans   Y           R
-trans   R           Y  
+trans   R           Y
 call    function
 ret
 push    R

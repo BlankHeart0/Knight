@@ -2,8 +2,8 @@
 
 #include "System.h"
 #include "FileManager.h"
-#include "Token.h"
 #include "Type.h"
+#include "DataTypeChecker.h"
 #include "AbstractSyntaxTree.h"
 #include "Register.h"
 #include "SymbolTable.h"
@@ -13,33 +13,34 @@
 class CodeGenerator
 {
 public:
-    AST abstract_syntax_tree;
-    
-    CodeGenerator(AST abstract_syntax_tree):
-                      abstract_syntax_tree(abstract_syntax_tree){}
 
     void CodeGen();
 
+    static PermissionSet program_permissions;
     static string gen_fucntion;
     static Function& NowInFunction();
     static FunctionTable functable;
 
-    // Instruction
-    // Variable
-    static void Permission(Token permission);           // PERM perm
-    static void Var(Token type,string variable_name);   // VAR var
-    static int  LoadConstant(Token constant);           // LOAD load
-    static int  LoadVariable(Token variable);           // LOAD load
-    static void Store(Token variable,int r_i,bool need_free);// STORE store
-    static void Convert(DataType to_dataType,int r_i);       // CVT cvt
+    // Instruction    
+    // Type
+    static void Permission(string permission);          // PERM perm
+    static int  Test(PermissionSet permissions,int line);// TEST test
+    static void Convert(DataType to_dtype,int r_i);          // CVT cvt
     
-    // Function    
-    static void Func(Token type,string function_name);  // FUNC func
+    // Variable
+    static void Var(Type type,string variable_name,int line);// VAR var
+    static int  LoadConstant(Token constant);           // LOAD load
+    static int  LoadVariable(string variable_name,int line);// LOAD load
+    static void Store(string variable_name,int r_i,int line);// STORE store
+    
+    // Function
+    static void Func(string function_name,int line);   // FUNC func
+    static void Func(Type type,string function_name,int line);   // FUNC func
     static int  TransX2R(int x_i);                      // TRANS trans
     static void TransR2X(int x_i,int r_i);              // TRANS trans
     static void TransY2R(int r_i);                      // TRANS trans
     static void TransR2Y(int r_i,int line);             // TRANS trans
-    static int  Call(Token function);                   // CALL call
+    static int  Call(string function_name,int line);                   // CALL call
     static void Ret();                                  // RET ret
     static void Push(int r_i);                          // PUSH push
     static void Pop(int r_i);                           // POP pop

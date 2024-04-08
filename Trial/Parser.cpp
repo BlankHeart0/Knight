@@ -1,5 +1,7 @@
 #include "Parser.h"
 
+AST abstract_syntax_tree;
+
 void Parser::Parse()
 {
     abstract_syntax_tree.translation_unit=Parse_Translation_Unit();
@@ -8,11 +10,11 @@ void Parser::Parse()
 
 
 //Begin
-ASTNode* Parser::Parse_Translation_Unit()
+unique_ptr<ASTNode> Parser::Parse_Translation_Unit()
 {
     diagnostor.WhoAmI("Parse_Translation_Unit");
 
-    TranslationUnitAST* node=new TranslationUnitAST();
+    unique_ptr<TranslationUnitAST> node=make_unique<TranslationUnitAST>();
 
     while(!IsAtEnd())
     {
@@ -24,17 +26,17 @@ ASTNode* Parser::Parse_Translation_Unit()
                             Parse_Function_Definition());
     }
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
 // Definition
-ASTNode* Parser::Parse_Permission_Definition()
+unique_ptr<ASTNode> Parser::Parse_Permission_Definition()
 {
     diagnostor.WhoAmI("Parse_Permission_Definition");
 
-    PermissionDefinitionAST* node=new PermissionDefinitionAST();
+    unique_ptr<PermissionDefinitionAST> node=make_unique<PermissionDefinitionAST>();
 
     if(Match(PERMISSION))
     {
@@ -52,7 +54,7 @@ ASTNode* Parser::Parse_Permission_Definition()
     }
     else PARSE_ERROR("Keyword 'permission' loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
@@ -89,11 +91,11 @@ TypeAsToken Parser::Parse_Type()
     return TypeAsToken(data_token,permissions_token);
 }
 
-ASTNode* Parser::Parse_Function_Definition()
+unique_ptr<ASTNode> Parser::Parse_Function_Definition()
 {
     diagnostor.WhoAmI("Parse_Function_Definition");
 
-    FunctionDefinitionAST* node=new FunctionDefinitionAST();
+    unique_ptr<FunctionDefinitionAST> node=make_unique<FunctionDefinitionAST>();
     
     if(!Peek(IDENTIFIER))
         node->ret_type=Parse_Type();
@@ -128,14 +130,14 @@ ASTNode* Parser::Parse_Function_Definition()
     }
     else PARSE_ERROR("Function identifier loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Parameter()
+unique_ptr<ASTNode> Parser::Parse_Parameter()
 {
     diagnostor.WhoAmI("Parse_Parameter");
 
-    ParameterAST* node=new ParameterAST();
+    unique_ptr<ParameterAST> node=make_unique<ParameterAST>();
 
     node->type=Parse_Type();
 
@@ -145,30 +147,30 @@ ASTNode* Parser::Parse_Parameter()
     }
     else PARSE_ERROR("Parameter identifier loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Parameter_List()
+unique_ptr<ASTNode> Parser::Parse_Parameter_List()
 {
     diagnostor.WhoAmI("Parse_Parameter_List");
 
-    ParameterListAST* node=new ParameterListAST();
+    unique_ptr<ParameterListAST> node=make_unique<ParameterListAST>();
 
     AddChildToVector(node->parameters,Parse_Parameter());
 
     while(Match(COMMA))
         AddChildToVector(node->parameters,Parse_Parameter());
     
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
-ASTNode* Parser::Parse_LocalVariable_Definition()
+unique_ptr<ASTNode> Parser::Parse_LocalVariable_Definition()
 {
     diagnostor.WhoAmI("Parse_LocalVariable_Definition");
 
-    LocalVariableDefinitionAST* node=new LocalVariableDefinitionAST();
+    unique_ptr<LocalVariableDefinitionAST> node=make_unique<LocalVariableDefinitionAST>();
 
     node->type=Parse_Type();
 
@@ -184,17 +186,17 @@ ASTNode* Parser::Parse_LocalVariable_Definition()
     }
     else PARSE_ERROR("Variable identifier loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
 // Statement
-ASTNode* Parser::Parse_Statement()
+unique_ptr<ASTNode> Parser::Parse_Statement()
 {
     diagnostor.WhoAmI("Parse_Statement");
 
-    StatementAST* node=new StatementAST();
+    unique_ptr<StatementAST> node=make_unique<StatementAST>();
 
     if(Peek(LEFT_BRACE)) 
         node->X_statement=Parse_Compound_Statement();
@@ -213,14 +215,14 @@ ASTNode* Parser::Parse_Statement()
     else
         node->X_statement=Parse_Expression_Statement();
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Compound_Statement()
+unique_ptr<ASTNode> Parser::Parse_Compound_Statement()
 {
     diagnostor.WhoAmI("Parse_Compound_Statement");
 
-    CompoundStatementAST* node=new CompoundStatementAST();
+    unique_ptr<CompoundStatementAST> node=make_unique<CompoundStatementAST>();
 
     if (Match(LEFT_BRACE))
 	{
@@ -234,16 +236,16 @@ ASTNode* Parser::Parse_Compound_Statement()
     }
     else PARSE_ERROR("Left barce '{' loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
-ASTNode* Parser::Parse_If_Statement()
+unique_ptr<ASTNode> Parser::Parse_If_Statement()
 {
     diagnostor.WhoAmI("Parse_If_Statement");
 
-    IfStatementAST* node=new IfStatementAST();
+    unique_ptr<IfStatementAST> node=make_unique<IfStatementAST>();
 
     if(Match(IF))
     {
@@ -264,14 +266,14 @@ ASTNode* Parser::Parse_If_Statement()
     }
     else PARSE_ERROR("Keyword 'if' loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_While_Statement()
+unique_ptr<ASTNode> Parser::Parse_While_Statement()
 {
     diagnostor.WhoAmI("Parse_While_Statement");
 
-    WhileStatementAST* node=new WhileStatementAST();
+    unique_ptr<WhileStatementAST> node=make_unique<WhileStatementAST>();
 
     if(Match(WHILE))
     {
@@ -288,14 +290,14 @@ ASTNode* Parser::Parse_While_Statement()
     }
     else PARSE_ERROR("Keyword 'while' loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Return_Statement()
+unique_ptr<ASTNode> Parser::Parse_Return_Statement()
 {
     diagnostor.WhoAmI("Parse_Return_Statement");
 
-    ReturnStatementAST* node=new ReturnStatementAST();
+    unique_ptr<ReturnStatementAST> node=make_unique<ReturnStatementAST>();
 
     if(Match(RET))
     {
@@ -307,34 +309,37 @@ ASTNode* Parser::Parse_Return_Statement()
     }
     else PARSE_ERROR("Keyword 'ret' loss");
     
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Print_Statement()
+unique_ptr<ASTNode> Parser::Parse_Print_Statement()
 {
     diagnostor.WhoAmI("Parse_Print_Statement");
 
-    PrintStatementAST* node=new PrintStatementAST();
+    unique_ptr<PrintStatementAST> node=make_unique<PrintStatementAST>();
 
     if(Match(PRINT))
     {
+        node->print=PreviousToken();
+
         AddChildToVector(node->expressions,Parse_Expression());
         while(Match(COMMA))
         {
             AddChildToVector(node->expressions,Parse_Expression());
         }
+        
         MatchSemicolon();
     }
     else PARSE_ERROR("Keyword 'print' loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Assignment_Statement()
+unique_ptr<ASTNode> Parser::Parse_Assignment_Statement()
 {
     diagnostor.WhoAmI("Parse_Assignment_Statement");
 
-    AssignmentStatementAST* node=new AssignmentStatementAST();
+    unique_ptr<AssignmentStatementAST> node=make_unique<AssignmentStatementAST>();
 
     if(Match(IDENTIFIER))
     {
@@ -348,42 +353,42 @@ ASTNode* Parser::Parse_Assignment_Statement()
     }
     else PARSE_ERROR("Variable identifier loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Expression_Statement()
+unique_ptr<ASTNode> Parser::Parse_Expression_Statement()
 {
     diagnostor.WhoAmI("Parse_Expression_Statement");
 
-    ExpressionStatementAST* node=new ExpressionStatementAST();
+    unique_ptr<ExpressionStatementAST> node=make_unique<ExpressionStatementAST>();
 
     node->expression=Parse_Expression();
     MatchSemicolon();
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
 // Expression
-ASTNode* Parser::Parse_Expression()
+unique_ptr<ASTNode> Parser::Parse_Expression()
 {
     diagnostor.WhoAmI("Parse_Expression");
     
-    ExpressionAST* node=new ExpressionAST();
+    unique_ptr<ExpressionAST> node=make_unique<ExpressionAST>();
 
     node->logicOr_expression=Parse_LogicOr_Expression();
 
-    return (ASTNode*)node;
+    return move(node);
 }    
 
 
 
-ASTNode* Parser::Parse_LogicOr_Expression()
+unique_ptr<ASTNode> Parser::Parse_LogicOr_Expression()
 {
     diagnostor.WhoAmI("Parse_LogicOr_Expression");
 
-    LogicOrExpressionAST* node=new LogicOrExpressionAST();
+    unique_ptr<LogicOrExpressionAST> node=make_unique<LogicOrExpressionAST>();
 
     node->logicAnd_expression=Parse_LogicAnd_Expression();
     while(Match(OR))
@@ -393,14 +398,14 @@ ASTNode* Parser::Parse_LogicOr_Expression()
                         Parse_LogicAnd_Expression());
     }
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_LogicAnd_Expression()
+unique_ptr<ASTNode> Parser::Parse_LogicAnd_Expression()
 {
     diagnostor.WhoAmI("Parse_LogicAnd_Expression");
 
-    LogicAndExpressionAST* node=new LogicAndExpressionAST();
+    unique_ptr<LogicAndExpressionAST> node=make_unique<LogicAndExpressionAST>();
 
     node->equality_expression=Parse_Equality_Expression();
     while(Match(AND))
@@ -410,16 +415,16 @@ ASTNode* Parser::Parse_LogicAnd_Expression()
                         Parse_Equality_Expression());
     }
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
-ASTNode* Parser::Parse_Equality_Expression()
+unique_ptr<ASTNode> Parser::Parse_Equality_Expression()
 {
     diagnostor.WhoAmI("Parse_Equality_Expression");
 
-    EqualityExpressionAST* node=new EqualityExpressionAST();
+    unique_ptr<EqualityExpressionAST> node=make_unique<EqualityExpressionAST>();
 
     node->relational_expression=Parse_Relational_Expression();
     while(Match(EQUAL)||Match(NOT_EQUAL))
@@ -429,14 +434,14 @@ ASTNode* Parser::Parse_Equality_Expression()
                         Parse_Relational_Expression());
     }
     
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Relational_Expression()
+unique_ptr<ASTNode> Parser::Parse_Relational_Expression()
 {
     diagnostor.WhoAmI("Parse_Relational_Expression");
 
-    RelationalExpressionAST* node=new RelationalExpressionAST();
+    unique_ptr<RelationalExpressionAST> node=make_unique<RelationalExpressionAST>();
 
     node->plusminus_expression=Parse_PlusMinus_Expression();
     while(Match(LESS)||Match(LESS_EQUAL)||Match(GREATER)||Match(GREATER_EQUAL))
@@ -446,16 +451,16 @@ ASTNode* Parser::Parse_Relational_Expression()
                         Parse_PlusMinus_Expression());
     }
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
-ASTNode* Parser::Parse_PlusMinus_Expression()
+unique_ptr<ASTNode> Parser::Parse_PlusMinus_Expression()
 {
     diagnostor.WhoAmI("Parse_PlusMinus_Expression");
 
-    PlusMinusExpressionAST* node=new PlusMinusExpressionAST();
+    unique_ptr<PlusMinusExpressionAST> node=make_unique<PlusMinusExpressionAST>();
 
     node->muldiv_expression=Parse_MulDiv_Expression();
     while(Match(PLUS)||Match(MINUS))
@@ -465,14 +470,14 @@ ASTNode* Parser::Parse_PlusMinus_Expression()
                         Parse_MulDiv_Expression());
     }
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_MulDiv_Expression()
+unique_ptr<ASTNode> Parser::Parse_MulDiv_Expression()
 {
     diagnostor.WhoAmI("Parse_MulDiv_Expression");
 
-    MulDivExpressionAST* node=new MulDivExpressionAST();
+    unique_ptr<MulDivExpressionAST> node=make_unique<MulDivExpressionAST>();
 
     node->unary_expression=Parse_Unary_Expression();
     while(Match(STAR)||Match(SLASH)||Match(PERCENT))
@@ -482,16 +487,16 @@ ASTNode* Parser::Parse_MulDiv_Expression()
                         Parse_Unary_Expression());
     }
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
-ASTNode* Parser::Parse_Unary_Expression()
+unique_ptr<ASTNode> Parser::Parse_Unary_Expression()
 {
     diagnostor.WhoAmI("Parse_Unary_Expression");
 
-    UnaryExpressionAST* node=new UnaryExpressionAST();
+    unique_ptr<UnaryExpressionAST> node=make_unique<UnaryExpressionAST>();
 
     if(Match(MINUS)||Match(NOT))
     {
@@ -503,14 +508,14 @@ ASTNode* Parser::Parse_Unary_Expression()
     else
         node->primary_expression=Parse_Primary_Expression();
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_Primary_Expression()
+unique_ptr<ASTNode> Parser::Parse_Primary_Expression()
 {
     diagnostor.WhoAmI("Parse_Primary_Expression");
 
-    PrimaryExpressionAST* node=new PrimaryExpressionAST();
+    unique_ptr<PrimaryExpressionAST> node=make_unique<PrimaryExpressionAST>();
     
     if(Match(LEFT_PAREN))
     {
@@ -528,14 +533,14 @@ ASTNode* Parser::Parse_Primary_Expression()
     }
     else PARSE_ERROR("Primary character loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
-ASTNode* Parser::Parse_FunctionCall_Expression()
+unique_ptr<ASTNode> Parser::Parse_FunctionCall_Expression()
 {
     diagnostor.WhoAmI("Parse_FunctionCall_Expression");
 
-    FunctionCallExpressionAST* node=new FunctionCallExpressionAST();
+    unique_ptr<FunctionCallExpressionAST> node=make_unique<FunctionCallExpressionAST>();
 
     if(Match(IDENTIFIER))
     {
@@ -560,14 +565,14 @@ ASTNode* Parser::Parse_FunctionCall_Expression()
     }
     else PARSE_ERROR("Function identifier loss");
 
-    return (ASTNode*)node;
+    return move(node);
 }
 
 
 
-void Parser::AddChildToVector(vector<ASTNode*>& vec, ASTNode* child )
+void Parser::AddChildToVector(vector<unique_ptr<ASTNode>>& vec, unique_ptr<ASTNode> child )
 {
-    vec.push_back(child);
+    vec.push_back(move(child));
 }
 
 Token Parser::PreviousToken()

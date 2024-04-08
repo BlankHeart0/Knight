@@ -20,10 +20,10 @@ void TranslationUnitAST::Print(int depth)
 {
     cout<<"Translation_Unit";
 
-    for(ASTNode* ast_ptr:permission_definitions)
+    for(unique_ptr<ASTNode>& ast_ptr:permission_definitions)
         ast_ptr->Print(depth+1);
 
-    for(ASTNode* ast_ptr:function_definitions)
+    for(unique_ptr<ASTNode>& ast_ptr:function_definitions)
         ast_ptr->Print(depth+1);
 }
 
@@ -50,7 +50,7 @@ void FunctionDefinitionAST::Print(int depth)
     cout<<" function_name:"<<function_name.lexeme;
     if(parameter_list)parameter_list->Print(depth+1);
     
-    for(ASTNode* ast_ptr:statements)
+    for(unique_ptr<ASTNode>& ast_ptr:statements)
         ast_ptr->Print(depth+1);
 }
 
@@ -68,7 +68,7 @@ void ParameterListAST::Print(int depth)
     PrintTab(depth);
     cout<<"Parameter_List";
 
-    for(ASTNode* ast_ptr:parameters)
+    for(unique_ptr<ASTNode>& ast_ptr:parameters)
         ast_ptr->Print(depth+1);
 }
 
@@ -100,7 +100,7 @@ void CompoundStatementAST::Print(int depth)
     PrintTab(depth);
     cout<<"Compound_Statement";
     
-    for(ASTNode* ast_ptr:statements)
+    for(unique_ptr<ASTNode>& ast_ptr:statements)
         ast_ptr->Print(depth+1);
 }
 
@@ -143,7 +143,7 @@ void PrintStatementAST::Print(int depth)
     PrintTab(depth);
     cout<<"Print_Statement";
 
-    for(ASTNode* ast_ptr:expressions)
+    for(unique_ptr<ASTNode>& ast_ptr:expressions)
         ast_ptr->Print(depth+1);
 }
 
@@ -311,6 +311,6 @@ void FunctionCallExpressionAST::Print(int depth)
 
     cout<<" function:"<<function.lexeme;
 
-    for(ASTNode* ast_ptr:expressions)
+    for(unique_ptr<ASTNode>& ast_ptr:expressions)
         ast_ptr->Print(depth+1);
 }

@@ -14,12 +14,12 @@ void Trial()
     //Scan
     Scanner scanner(file_manager.source);
     scanner.ScanTokens();
-    scanner.Tokens_PrintTable();
+    //scanner.Tokens_PrintTable();
 
     //Parse
     Parser parser(scanner.tokens);
     parser.Parse();
-    abstract_syntax_tree.Print();
+    //abstract_syntax_tree.Print();
 
     //CodeGen
     CodeGenerator code_generator;
@@ -32,6 +32,8 @@ int main(int argc,char* argv[])
     else 
     {
         file_manager.Initialize(argv[1]);
+        cout<<file_manager.GetInputfile();
+
         file_manager.Open();
         file_manager.Load();
         Trial();

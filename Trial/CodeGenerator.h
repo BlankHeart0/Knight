@@ -44,7 +44,7 @@ public:
     static void Ret();                                  // RET ret
     static void Push(int r_i);                          // PUSH push
     static void Pop(int r_i);                           // POP pop
-    static void Print(int r_i);                         // PRINT print
+    static void Print(int r_i,int line);                         // PRINT print
     
     // Control Flow
     static void Lable(int lable_id);                    // LABLE lable  

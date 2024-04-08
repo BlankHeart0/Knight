@@ -18,9 +18,9 @@ void CodeGenerator::CodeGen()
 
 void AST::CodeGen()
 {
-    cout<<"--- --- CodeGen Begin --- ---"<<endl;
     translation_unit->CodeGen();
-    cout<<"--- --- CodeGen Done --- ---"<<endl;
+
+    cout<<">>> CodeGen Done"<<endl;
 }
 
 
@@ -76,18 +76,8 @@ int FunctionDefinitionAST::CodeGen()
     {
         Parameter& parameter=CodeGenerator::NowInFunction().parameters[x_i];
         int r_i=CodeGenerator::TransX2R(x_i);
-
-        PermissionSet var_permissions=parameter.type.permissions;
-        PermissionSet r_permissions=general_register.GetReg(r_i).type.permissions;
-    
-        int test_ri=CodeGenerator::Test(r_permissions-var_permissions,function_name.line);
-    
-        int lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
-        CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
     
         CodeGenerator::Store(parameter.name,r_i,function_name.line);
-    
-        CodeGenerator::Lable(lable_storeEnd);
     }
 
     for(unique_ptr<ASTNode>& ast_ptr:statements)
@@ -124,18 +114,7 @@ int LocalVariableDefinitionAST::CodeGen()
     if(expression)
     {
         int expression_ri=expression->CodeGen();
-
-        PermissionSet var_permissions=CodeGenerator::NowInFunction().vartable.Visit(variable_name.lexeme,variable_name.line).type.permissions;
-        PermissionSet r_permissions=general_register.GetReg(expression_ri).type.permissions;
-    
-        int test_ri=CodeGenerator::Test(r_permissions-var_permissions,variable_name.line);
-    
-        int lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
-        CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
-    
         CodeGenerator::Store(variable_name.lexeme,expression_ri,variable_name.line);
-    
-        CodeGenerator::Lable(lable_storeEnd);
     }
 
     return NOTHING;
@@ -230,20 +209,10 @@ int PrintStatementAST::CodeGen()
     for(unique_ptr<ASTNode>& ast_ptr:expressions)
     {
         int expression_ri=ast_ptr->CodeGen();
-
-        PermissionSet r_permissions=general_register.GetReg(expression_ri).type.permissions;
-        
-        int test_ri=CodeGenerator::Test(r_permissions,print.line);
-        
-        int lable_printEnd=CodeGenerator::NowInFunction().NewLable();
-        CodeGenerator::JumpFalse(lable_printEnd,test_ri);
-        
-        CodeGenerator::Print(expression_ri);
-
-        CodeGenerator::Lable(lable_printEnd);
+        CodeGenerator::Print(expression_ri,print.line);
     }
 
-    CodeGenerator::Print(NOTHING);
+    CodeGenerator::Print(NOTHING,print.line);
     
     return NOTHING;
 }
@@ -251,19 +220,8 @@ int PrintStatementAST::CodeGen()
 int AssignmentStatementAST::CodeGen()
 {
     int expression_ri=expression->CodeGen();
-
-    PermissionSet var_permissions=CodeGenerator::NowInFunction().vartable.Visit(variable.lexeme,variable.line).type.permissions;
-    PermissionSet r_permissions=general_register.GetReg(expression_ri).type.permissions;
-    
-    int test_ri=CodeGenerator::Test(r_permissions-var_permissions,variable.line);
-    
-    int lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
-    CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
-    
     CodeGenerator::Store(variable.lexeme,expression_ri,variable.line);
-    
-    CodeGenerator::Lable(lable_storeEnd);
-    
+  
     return NOTHING;
 }
 

@@ -17,7 +17,8 @@ public:
 
     void Initialize(string input_file_name);
     void Initialize(string input_file_name,string output_file_name);
-
+    string GetInputfile();
+    
     void Open();
     void Load();
     void Write(string code_ks);

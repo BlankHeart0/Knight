@@ -14,6 +14,14 @@ void FileManager::Initialize(string input_file_name,string output_file_name)
     this->output_file_name=output_file_name;
 }
 
+string FileManager::GetInputfile()
+{
+    string tab_str="\t";
+    if(input_file_name.size()<8)tab_str+="\t";
+
+    return input_file_name+tab_str;
+}
+
 
 
 void FileManager::Open()
@@ -30,7 +38,8 @@ void FileManager::Open()
 
     //Ready to write
     output_file.open(output_file_name,ios::app);
-    if(!output_file.is_open())FILEMANAGER_ERROR("Open the output file error!");
+    if(!output_file.is_open())
+        FILEMANAGER_ERROR("Open the output file error!");
 }
 
 void FileManager::Load()

@@ -18,10 +18,12 @@ void CodeGenerator::Permission(string permission)
 
 int CodeGenerator::Test(PermissionSet permissions,int line)
 {
+    // Static permission check
     PermissionSet miss_permissions=permissions-program_permissions;
     if(!miss_permissions.IsEmpty())
         TYPE_ERROR("Miss permissions"+miss_permissions.Str());
 
+    // Dynamic permission check
     int r_i=general_register.Alloc(Type(D_BOOL,PermissionType()));
 
     // Opcode
@@ -148,8 +150,21 @@ int CodeGenerator::LoadVariable(string variable_name,int line)
 }
 
 void CodeGenerator::Store(string variable_name,int r_i,int line)
-{ 
+{         
     Variable variable=NowInFunction().vartable.Visit(variable_name,line);
+
+    PermissionSet variable_permissions=variable.type.permissions;
+    PermissionSet register_permissions=general_register.GetReg(r_i).type.permissions;
+    PermissionSet need_permissions=register_permissions-variable_permissions;
+    int lable_storeEnd=-1;
+    if(!need_permissions.IsEmpty())
+    {
+        int test_ri=CodeGenerator::Test(need_permissions,line);
+        lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
+        CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
+    }
+
+
     DataTypeChecker::Check_Store(variable.type.data,r_i,line);
 
     // Opcode
@@ -168,6 +183,12 @@ void CodeGenerator::Store(string variable_name,int r_i,int line)
     file_manager.WriteEndl();
 
     general_register.Free(r_i);
+
+
+    if(!need_permissions.IsEmpty())
+    {
+        CodeGenerator::Lable(lable_storeEnd);
+    }
 }
 
 
@@ -356,21 +377,46 @@ void CodeGenerator::Pop(int r_i)
     file_manager.WriteEndl();
 }
 
-void CodeGenerator::Print(int r_i)
+void CodeGenerator::Print(int r_i,int line)
 {
+    if(r_i==NOTHING)
+    {
+        // Opcode
+        file_manager.Write(is_upper?"PRINT":"print");
+        file_manager.Write("\t");
+        // Operand1
+        file_manager.Write(is_upper?"ENDLINE":"endline");
+        file_manager.WriteEndl();
+
+        return;
+    }
+
+
+    PermissionSet register_permissions=general_register.GetReg(r_i).type.permissions;
+    int lable_printEnd=-1;
+    if(!register_permissions.IsEmpty())  
+    {
+        int test_ri=CodeGenerator::Test(register_permissions,line);
+        lable_printEnd=CodeGenerator::NowInFunction().NewLable();
+        CodeGenerator::JumpFalse(lable_printEnd,test_ri);
+    }    
+
+
     // Opcode
     file_manager.Write(is_upper?"PRINT":"print");
     file_manager.Write("\t");
 
     // Operand1
-    if(r_i==NOTHING)
-        file_manager.Write(is_upper?"ENDLINE":"endline");
-    else 
-        WriteGeneralRegisterName(r_i);
-    
+    WriteGeneralRegisterName(r_i);
     file_manager.WriteEndl();
 
     general_register.Free(r_i);
+
+
+    if(!register_permissions.IsEmpty())  
+    {
+        CodeGenerator::Lable(lable_printEnd);
+    }
 }
 
 

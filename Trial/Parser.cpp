@@ -208,7 +208,7 @@ unique_ptr<ASTNode> Parser::Parse_Statement()
         node->X_statement=Parse_Return_Statement();
     else if(Peek(PRINT))
         node->X_statement=Parse_Print_Statement();
-    else if(Peek(IDENTIFIER))
+    else if(Peek(IDENTIFIER)&&Peek(ASSIGN,2))
         node->X_statement=Parse_Assignment_Statement();
     else if(Peek(INT)||Peek(DEC)||Peek(STR)||Peek(BOOL))
         node->X_statement=Parse_LocalVariable_Definition();

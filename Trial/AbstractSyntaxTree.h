@@ -120,6 +120,7 @@ public:
 class IfStatementAST: public ASTNode
 {
 public:
+    Token If;
     unique_ptr<ASTNode> expression;
     unique_ptr<ASTNode> true_statement;
     unique_ptr<ASTNode> false_statement;
@@ -131,6 +132,7 @@ public:
 class WhileStatementAST: public ASTNode
 {
 public:
+    Token While;
     unique_ptr<ASTNode> expression;
     unique_ptr<ASTNode> statement;
 

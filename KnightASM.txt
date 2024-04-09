@@ -19,6 +19,7 @@ ret
 push    R
 pop     R
 print   R
+print   endline
 
 lable   N                       (directive)
 jmp     N

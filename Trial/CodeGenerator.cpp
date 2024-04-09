@@ -147,6 +147,17 @@ int CompoundStatementAST::CodeGen()
 int IfStatementAST::CodeGen()
 {
     int expression_ri=expression->CodeGen();
+    
+    PermissionSet register_permissions=general_register.GetReg(expression_ri).type.permissions;
+    int lable_statementEnd=-1;
+    if(!register_permissions.IsEmpty())  
+    {
+        int test_ri=CodeGenerator::Test(register_permissions,If.line);
+        lable_statementEnd=CodeGenerator::NowInFunction().NewLable();
+        CodeGenerator::JumpFalse(lable_statementEnd,test_ri);
+    }    
+
+
     CodeGenerator::Convert(D_BOOL,expression_ri);
 
     int lable_ifEnd=CodeGenerator::NowInFunction().NewLable();
@@ -166,6 +177,12 @@ int IfStatementAST::CodeGen()
     }
     else CodeGenerator::Lable(lable_ifEnd);
 
+
+    if(!register_permissions.IsEmpty())  
+    {
+        CodeGenerator::Lable(lable_statementEnd);
+    }
+
     return NOTHING;
 }
 
@@ -176,6 +193,16 @@ int WhileStatementAST::CodeGen()
 
     CodeGenerator::Lable(lable_begin);
     int expression_ri=expression->CodeGen();
+
+    
+    PermissionSet register_permissions=general_register.GetReg(expression_ri).type.permissions;
+    if(!register_permissions.IsEmpty())
+    {
+        int test_ri=CodeGenerator::Test(register_permissions,While.line);
+        CodeGenerator::JumpFalse(lable_end,test_ri);
+    }
+
+
     CodeGenerator::Convert(D_BOOL,expression_ri);
     CodeGenerator::JumpFalse(lable_end,expression_ri);
 

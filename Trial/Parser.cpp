@@ -249,6 +249,8 @@ unique_ptr<ASTNode> Parser::Parse_If_Statement()
 
     if(Match(IF))
     {
+        node->If=PreviousToken();
+        
         if(Match(LEFT_PAREN))
         {
             node->expression=Parse_Expression();
@@ -277,6 +279,8 @@ unique_ptr<ASTNode> Parser::Parse_While_Statement()
 
     if(Match(WHILE))
     {
+        node->While=PreviousToken();
+
         if(Match(LEFT_PAREN))
         {
             node->expression=Parse_Expression();

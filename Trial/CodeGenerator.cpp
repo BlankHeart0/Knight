@@ -81,7 +81,7 @@ int FunctionDefinitionAST::CodeGen()
     }
 
     for(unique_ptr<ASTNode>& ast_ptr:statements)
-        ast_ptr->CodeGen();    
+        ast_ptr->CodeGen();
     
     CodeGenerator::NowInFunction().vartable.LeaveScope();
     
@@ -194,7 +194,7 @@ int WhileStatementAST::CodeGen()
     CodeGenerator::Lable(lable_begin);
     int expression_ri=expression->CodeGen();
 
-    
+
     PermissionSet register_permissions=general_register.GetReg(expression_ri).type.permissions;
     if(!register_permissions.IsEmpty())
     {
@@ -220,6 +220,9 @@ int ReturnStatementAST::CodeGen()
 
     if(expression)
     {
+        if(CodeGenerator::NowInFunction().is_void)
+            TYPE_ERROR("Function ret type is void");
+
         int expression_ri=expression->CodeGen();
         CodeGenerator::TransR2Y(expression_ri,line);
     }
@@ -405,15 +408,34 @@ int FunctionCallExpressionAST::CodeGen()
         TYPE_ERROR("Parameter and Argument number not match");
 
     // store argument
-    vector<int> r_is;
+    vector<int> expression_ris;
     for(int i=0;i<expressions.size();i++)
-        r_is.push_back(expressions[i]->CodeGen());
+        expression_ris.push_back(expressions[i]->CodeGen());
 
     for(int i=0;i<expressions.size();i++)
     {
-        DataTypeChecker::Check_Store(called_function.parameters[i].type.data,
-                                r_is[i],line);
-        CodeGenerator::TransR2X(i,r_is[i]);
+        int r_i=expression_ris[i];
+        Parameter& parameter=called_function.parameters[i];
+        PermissionSet parameter_permissions=parameter.type.permissions;
+        PermissionSet register_permissions=general_register.GetReg(r_i).type.permissions;
+        PermissionSet need_permissions=register_permissions-parameter_permissions;
+        int lable_transEnd=-1;
+        if(!need_permissions.IsEmpty())
+        {
+            int test_ri=CodeGenerator::Test(need_permissions,line);
+            lable_transEnd=CodeGenerator::NowInFunction().NewLable();
+            CodeGenerator::JumpFalse(lable_transEnd,test_ri);
+        }
+
+
+        DataTypeChecker::Check_Store(parameter.type.data,r_i,line);
+        CodeGenerator::TransR2X(i,r_i);
+
+
+        if(!need_permissions.IsEmpty())
+        {
+            CodeGenerator::Lable(lable_transEnd);
+        }
     }
 
     return CodeGenerator::Call(function.lexeme,function.line);

@@ -115,7 +115,7 @@ string Type::Str()
         case D_BOOL:result+=(is_upper?"BOOL":"bool");break;
     }
 
-    result+=permissions.Str();
+    //result+=permissions.Str();
 
     return result;
 }

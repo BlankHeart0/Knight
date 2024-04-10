@@ -9,9 +9,9 @@ string GeneralRegister::Name(int r_i)
     register_name+=(is_upper?"R":"r")+to_string(r_i);
 
     //unnecessary
-    register_name+="(";
-    register_name+=GetReg(r_i).type.Str();
-    register_name+=")";
+    // register_name+="(";
+    // register_name+=GetReg(r_i).type.Str();
+    // register_name+=")";
 
     return register_name;
 }

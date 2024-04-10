@@ -1,6 +1,6 @@
 #include "Parser.h"
 
-Instruction* Parser::Parse()
+unique_ptr<Instruction> Parser::Parse()
 {   
     int current=0;
 
@@ -140,17 +140,17 @@ OperandLable Parse_OperandLable(string& operand_str)
 
 // Instruction
 // Variable
-Instruction* Parse_Var(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Var(string& operand1_str,string& operand2_str)
 {
     OperandType     operand1_type=Parse_OperandType(operand1_str);
     OperandVariable operand2_variable=Parse_OperandVariable(operand2_str);
 
-    Var* var=new Var(operand1_type,operand2_variable);
+    unique_ptr<Var> var=make_unique<Var>(operand1_type,operand2_variable);
     
-    return (Instruction*)var;
+    return move(var);
 }
 
-Instruction* Parse_Load(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Load(string& operand1_str,string& operand2_str)
 {   
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
@@ -160,295 +160,295 @@ Instruction* Parse_Load(string& operand1_str,string& operand2_str)
     {
         OperandConstant operand2_constant=Parse_OperandConstant(operand2_str);
         
-        LoadConstant* load=new LoadConstant(operand1_register,operand2_constant);
+        unique_ptr<LoadConstant> load=make_unique<LoadConstant>(operand1_register,operand2_constant);
 
-        return (Instruction*)load;
+        return move(load);
     }
 
     // LoadVariable
     OperandVariable operand2_variable=Parse_OperandVariable(operand2_str);
 
-    LoadVariable* load=new LoadVariable(operand1_register,operand2_variable);
+    unique_ptr<LoadVariable> load=make_unique<LoadVariable>(operand1_register,operand2_variable);
     
-    return (Instruction*)load;
+    return move(load);
 }
 
-Instruction* Parse_Store(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Store(string& operand1_str,string& operand2_str)
 {
     OperandVariable operand1_variable=Parse_OperandVariable(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Store* store=new Store(operand1_variable,operand2_register);
+    unique_ptr<Store> store=make_unique<Store>(operand1_variable,operand2_register);
     
-    return (Instruction*)store;
+    return move(store);
 }
 
-Instruction* Parse_Cvt(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Cvt(string& operand1_str,string& operand2_str)
 {
     OperandType     operand1_type=Parse_OperandType(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Cvt* cvt=new Cvt(operand1_type,operand2_register);
+    unique_ptr<Cvt> cvt=make_unique<Cvt>(operand1_type,operand2_register);
 
-    return (Instruction*)cvt;
+    return move(cvt);
 }
 
 
 
 // Function    
-Instruction* Parse_Func(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Func(string& operand1_str,string& operand2_str)
 {
     OperandType     operand1_type=Parse_OperandType(operand1_str);
     OperandFunction operand2_function=Parse_OperandFunction(operand2_str);
 
-    Func* func=new Func(operand1_type,operand2_function);
+    unique_ptr<Func> func=make_unique<Func>(operand1_type,operand2_function);
 
-    return (Instruction*)func;
+    return move(func);
 }
 
-Instruction* Parse_Trans(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Trans(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Trans* trans=new Trans(operand1_register,operand2_register);
+    unique_ptr<Trans> trans=make_unique<Trans>(operand1_register,operand2_register);
 
-    return (Instruction*)trans;
+    return move(trans);
 }
 
-Instruction* Parse_Call(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Call(string& operand1_str,string& operand2_str)
 {
     OperandFunction operand1_function=Parse_OperandFunction(operand1_str);
 
-    Call* call=new Call(operand1_function);
+    unique_ptr<Call> call=make_unique<Call>(operand1_function);
     
-    return (Instruction*)call;
+    return move(call);
 }
 
-Instruction* Parse_Ret(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Ret(string& operand1_str,string& operand2_str)
 {
-    Ret* ret=new Ret();
+    unique_ptr<Ret> ret=make_unique<Ret>();
 
-    return (Instruction*)ret;
+    return move(ret);
 }
 
-Instruction* Parse_Push(string& operand1_str,string& operand2_str)
-{
-    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
-
-    Push* push=new Push(operand1_register);
-
-    return (Instruction*)push;
-}
-
-Instruction* Parse_Pop(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Push(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
-    Pop* pop=new Pop(operand1_register);
+    unique_ptr<Push> push=make_unique<Push>(operand1_register);
 
-    return (Instruction*)pop;
+    return move(push);
 }
 
-Instruction* Parse_Print(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Pop(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
-    Print* print=new Print(operand1_register);
+    unique_ptr<Pop> pop=make_unique<Pop>(operand1_register);
 
-    return (Instruction*)print;
+    return move(pop);
+}
+
+unique_ptr<Instruction> Parse_Print(string& operand1_str,string& operand2_str)
+{
+    OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
+
+    unique_ptr<Print> print=make_unique<Print>(operand1_register);
+
+    return move(print);
 }
 
 
 
 // Control Flow
-Instruction* Parse_Lable(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Lable(string& operand1_str,string& operand2_str)
 {
     OperandLable operand1_lable=Parse_OperandLable(operand1_str);
 
-    Lable* lable=new Lable(operand1_lable);
+    unique_ptr<Lable> lable=make_unique<Lable>(operand1_lable);
 
-    return (Instruction*)lable;
+    return move(lable);
 }
 
-Instruction* Parse_Jmp(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Jmp(string& operand1_str,string& operand2_str)
 {
     OperandLable operand1_lable=Parse_OperandLable(operand1_str);
 
-    Jmp* jmp=new Jmp(operand1_lable);
+    unique_ptr<Jmp> jmp=make_unique<Jmp>(operand1_lable);
 
-    return (Instruction*)jmp;
+    return move(jmp);
 }
 
-Instruction* Parse_Jmpt(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Jmpt(string& operand1_str,string& operand2_str)
 {
     OperandLable    operand1_lable=Parse_OperandLable(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Jmpt* jmpt=new Jmpt(operand1_lable,operand2_register);
+    unique_ptr<Jmpt> jmpt=make_unique<Jmpt>(operand1_lable,operand2_register);
 
-    return (Instruction*)jmpt;
+    return move(jmpt);
 }
 
-Instruction* Parse_Jmpf(string& operand1_str,string& operand2_str){
+unique_ptr<Instruction> Parse_Jmpf(string& operand1_str,string& operand2_str){
     OperandLable    operand1_lable=Parse_OperandLable(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Jmpf* jmpf=new Jmpf(operand1_lable,operand2_register);
+    unique_ptr<Jmpf> jmpf=make_unique<Jmpf>(operand1_lable,operand2_register);
 
-    return (Instruction*)jmpf;
+    return move(jmpf);
 }
 
 
 
 // Binary
-Instruction* Parse_Or(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Or(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Or* or_=new Or(operand1_register,operand2_register);
+    unique_ptr<Or> or_=make_unique<Or>(operand1_register,operand2_register);
 
-    return (Instruction*)or_;
+    return move(or_);
 }
 
-Instruction* Parse_And(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_And(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    And* and_=new And(operand1_register,operand2_register);
+    unique_ptr<And> and_=make_unique<And>(operand1_register,operand2_register);
 
-    return (Instruction*)and_;
+    return move(and_);
 }
 
-Instruction* Parse_Equ(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Equ(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Equ* equ=new Equ(operand1_register,operand2_register);
+    unique_ptr<Equ> equ=make_unique<Equ>(operand1_register,operand2_register);
 
-    return (Instruction*)equ;
+    return move(equ);
 }
 
-Instruction* Parse_Nequ(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Nequ(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Nequ* nequ=new Nequ(operand1_register,operand2_register);
+    unique_ptr<Nequ> nequ=make_unique<Nequ>(operand1_register,operand2_register);
 
-    return (Instruction*)nequ;
+    return move(nequ);
 }
 
-Instruction* Parse_Les(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Les(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Les* les=new Les(operand1_register,operand2_register);
+    unique_ptr<Les> les=make_unique<Les>(operand1_register,operand2_register);
 
-    return (Instruction*)les;
+    return move(les);
 }
 
-Instruction* Parse_Lequ(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Lequ(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Lequ* lequ=new Lequ(operand1_register,operand2_register);
+    unique_ptr<Lequ> lequ=make_unique<Lequ>(operand1_register,operand2_register);
 
-    return (Instruction*)lequ;
+    return move(lequ);
 }
 
-Instruction* Parse_Gre(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Gre(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Gre* gre=new Gre(operand1_register,operand2_register);
+    unique_ptr<Gre> gre=make_unique<Gre>(operand1_register,operand2_register);
 
-    return (Instruction*)gre;
+    return move(gre);
 }
 
-Instruction* Parse_Gequ(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Gequ(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Gequ* gequ=new Gequ(operand1_register,operand2_register);
+    unique_ptr<Gequ> gequ=make_unique<Gequ>(operand1_register,operand2_register);
 
-    return (Instruction*)gequ;
+    return move(gequ);
 }
 
-Instruction* Parse_Add(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Add(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Add* add=new Add(operand1_register,operand2_register);
+    unique_ptr<Add> add=make_unique<Add>(operand1_register,operand2_register);
 
-    return (Instruction*)add;
+    return move(add);
 }
 
-Instruction* Parse_Sub(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Sub(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Sub* sub=new Sub(operand1_register,operand2_register);
+    unique_ptr<Sub> sub=make_unique<Sub>(operand1_register,operand2_register);
 
-    return (Instruction*)sub;
+    return move(sub);
 }
 
-Instruction* Parse_Mul(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Mul(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Mul* mul=new Mul(operand1_register,operand2_register);
+    unique_ptr<Mul> mul=make_unique<Mul>(operand1_register,operand2_register);
 
-    return (Instruction*)mul;
+    return move(mul);
 }
 
-Instruction* Parse_Div(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Div(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Div* div=new Div(operand1_register,operand2_register);
+    unique_ptr<Div> div=make_unique<Div>(operand1_register,operand2_register);
 
-    return (Instruction*)div;
+    return move(div);
 }
 
-Instruction* Parse_Mod(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Mod(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
     OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
 
-    Mod* mod=new Mod(operand1_register,operand2_register);
+    unique_ptr<Mod> mod=make_unique<Mod>(operand1_register,operand2_register);
 
-    return (Instruction*)mod;
+    return move(mod);
 }
 
 
 
 // Unary
-Instruction* Parse_Neg(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Neg(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
-    Neg* neg=new Neg(operand1_register);
+    unique_ptr<Neg> neg=make_unique<Neg>(operand1_register);
 
-    return (Instruction*)neg;
+    return move(neg);
 }
 
-Instruction* Parse_Not  (string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Not(string& operand1_str,string& operand2_str)
 {    
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
-    Not* not_=new Not(operand1_register);
+    unique_ptr<Not> not_=make_unique<Not>(operand1_register);
 
-    return (Instruction*)not_;
+    return move(not_);
 }

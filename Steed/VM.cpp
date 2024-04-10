@@ -16,12 +16,12 @@ void VirtualMachine::Load()
     while(line_str!="")
     {   
         Parser parser(line_str);
-        Instruction* instruction=parser.Parse();
+        unique_ptr<Instruction> instruction=parser.Parse();
 
         //Directive
         if(instruction->is_directive)instruction->Excute();
         //Instruction
-        else ParsingFunction().instructions.push_back(instruction);
+        else ParsingFunction().instructions.push_back(move(instruction));
         
         line_str=file_manager.ReadLine();
     }

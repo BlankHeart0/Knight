@@ -16,7 +16,7 @@ private:
 public:
     Parser(string line_code):line_code(line_code){}
 
-    Instruction* Parse();
+    unique_ptr<Instruction> Parse();
 };
 
 
@@ -32,55 +32,63 @@ OperandLable    Parse_OperandLable   (string& operand_str);
 
 
 // Instruction
+// Type
+unique_ptr<Instruction> Parse_Perm (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Test (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Cvt  (string& operand1_str,string& operand2_str);
+
 // Variable
-Instruction* Parse_Var  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Load (string& operand1_str,string& operand2_str);
-Instruction* Parse_Store(string& operand1_str,string& operand2_str);
-Instruction* Parse_Cvt  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Var  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Load (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Store(string& operand1_str,string& operand2_str);
 
 // Function    
-Instruction* Parse_Func (string& operand1_str,string& operand2_str);
-Instruction* Parse_Trans(string& operand1_str,string& operand2_str);
-Instruction* Parse_Call (string& operand1_str,string& operand2_str);
-Instruction* Parse_Ret  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Push (string& operand1_str,string& operand2_str);
-Instruction* Parse_Pop  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Print(string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Func (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Trans(string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Call (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Ret  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Push (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Pop  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Print(string& operand1_str,string& operand2_str);
 
 // Control Flow
-Instruction* Parse_Lable(string& operand1_str,string& operand2_str);
-Instruction* Parse_Jmp  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Jmpt (string& operand1_str,string& operand2_str);
-Instruction* Parse_Jmpf (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Lable(string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Jmp  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Jmpt (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Jmpf (string& operand1_str,string& operand2_str);
 
 // Binary
-Instruction* Parse_Or   (string& operand1_str,string& operand2_str);
-Instruction* Parse_And  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Equ  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Nequ (string& operand1_str,string& operand2_str);
-Instruction* Parse_Les  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Lequ (string& operand1_str,string& operand2_str);
-Instruction* Parse_Gre  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Gequ (string& operand1_str,string& operand2_str);
-Instruction* Parse_Add  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Sub  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Mul  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Div  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Mod  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Or   (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_And  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Equ  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Nequ (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Les  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Lequ (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Gre  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Gequ (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Add  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Sub  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Mul  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Div  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Mod  (string& operand1_str,string& operand2_str);
 
 // Unary
-Instruction* Parse_Neg  (string& operand1_str,string& operand2_str);
-Instruction* Parse_Not  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Neg  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Not  (string& operand1_str,string& operand2_str);
 
 
 
-static unordered_map<string,Instruction* (*)(string&,string&)> ParseInstruction_map
+static unordered_map<string,unique_ptr<Instruction>(*)(string&,string&)> ParseInstruction_map
 {   
+    // Type
+    {"PERM",Parse_Perm},  {"perm",Parse_Perm},
+    {"TEST",Parse_Test},  {"test",Parse_Test},
+    {"CVT",Parse_Cvt},    {"cvt",Parse_Cvt},
+
     // Var
     {"VAR",Parse_Var},    {"var",Parse_Var},
     {"LOAD",Parse_Load},  {"load",Parse_Load},
     {"STORE",Parse_Store},{"store",Parse_Store},
-    {"CVT",Parse_Cvt},    {"cvt",Parse_Cvt},
 
     // Function
     {"FUNC",Parse_Func},  {"func",Parse_Func},

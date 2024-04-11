@@ -16,6 +16,47 @@ public:
 };
 
 
+// Type
+class Perm: public Instruction
+{
+public:
+    OperandPermission operand1_permission;
+    OperandLable      operand2_lable;
+
+    Perm(OperandPermission operand1_permission,OperandLable operand2_lable):
+        operand1_permission(operand1_permission),operand2_lable(operand2_lable),
+        Instruction(true){}
+
+    void Excute() override;
+};
+
+class Test: public Instruction
+{
+public:
+    OperandRegister   operand1_register;
+    OperandPermission operand2_permission;
+
+    Test(OperandRegister operand1_register,OperandPermission operand2_permission):
+        operand1_register(operand1_register),operand2_permission(operand2_permission),
+        Instruction(false){}
+
+    void Excute() override;    
+};
+
+class Cvt: public Instruction
+{
+public:
+    OperandType     operand1_type;
+    OperandRegister operand2_register;
+
+    Cvt(OperandType operand1_type,OperandRegister operand2_register):
+        operand1_type(operand1_type),operand2_register(operand2_register),
+        Instruction(false){}
+
+    void Excute() override;    
+};
+
+
 
 // Variable
 class Var: public Instruction
@@ -65,19 +106,6 @@ public:
 
     Store(OperandVariable operand1_variable,OperandRegister operand2_register):
         operand1_variable(operand1_variable),operand2_register(operand2_register),
-        Instruction(false){}
-
-    void Excute() override;    
-};
-
-class Cvt: public Instruction
-{
-public:
-    OperandType     operand1_type;
-    OperandRegister operand2_register;
-
-    Cvt(OperandType operand1_type,OperandRegister operand2_register):
-        operand1_type(operand1_type),operand2_register(operand2_register),
         Instruction(false){}
 
     void Excute() override;    
@@ -156,14 +184,22 @@ public:
     void Excute() override; 
 };
 
-class Print: public Instruction
+class PrintRegister: public Instruction
 {
 public:
     OperandRegister operand1_register;
 
-    Print(OperandRegister operand1_register):
+    PrintRegister(OperandRegister operand1_register):
         operand1_register(operand1_register),
         Instruction(false){}
+
+    void Excute() override;
+};
+
+class PrintEndline: public Instruction
+{
+public:
+    PrintEndline():Instruction(false){}
 
     void Excute() override;
 };

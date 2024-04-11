@@ -20,7 +20,9 @@ Function& FunctionTable::Get(string name)
 
 void FunctionStack::Push()
 {
+    Steed.pc.instruction_id++;
     VariableTable variables=Steed.ExcutingFunction().variables;
+
     context.push(Context(Steed.pc,variables));
 }
 

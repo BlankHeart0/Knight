@@ -1,6 +1,6 @@
 Knight Assembly
 
-perm    permission  N   (0/1)
+perm    permission  N(0/1)      (directive)
 test    R           permissions
 cvt     type        R    
 

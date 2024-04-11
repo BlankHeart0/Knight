@@ -52,6 +52,16 @@ public:
 
 
 
+class OperandPermission
+{
+public:
+    PermissionSet permissions;
+
+    OperandPermission(PermissionSet permissions):permissions(permissions){}
+};
+
+
+
 class OperandFunction
 {
 public:

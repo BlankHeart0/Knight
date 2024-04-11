@@ -22,12 +22,13 @@ public:
 
 
 // Operand
-OperandConstant Parse_OperandConstant(string& operand_str);
-OperandRegister Parse_OperandRegister(string& operand_str);
-OperandType     Parse_OperandType    (string& operand_str);
-OperandFunction Parse_OperandFunction(string& operand_str);
-OperandVariable Parse_OperandVariable(string& operand_str);
-OperandLable    Parse_OperandLable   (string& operand_str);
+OperandConstant   Parse_OperandConstant  (string& operand_str);
+OperandRegister   Parse_OperandRegister  (string& operand_str);
+OperandType       Parse_OperandType      (string& operand_str);
+OperandPermission Parse_OperandPermission(string& operand_str);
+OperandFunction   Parse_OperandFunction  (string& operand_str);
+OperandVariable   Parse_OperandVariable  (string& operand_str);
+OperandLable      Parse_OperandLable     (string& operand_str);
 
 
 

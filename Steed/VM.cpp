@@ -38,9 +38,16 @@ void VirtualMachine::Run()
 
     pc.excuting_function="main";
     pc.instruction_id=0;
+    is_stop=false;
 
-    while(pc.instruction_id<ExcutingFunction().instructions.size())
-        ExcutingFunction().instructions[pc.instruction_id]->Excute();
+    while(!is_stop)
+    {
+        if(pc.instruction_id<ExcutingFunction().instructions.size())
+            ExcutingFunction().instructions[pc.instruction_id]->Excute();
+        else if(pc.excuting_function!="main")
+            function_stack.Pop();
+        else is_stop=true;
+    }
 
     cout<<endl<<"------ Done ------"<<endl<<endl;
 }

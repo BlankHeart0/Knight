@@ -104,6 +104,25 @@ OperandType Parse_OperandType(string& operand_str)
     return OperandType();
 }
 
+OperandPermission Parse_OperandPermission(string& operand_str)
+{
+    PermissionSet permissions;
+
+    int begin=operand_str[0]=='<'?1:0;
+
+    while(begin<operand_str.size())
+    {
+        int end=begin;
+        while(end<operand_str.size()&&operand_str[end]!=','&&operand_str[end]!='>')
+            end++;
+        
+        permissions.InsertPermission(operand_str.substr(begin,end-begin));
+        begin=end+1;
+    }
+
+    return OperandPermission(permissions);
+}
+
 OperandFunction Parse_OperandFunction(string& operand_str)
 {
     string function_name=operand_str;
@@ -139,6 +158,39 @@ OperandLable Parse_OperandLable(string& operand_str)
 
 
 // Instruction
+// Type
+unique_ptr<Instruction> Parse_Perm (string& operand1_str,string& operand2_str)
+{
+    OperandPermission operand1_permission=Parse_OperandPermission(operand1_str);
+    OperandLable      operand2_lable=Parse_OperandLable(operand2_str);
+
+    unique_ptr<Perm> perm=make_unique<Perm>(operand1_permission,operand2_lable);
+
+    return move(perm);
+}
+
+unique_ptr<Instruction> Parse_Test (string& operand1_str,string& operand2_str)
+{
+    OperandRegister   operand1_register=Parse_OperandRegister(operand1_str);
+    OperandPermission operand2_permission=Parse_OperandPermission(operand2_str);
+
+    unique_ptr<Test> test=make_unique<Test>(operand1_register,operand2_permission);
+
+    return move(test);
+}
+
+unique_ptr<Instruction> Parse_Cvt(string& operand1_str,string& operand2_str)
+{
+    OperandType     operand1_type=Parse_OperandType(operand1_str);
+    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
+
+    unique_ptr<Cvt> cvt=make_unique<Cvt>(operand1_type,operand2_register);
+
+    return move(cvt);
+}
+
+
+
 // Variable
 unique_ptr<Instruction> Parse_Var(string& operand1_str,string& operand2_str)
 {
@@ -181,16 +233,6 @@ unique_ptr<Instruction> Parse_Store(string& operand1_str,string& operand2_str)
     unique_ptr<Store> store=make_unique<Store>(operand1_variable,operand2_register);
     
     return move(store);
-}
-
-unique_ptr<Instruction> Parse_Cvt(string& operand1_str,string& operand2_str)
-{
-    OperandType     operand1_type=Parse_OperandType(operand1_str);
-    OperandRegister operand2_register=Parse_OperandRegister(operand2_str);
-
-    unique_ptr<Cvt> cvt=make_unique<Cvt>(operand1_type,operand2_register);
-
-    return move(cvt);
 }
 
 
@@ -252,9 +294,18 @@ unique_ptr<Instruction> Parse_Pop(string& operand1_str,string& operand2_str)
 
 unique_ptr<Instruction> Parse_Print(string& operand1_str,string& operand2_str)
 {
+    // PrintEndline
+    if(operand1_str=="endline"||operand1_str=="ENDLINE")
+    {
+        unique_ptr<PrintEndline> print=make_unique<PrintEndline>();
+
+        return move(print);
+    }    
+
+    // PrintRegister
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
-    unique_ptr<Print> print=make_unique<Print>(operand1_register);
+    unique_ptr<PrintRegister> print=make_unique<PrintRegister>(operand1_register);
 
     return move(print);
 }

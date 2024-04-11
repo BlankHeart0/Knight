@@ -21,6 +21,7 @@ CodeGenerator.o: CodeGenerator.h
 Diagnostor.o: Diagnostor.h
 
 
+
 .PHONY: clean
 clean:
 	-rm trial $(objects)

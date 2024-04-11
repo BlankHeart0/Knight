@@ -7,7 +7,22 @@ enum DataType
     D_INT,D_DEC,D_STR,D_BOOL
 };
 
-static vector<string> DataType_Text
+class PermissionSet
 {
-    "D_INT","D_DEC","D_STR","D_BOOL"
+private:
+    unordered_set<string> permission_uset;
+
+public:
+    string Str();
+    void InsertPermission(string permission);
+    bool IsEmpty();
+    bool HavePermission(string permission);
+    bool Included(PermissionSet& permissions);
+    PermissionSet Intersection(PermissionSet& permissions);
+    PermissionSet Union(PermissionSet& permissions);
+    PermissionSet operator - (PermissionSet& permissions);
+    PermissionSet operator + (PermissionSet& permissions);
+    void operator += (PermissionSet& permissions);
 };
+
+typedef PermissionSet PermissionType;

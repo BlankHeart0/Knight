@@ -1,11 +1,11 @@
 #pragma once
 
 #include "System.h"
-#include "Diagnostor.h"
 #include "Instruction.h"
 #include "Type.h"
 #include "Variable.h"
 #include "Context.h"
+#include "Diagnostor.h"
 
 class Function
 {

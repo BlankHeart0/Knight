@@ -1,6 +1,112 @@
 #include "Instruction.h"
 #include "VM.h"
 
+// Type
+// perm permission N
+void Perm::Excute()
+{
+    if(operand2_lable.lable_id)
+        Steed.program_permissions+=operand1_permission.permissions;
+}
+
+// test R permissions
+void Test::Excute()
+{
+    int R_i=operand1_register.register_i;
+
+    if(operand2_permission.permissions.Included(Steed.program_permissions))
+    {
+        general_register.Set(R_i,true);
+    }
+    else 
+    {
+        general_register.Set(R_i,false);
+    }
+    
+    Steed.pc.instruction_id++;
+}
+
+// cvt type R
+void Cvt::Excute()
+{
+    Register& R=general_register.Get(operand2_register.register_i);
+    
+    switch(R.data_type)
+    {
+        case D_INT:
+            switch(operand1_type.data_type)
+            {
+                case D_INT:break;
+                case D_DEC:
+                    R.data_type=D_DEC;
+                    R.DEC_val=(double)R.INT_val;
+                    break;
+                case D_STR:
+                    diagnostor.Error(E_TYPE,"Convert int to str");
+                    break;
+                case D_BOOL:
+                    R.data_type=D_BOOL;
+                    R.BOOL_val=(bool)R.INT_val;
+                    break;
+            }
+            break;
+
+        case D_DEC:
+            switch(operand1_type.data_type)
+            {
+                case D_INT:
+                    R.data_type=D_INT;
+                    R.INT_val=(int)R.DEC_val;
+                    break;
+                case D_DEC:break;
+                case D_STR:
+                    diagnostor.Error(E_TYPE,"Convert dec to str");
+                    break;
+                case D_BOOL:
+                    R.data_type=D_BOOL;
+                    R.BOOL_val=(bool)R.DEC_val;
+                    break;
+            }
+            break;
+
+        case D_STR:
+            switch(operand1_type.data_type)
+            {
+                case D_INT:
+                    diagnostor.Error(E_TYPE,"Convert str to int");
+                    break;
+                case D_DEC:
+                    diagnostor.Error(E_TYPE,"Convert str to dec");
+                    break;
+                case D_STR:break;
+                case D_BOOL:
+                    diagnostor.Error(E_TYPE,"Convert str to bool");
+                    break;
+            }
+            break;
+        
+        case D_BOOL:
+            switch(operand1_type.data_type)
+            {
+                case D_INT:
+                    diagnostor.Error(E_TYPE,"Convert bool to int");
+                    break;
+                case D_DEC:
+                    diagnostor.Error(E_TYPE,"Convert bool to dec");
+                    break;
+                case D_STR:
+                    diagnostor.Error(E_TYPE,"Convert bool to str");
+                    break;
+                case D_BOOL:break;
+            }
+            break;
+    }
+
+    Steed.pc.instruction_id++;
+}
+
+
+
 // Variable
 // var type variable(N)
 void Var::Excute()
@@ -93,85 +199,6 @@ void Store::Excute()
     Steed.pc.instruction_id++;
 } 
 
-// cvt type R
-void Cvt::Excute()
-{
-    Register& R=general_register.Get(operand2_register.register_i);
-    
-    switch(R.data_type)
-    {
-        case D_INT:
-            switch(operand1_type.data_type)
-            {
-                case D_INT:break;
-                case D_DEC:
-                    R.data_type=D_DEC;
-                    R.DEC_val=(double)R.INT_val;
-                    break;
-                case D_STR:
-                    diagnostor.Error(E_TYPE,"Convert int to str");
-                    break;
-                case D_BOOL:
-                    R.data_type=D_BOOL;
-                    R.BOOL_val=(bool)R.INT_val;
-                    break;
-            }
-            break;
-
-        case D_DEC:
-            switch(operand1_type.data_type)
-            {
-                case D_INT:
-                    R.data_type=D_INT;
-                    R.INT_val=(int)R.DEC_val;
-                    break;
-                case D_DEC:break;
-                case D_STR:
-                    diagnostor.Error(E_TYPE,"Convert dec to str");
-                    break;
-                case D_BOOL:
-                    R.data_type=D_BOOL;
-                    R.BOOL_val=(bool)R.DEC_val;
-                    break;
-            }
-            break;
-
-        case D_STR:
-            switch(operand1_type.data_type)
-            {
-                case D_INT:
-                    diagnostor.Error(E_TYPE,"Convert str to int");
-                    break;
-                case D_DEC:
-                    diagnostor.Error(E_TYPE,"Convert str to dec");
-                    break;
-                case D_STR:break;
-                case D_BOOL:
-                    diagnostor.Error(E_TYPE,"Convert str to bool");
-                    break;
-            }
-            break;
-        
-        case D_BOOL:
-            switch(operand1_type.data_type)
-            {
-                case D_INT:
-                    diagnostor.Error(E_TYPE,"Convert bool to int");
-                    break;
-                case D_DEC:
-                    diagnostor.Error(E_TYPE,"Convert bool to dec");
-                    break;
-                case D_STR:
-                    diagnostor.Error(E_TYPE,"Convert bool to str");
-                    break;
-                case D_BOOL:break;
-            }
-            break;
-    }
-
-    Steed.pc.instruction_id++;
-}
-
 
 
 // Function
@@ -235,9 +262,13 @@ void Call::Excute()
 // ret
 void Ret::Excute()
 {
+    if(Steed.pc.excuting_function=="main")
+    {
+        Steed.is_stop=true;
+        return;
+    }
+
     function_stack.Pop();
-    
-    Steed.pc.instruction_id++;
 }
 
 // push R
@@ -261,16 +292,24 @@ void Pop::Excute()
 }
 
 // print R
-void Print::Excute()
+void PrintRegister::Excute()
 {
     Register& R=general_register.Get(operand1_register.register_i);
     switch(R.data_type)
     {
-        case D_INT: cout<<R.INT_val<<endl;                  break;
-        case D_DEC: cout<<R.DEC_val<<endl;                  break;
-        case D_STR: cout<<R.STR_val<<endl;                  break;
-        case D_BOOL:cout<<(R.BOOL_val?"true":"false")<<endl;break;
+        case D_INT: cout<<R.INT_val;                  break;
+        case D_DEC: cout<<R.DEC_val;                  break;
+        case D_STR: cout<<R.STR_val;                  break;
+        case D_BOOL:cout<<(R.BOOL_val?"true":"false");break;
     }
+
+    Steed.pc.instruction_id++;
+}
+
+// print endline
+void PrintEndline::Excute()
+{
+    cout<<endl;
 
     Steed.pc.instruction_id++;
 }

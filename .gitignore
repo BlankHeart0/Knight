@@ -32,13 +32,11 @@
 *.app
 
 # Knight file
-*.k
-*.ks
-Trial/trial
-Steed/steed
+build/
+bin/
+test/
 
 #others
 .vscode/
 .VSCodeCounter/
-Test/
 *.json

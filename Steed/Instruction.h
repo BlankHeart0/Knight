@@ -160,6 +160,14 @@ public:
     void Excute() override;  
 };
 
+class Exit:public Instruction
+{
+public:
+    Exit():Instruction(false){}
+
+    void Excute() override;
+};
+
 class Push:public Instruction
 {
 public:
@@ -184,22 +192,34 @@ public:
     void Excute() override; 
 };
 
-class PrintRegister: public Instruction
+class Input: public Instruction
+{
+public:
+    OperandVariable operand1_variable;
+
+    Input(OperandVariable operand1_variable):
+        operand1_variable(operand1_variable),
+        Instruction(false){}
+
+    void Excute() override;
+};
+
+class OutputRegister: public Instruction
 {
 public:
     OperandRegister operand1_register;
 
-    PrintRegister(OperandRegister operand1_register):
+    OutputRegister(OperandRegister operand1_register):
         operand1_register(operand1_register),
         Instruction(false){}
 
     void Excute() override;
 };
 
-class PrintEndline: public Instruction
+class OutputEndline: public Instruction
 {
 public:
-    PrintEndline():Instruction(false){}
+    OutputEndline():Instruction(false){}
 
     void Excute() override;
 };

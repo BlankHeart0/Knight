@@ -118,10 +118,10 @@ void Var::Excute()
 
     switch(operand1_type.data_type)
     {
-        case D_INT: variables.Set(scope_i,name,0);    break;
-        case D_DEC: variables.Set(scope_i,name,0.0);  break;
-        case D_STR: variables.Set(scope_i,name,"");   break;
-        case D_BOOL:variables.Set(scope_i,name,false);break;
+        case D_INT: variables.Set(scope_i,name,int(0));     break;
+        case D_DEC: variables.Set(scope_i,name,double(0.0));break;
+        case D_STR: variables.Set(scope_i,name,string("")); break;
+        case D_BOOL:variables.Set(scope_i,name,bool(false));break;
     }
 
     Steed.pc.instruction_id++;
@@ -271,6 +271,12 @@ void Ret::Excute()
     function_stack.Pop();
 }
 
+// exit
+void Exit::Excute()
+{
+    Steed.is_stop=true;
+}
+
 // push R
 void Push::Excute()
 {
@@ -291,8 +297,30 @@ void Pop::Excute()
     Steed.pc.instruction_id++;
 }
 
-// print R
-void PrintRegister::Excute()
+// input variable(N)
+void Input::Excute()
+{
+    VariableTable& variables=Steed.ExcutingFunction().variables;
+
+    string name=operand1_variable.name;
+    int scope_i=operand1_variable.scope_i;
+
+    Variable& variable=variables.Get(scope_i,name);
+
+    //@Bug:Have undefined behavior
+    switch(variable.data_type)
+    {
+        case D_INT: cin>>variable.INT_val; break;
+        case D_DEC: cin>>variable.DEC_val; break;
+        case D_STR: cin>>variable.STR_val; break;
+        case D_BOOL:cin>>variable.BOOL_val;break;
+    }
+
+    Steed.pc.instruction_id++;
+}
+
+// output R
+void OutputRegister::Excute()
 {
     Register& R=general_register.Get(operand1_register.register_i);
     switch(R.data_type)
@@ -306,8 +334,8 @@ void PrintRegister::Excute()
     Steed.pc.instruction_id++;
 }
 
-// print endline
-void PrintEndline::Excute()
+// output endline
+void OutputEndline::Excute()
 {
     cout<<endl;
 

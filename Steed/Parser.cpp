@@ -274,6 +274,13 @@ unique_ptr<Instruction> Parse_Ret(string& operand1_str,string& operand2_str)
     return move(ret);
 }
 
+unique_ptr<Instruction> Parse_Exit(string& operand1_str,string& operand2_str)
+{
+    unique_ptr<Exit> exit=make_unique<Exit>();
+
+    return move(exit);
+}
+
 unique_ptr<Instruction> Parse_Push(string& operand1_str,string& operand2_str)
 {
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
@@ -292,20 +299,29 @@ unique_ptr<Instruction> Parse_Pop(string& operand1_str,string& operand2_str)
     return move(pop);
 }
 
-unique_ptr<Instruction> Parse_Print(string& operand1_str,string& operand2_str)
+unique_ptr<Instruction> Parse_Input(string& operand1_str,string& operand2_str)
 {
-    // PrintEndline
+    OperandVariable operand1_variable=Parse_OperandVariable(operand1_str);
+
+    unique_ptr<Input> input=make_unique<Input>(operand1_variable);
+
+    return move(input);
+}
+
+unique_ptr<Instruction> Parse_Output(string& operand1_str,string& operand2_str)
+{
+    // OutputEndline
     if(operand1_str=="endline"||operand1_str=="ENDLINE")
     {
-        unique_ptr<PrintEndline> print=make_unique<PrintEndline>();
+        unique_ptr<OutputEndline> print=make_unique<OutputEndline>();
 
         return move(print);
     }    
 
-    // PrintRegister
+    // OutputRegister
     OperandRegister operand1_register=Parse_OperandRegister(operand1_str);
 
-    unique_ptr<PrintRegister> print=make_unique<PrintRegister>(operand1_register);
+    unique_ptr<OutputRegister> print=make_unique<OutputRegister>(operand1_register);
 
     return move(print);
 }

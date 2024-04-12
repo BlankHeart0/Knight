@@ -24,5 +24,3 @@ public:
     PermissionSet operator + (PermissionSet& permissions);
     void operator += (PermissionSet& permissions);
 };
-
-typedef PermissionSet PermissionType;

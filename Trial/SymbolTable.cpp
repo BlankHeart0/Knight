@@ -77,7 +77,10 @@ void FunctionTable::Add(string function_name,int line)
 }
   
 void FunctionTable::Add(Type type,string function_name,int line)
-{
+{   
+    if(function_name=="main")
+        SYMBOL_ERROR("Main function must ret void");
+        
     if(!Exist(function_name))
     {
         table[function_name]=Function(type,function_name);

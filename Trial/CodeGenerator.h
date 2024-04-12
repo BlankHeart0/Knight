@@ -42,9 +42,11 @@ public:
     static void TransR2Y(int r_i,int line);             // TRANS trans
     static int  Call(string function_name,int line);                   // CALL call
     static void Ret();                                  // RET ret
+    static void Exit();//EXIT exit
     static void Push(int r_i);                          // PUSH push
     static void Pop(int r_i);                           // POP pop
-    static void Print(int r_i,int line);                         // PRINT print
+    static void Input(string variable_name,int line); // INPUT input
+    static void Output(int r_i,int line);            // OUTPUT output
     
     // Control Flow
     static void Lable(int lable_id);                    // LABLE lable  

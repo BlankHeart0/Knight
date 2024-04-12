@@ -206,8 +206,12 @@ unique_ptr<ASTNode> Parser::Parse_Statement()
         node->X_statement=Parse_While_Statement();
     else if(Peek(RET))
         node->X_statement=Parse_Return_Statement();
-    else if(Peek(PRINT))
-        node->X_statement=Parse_Print_Statement();
+    else if(Peek(EXIT))
+        node->X_statement=Parse_Exit_Statement();
+    else if(Peek(INPUT))
+        node->X_statement=Parse_Input_Statement();
+    else if(Peek(OUTPUT))
+        node->X_statement=Parse_Output_Statement();
     else if(Peek(IDENTIFIER)&&Peek(ASSIGN,2))
         node->X_statement=Parse_Assignment_Statement();
     else if(Peek(INT)||Peek(DEC)||Peek(STR)||Peek(BOOL))
@@ -316,15 +320,59 @@ unique_ptr<ASTNode> Parser::Parse_Return_Statement()
     return move(node);
 }
 
-unique_ptr<ASTNode> Parser::Parse_Print_Statement()
+unique_ptr<ASTNode> Parser::Parse_Exit_Statement()
 {
-    diagnostor.WhoAmI("Parse_Print_Statement");
+    diagnostor.WhoAmI("Parse_Exit_Statement");
 
-    unique_ptr<PrintStatementAST> node=make_unique<PrintStatementAST>();
+    unique_ptr<ExitStatementAST> node=make_unique<ExitStatementAST>();
 
-    if(Match(PRINT))
+    if(Match(EXIT))
     {
-        node->print=PreviousToken();
+        node->exit=PreviousToken();
+
+        MatchSemicolon();
+    }
+    else PARSE_ERROR("Keyword 'exit' loss");
+    
+    return move(node);
+}
+
+unique_ptr<ASTNode> Parser::Parse_Input_Statement()
+{
+    diagnostor.WhoAmI("Parse_Input_Statement");
+
+    unique_ptr<InputStatementAST> node=make_unique<InputStatementAST>();
+
+    if(Match(INPUT))
+    {
+        if(Match(IDENTIFIER))
+        {
+            node->variables.push_back(PreviousToken());
+            while(Match(COMMA))
+            {
+                if(Match(IDENTIFIER))
+                    node->variables.push_back(PreviousToken());
+                else PARSE_ERROR("Input identifier loss");
+            }
+
+            MatchSemicolon();
+        }
+        else PARSE_ERROR("Input identifier loss");
+    }
+    else PARSE_ERROR("Keyword 'input' loss");
+    
+    return move(node);
+}
+
+unique_ptr<ASTNode> Parser::Parse_Output_Statement()
+{
+    diagnostor.WhoAmI("Parse_Output_Statement");
+
+    unique_ptr<OutputStatementAST> node=make_unique<OutputStatementAST>();
+
+    if(Match(OUTPUT))
+    {
+        node->output=PreviousToken();
 
         AddChildToVector(node->expressions,Parse_Expression());
         while(Match(COMMA))
@@ -334,7 +382,7 @@ unique_ptr<ASTNode> Parser::Parse_Print_Statement()
         
         MatchSemicolon();
     }
-    else PARSE_ERROR("Keyword 'print' loss");
+    else PARSE_ERROR("Keyword 'output' loss");
 
     return move(node);
 }

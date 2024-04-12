@@ -150,10 +150,28 @@ public:
     void Print(int depth) override;
 };
 
-class PrintStatementAST: public ASTNode
+class ExitStatementAST: public ASTNode
 {
 public:
-    Token print;
+    Token exit;
+
+    int CodeGen() override;
+    void Print(int depth) override;
+};
+
+class InputStatementAST: public ASTNode
+{
+public:
+    vector<Token> variables;
+        
+    int CodeGen() override;
+    void Print(int depth) override;  
+};
+
+class OutputStatementAST: public ASTNode
+{
+public:
+    Token output;
     vector<unique_ptr<ASTNode>> expressions;
 
     int CodeGen() override;

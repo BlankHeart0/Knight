@@ -138,10 +138,25 @@ void ReturnStatementAST::Print(int depth)
     if(expression)expression->Print(depth+1);
 }
 
-void PrintStatementAST::Print(int depth)
+void ExitStatementAST::Print(int depth)
 {
     PrintTab(depth);
-    cout<<"Print_Statement";
+    cout<<"Exit_Statement";
+}
+
+void InputStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Input_Statement";
+
+    for(Token& t:variables)
+        cout<<" "<<t.lexeme;
+}
+
+void OutputStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Output_Statement";
 
     for(unique_ptr<ASTNode>& ast_ptr:expressions)
         ast_ptr->Print(depth+1);

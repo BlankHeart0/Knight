@@ -35,7 +35,9 @@ public:
     unique_ptr<ASTNode> Parse_If_Statement();
     unique_ptr<ASTNode> Parse_While_Statement();
     unique_ptr<ASTNode> Parse_Return_Statement();
-    unique_ptr<ASTNode> Parse_Print_Statement();
+    unique_ptr<ASTNode> Parse_Exit_Statement();
+    unique_ptr<ASTNode> Parse_Input_Statement();
+    unique_ptr<ASTNode> Parse_Output_Statement();
     unique_ptr<ASTNode> Parse_Assignment_Statement();
     unique_ptr<ASTNode> Parse_Expression_Statement();
 

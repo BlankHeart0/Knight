@@ -357,6 +357,7 @@ int CodeGenerator::Call(string function_name,int line)
         return r_i;
     }
 
+    //@Bug:don't use void function's ret value
     return NOTHING;
 }
 
@@ -365,6 +366,15 @@ void CodeGenerator::Ret()
     // Opcode
     file_manager.Write(is_upper?"RET":"ret");
     file_manager.Write("\t\t");
+
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::Exit()
+{
+    // Opcode
+    file_manager.Write(is_upper?"EXIT":"exit");
+    file_manager.Write("\t");
 
     file_manager.WriteEndl();
 }
@@ -391,12 +401,28 @@ void CodeGenerator::Pop(int r_i)
     file_manager.WriteEndl();
 }
 
-void CodeGenerator::Print(int r_i,int line)
+void CodeGenerator::Input(string variable_name,int line)
+{
+    Variable variable=NowInFunction().vartable.Visit(variable_name,line);
+
+    // Opcode
+    file_manager.Write(is_upper?"INPUT":"input");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(variable.name);
+    file_manager.Write("(");
+    file_manager.Write(to_string(variable.scope_i));
+    file_manager.Write(")");
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::Output(int r_i,int line)
 {
     if(r_i==NOTHING)
     {
         // Opcode
-        file_manager.Write(is_upper?"PRINT":"print");
+        file_manager.Write(is_upper?"OUTPUT":"output");
         file_manager.Write("\t");
         // Operand1
         file_manager.Write(is_upper?"ENDLINE":"endline");
@@ -417,7 +443,7 @@ void CodeGenerator::Print(int r_i,int line)
 
 
     // Opcode
-    file_manager.Write(is_upper?"PRINT":"print");
+    file_manager.Write(is_upper?"OUTPUT":"output");
     file_manager.Write("\t");
 
     // Operand1

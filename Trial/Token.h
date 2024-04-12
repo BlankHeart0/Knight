@@ -8,7 +8,8 @@ enum TokenType
     INT, DEC, STR,
     BOOL, TRUE, FALSE,
     IF, ELSE, WHILE,
-    PRINT, RET, 
+    INPUT, OUTPUT, 
+    RET, EXIT, 
     PERMISSION,
 
     //Identifier
@@ -42,7 +43,8 @@ static vector<string>TokenType_text
     "INT", "DEC", "STR",
     "BOOL", "TRUE", "FALSE",
     "IF", "ELSE", "WHILE",
-    "PRINT", "RET",
+    "INPUT", "OUTPUT", 
+    "RET", "EXIT", 
     "PERMISSION",
 
     //Identifier
@@ -75,7 +77,8 @@ static unordered_map<string,TokenType>Keyword_map
     {"int",INT}, {"dec",DEC}, {"str",STR},
     {"bool",BOOL}, {"true", TRUE}, {"false",FALSE},
     {"if",IF}, {"else",ELSE}, {"while",WHILE},
-    {"print",PRINT}, {"ret",RET},
+    {"input",INPUT}, {"output",OUTPUT}, 
+    {"ret",RET}, {"exit",EXIT}, 
     {"permission",PERMISSION},
     {"not",NOT}, {"and",AND}, {"or",OR}
 };

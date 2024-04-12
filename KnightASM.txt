@@ -16,10 +16,12 @@ trans   Y           R
 trans   R           Y
 call    function
 ret
+exit
 push    R
 pop     R
-print   R
-print   endline
+input   variable(N)
+output  R
+output  endline
 
 lable   N                       (directive)
 jmp     N

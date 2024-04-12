@@ -234,15 +234,30 @@ int ReturnStatementAST::CodeGen()
     return NOTHING;
 }
 
-int PrintStatementAST::CodeGen()
+int ExitStatementAST::CodeGen()
+{
+    CodeGenerator::Exit();
+
+    return NOTHING;
+}
+
+int InputStatementAST::CodeGen()
+{
+    for(Token& variable:variables)
+        CodeGenerator::Input(variable.lexeme,variable.line);
+
+    return NOTHING;
+}
+
+int OutputStatementAST::CodeGen()
 {
     for(unique_ptr<ASTNode>& ast_ptr:expressions)
     {
         int expression_ri=ast_ptr->CodeGen();
-        CodeGenerator::Print(expression_ri,print.line);
+        CodeGenerator::Output(expression_ri,output.line);
     }
 
-    CodeGenerator::Print(NOTHING,print.line);
+    CodeGenerator::Output(NOTHING,output.line);
     
     return NOTHING;
 }
@@ -258,11 +273,9 @@ int AssignmentStatementAST::CodeGen()
 int ExpressionStatementAST::CodeGen()
 {
     //@Todo:it breaks the packing
-    if(expression)
-    {
-        int expression_ri=expression->CodeGen();
-        general_register.Free(expression_ri);
-    }
+
+    int expression_ri=expression->CodeGen();
+    general_register.Free(expression_ri);
 
     return NOTHING;
 }

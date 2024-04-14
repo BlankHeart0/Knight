@@ -9,7 +9,7 @@ void FileManager::Open()
 {
     knightASM_file.open(knightASM_file_name,ios::in);
     if(!knightASM_file.is_open())
-        FILEMANAGER_ERROR("Open the input file error!");
+        FILEMANAGER_ERROR("Open the file error!");
 }
 
 string FileManager::ReadLine()

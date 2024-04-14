@@ -62,6 +62,14 @@ public:
 
 
 
+class OperandApplication
+{
+public:
+    string name;
+
+    OperandApplication(string name):name(name){}
+};
+
 class OperandFunction
 {
 public:

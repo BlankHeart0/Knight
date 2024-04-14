@@ -34,7 +34,6 @@
 # Knight file
 build/
 bin/
-test/
 
 #others
 .vscode/

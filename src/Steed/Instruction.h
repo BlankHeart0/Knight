@@ -114,6 +114,19 @@ public:
 
 
 // Function
+class Invoke: public Instruction
+{
+public:
+    OperandApplication operand1_application;
+    OperandFunction    operand2_function;
+
+    Invoke(OperandApplication operand1_application,OperandFunction operand2_function):
+        operand1_application(operand1_application),operand2_function(operand2_function),
+        Instruction(true){}
+
+    void Excute() override;  
+};
+
 class Func: public Instruction
 {
 public:

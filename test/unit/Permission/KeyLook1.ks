@@ -1,0 +1,30 @@
+perm	USE_KEY,0
+func	str,GetKey
+var		str,name(0)
+trans	r0,x0
+store	name(0),r0
+var		str,key(0)
+load	r0,""
+store	key(0),r0
+load	r0,name(0)
+load	r1,"PJD"
+equ		r0,r1
+cvt		bool,r0
+jmpf	0,r0
+load	r0,"123456"
+store	key(0),r0
+lable	0
+load	r0,key(0)
+trans	y,r0
+ret		
+func	void,main
+load	r0,"PJD"
+trans	x0,r0
+call	GetKey
+trans	r0,y
+test	r1,<USE_KEY>
+jmpf	0,r1
+output	r0
+lable	0
+output	endline
+ret		

@@ -9,26 +9,26 @@ class Parser
 private:
     string line_code;
 
+public:
     string opcode_str;
     string operand1_str;
     string operand2_str;
 
-public:
-    Parser(string line_code):line_code(line_code){}
-
+    Parser(string line_code);
     unique_ptr<Instruction> Parse();
 };
 
 
 
 // Operand
-OperandConstant   Parse_OperandConstant  (string& operand_str);
-OperandRegister   Parse_OperandRegister  (string& operand_str);
-OperandType       Parse_OperandType      (string& operand_str);
-OperandPermission Parse_OperandPermission(string& operand_str);
-OperandFunction   Parse_OperandFunction  (string& operand_str);
-OperandVariable   Parse_OperandVariable  (string& operand_str);
-OperandLable      Parse_OperandLable     (string& operand_str);
+OperandConstant    Parse_OperandConstant    (string& operand_str);
+OperandRegister    Parse_OperandRegister    (string& operand_str);
+OperandType        Parse_OperandType        (string& operand_str);
+OperandPermission  Parse_OperandPermission  (string& operand_str);
+OperandApplication Parse_OperandApplication (string& operand_str);
+OperandFunction    Parse_OperandFunction    (string& operand_str);
+OperandVariable    Parse_OperandVariable    (string& operand_str);
+OperandLable       Parse_OperandLable       (string& operand_str);
 
 
 
@@ -43,7 +43,8 @@ unique_ptr<Instruction> Parse_Var   (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Load  (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Store (string& operand1_str,string& operand2_str);
 
-// Function    
+// Function
+unique_ptr<Instruction> Parse_Invoke(string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Func  (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Trans (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Call  (string& operand1_str,string& operand2_str);
@@ -94,6 +95,7 @@ static unordered_map<string,unique_ptr<Instruction>(*)(string&,string&)> ParseIn
     {"STORE",Parse_Store},  {"store",Parse_Store},
 
     // Function
+    {"INVOKE",Parse_Invoke},{"invoke",Parse_Invoke},
     {"FUNC",Parse_Func},    {"func",Parse_Func},
     {"TRANS",Parse_Trans},  {"trans",Parse_Trans},
     {"CALL",Parse_Call},    {"call",Parse_Call},

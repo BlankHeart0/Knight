@@ -202,6 +202,45 @@ void Store::Excute()
 
 
 // Function
+// invoke application function (directive)
+void Invoke::Excute()
+{
+    FileManager app_file;
+    app_file.Initialize(operand1_application.name);
+    app_file.Open();
+
+    bool isInTargetFunction=false;
+
+    string line_str=app_file.ReadLine();
+    while(line_str!="")
+    {
+        Parser parser(line_str);
+        if(parser.opcode_str=="INVOKE"||parser.opcode_str=="invoke")
+            parser.Parse()->Excute();
+
+        if(parser.opcode_str=="FUNC"||parser.opcode_str=="func")
+        {
+            if(parser.operand2_str==operand2_function.name)
+            {
+                parser.operand2_str=operand1_application.name+"."+operand2_function.name;
+                isInTargetFunction=true;
+            }
+            else isInTargetFunction=false;
+        }
+
+        if(isInTargetFunction)
+        {
+            unique_ptr<Instruction> instruction=parser.Parse();
+            if(instruction->is_directive)instruction->Excute();
+            else Steed.ParsingFunction().instructions.push_back(move(instruction));
+        }
+
+        line_str=app_file.ReadLine();
+    }
+
+    app_file.Close();
+}
+
 // func type function (directive)
 void Func::Excute()
 {

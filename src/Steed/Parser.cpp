@@ -1,7 +1,9 @@
 #include "Parser.h"
 
-unique_ptr<Instruction> Parser::Parse()
-{   
+Parser::Parser(string line_code)
+{
+    this->line_code=line_code;
+
     int current=0;
 
     // Opcode
@@ -25,8 +27,10 @@ unique_ptr<Instruction> Parser::Parse()
     while(end<line_code.size())end++;
     if(current<line_code.size())
         operand2_str=line_code.substr(current,end-current);
+}   
 
-
+unique_ptr<Instruction> Parser::Parse()
+{   
     return ParseInstruction_map[opcode_str](operand1_str,operand2_str);
 }
 
@@ -121,6 +125,13 @@ OperandPermission Parse_OperandPermission(string& operand_str)
     }
 
     return OperandPermission(permissions);
+}
+
+OperandApplication Parse_OperandApplication(string& operand_str)
+{
+    string app_name=operand_str;
+
+    return OperandApplication(app_name);
 }
 
 OperandFunction Parse_OperandFunction(string& operand_str)
@@ -237,7 +248,17 @@ unique_ptr<Instruction> Parse_Store(string& operand1_str,string& operand2_str)
 
 
 
-// Function    
+// Function
+unique_ptr<Instruction> Parse_Invoke(string& operand1_str,string& operand2_str)
+{
+    OperandApplication operand1_application=Parse_OperandApplication(operand1_str);
+    OperandFunction    operand2_function=Parse_OperandFunction(operand2_str);
+
+    unique_ptr<Invoke> invoke=make_unique<Invoke>(operand1_application,operand2_function);
+
+    return move(invoke);
+}
+
 unique_ptr<Instruction> Parse_Func(string& operand1_str,string& operand2_str)
 {
     OperandType     operand1_type=Parse_OperandType(operand1_str);

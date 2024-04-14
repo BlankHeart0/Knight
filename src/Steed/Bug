@@ -1,2 +1,3 @@
 --Parse error,it thinks grammar is absoulutely right
 --Only run the code compiled by trial
+--Invoke function not match ret_type and parameters is undefined

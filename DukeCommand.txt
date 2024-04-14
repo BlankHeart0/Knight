@@ -1,0 +1,13 @@
+--package:.ks
+--application:others
+
+draw
+
+list
+list -app
+list -pkg
+
+install package
+reinstall application
+chperm application
+run application

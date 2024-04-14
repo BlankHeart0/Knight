@@ -1,6 +1,7 @@
 #pragma once
 
 #include "System.h"
+#include "Parser.h"
 
 class OperatingSystem
 {

@@ -253,6 +253,8 @@ unique_ptr<ASTNode> Parser::Parse_Statement()
         node->X_statement=Parse_Return_Statement();
     else if(Peek(EXIT))
         node->X_statement=Parse_Exit_Statement();
+    else if(Peek(SLEEP))
+        node->X_statement=Parse_Sleep_Statement();
     else if(Peek(INPUT))
         node->X_statement=Parse_Input_Statement();
     else if(Peek(OUTPUT))
@@ -379,6 +381,26 @@ unique_ptr<ASTNode> Parser::Parse_Exit_Statement()
     }
     else PARSE_ERROR("Keyword 'exit' loss");
     
+    return move(node);
+}
+
+unique_ptr<ASTNode> Parser::Parse_Sleep_Statement()
+{
+    diagnostor.WhoAmI("Parse_Sleep_Statement");
+
+    unique_ptr<SleepStatementAST> node=make_unique<SleepStatementAST>();
+
+    if(Match(SLEEP))
+    {
+        if(Match(CONSTANT_INT))
+        {
+            node->constant=PreviousToken();
+            MatchSemicolon();
+        }
+        else PARSE_ERROR("Sleep time loss");
+    }
+    else PARSE_ERROR("Keyword 'sleep' loss");
+
     return move(node);
 }
 

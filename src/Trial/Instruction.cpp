@@ -413,6 +413,17 @@ void CodeGenerator::Exit()
     file_manager.WriteEndl();
 }
 
+void CodeGenerator::Sleep(string time)
+{
+    // Opcode
+    file_manager.Write(is_upper?"SLEEP":"sleep");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(time);
+    file_manager.WriteEndl();
+}
+
 void CodeGenerator::Push(int r_i)
 {
     // Opcode

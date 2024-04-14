@@ -1,4 +1,4 @@
-perm	USE_KEY,1
+perm	USE_KEY,0
 func	str,GetKey
 var		str,name(0)
 trans	r0,x0
@@ -25,6 +25,7 @@ jmpf	1,r0
 load	r0,"HaveKey Running..."
 output	r0
 output	endline
+sleep	1
 jmp		0
 lable	1
 ret		

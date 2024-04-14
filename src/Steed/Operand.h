@@ -52,34 +52,6 @@ public:
 
 
 
-class OperandPermission
-{
-public:
-    PermissionSet permissions;
-
-    OperandPermission(PermissionSet permissions):permissions(permissions){}
-};
-
-
-
-class OperandApplication
-{
-public:
-    string name;
-
-    OperandApplication(string name):name(name){}
-};
-
-class OperandFunction
-{
-public:
-    string name;
-
-    OperandFunction(string name):name(name){}
-};
-
-
-
 class OperandVariable
 {
 public: 
@@ -92,11 +64,36 @@ public:
 
 
 
-class OperandLable
+class OperandPermission
 {
 public:
-    int lable_id;
+    PermissionSet permissions;
 
-    OperandLable(int lable_id):
-        lable_id(lable_id){}
+    OperandPermission(PermissionSet permissions):permissions(permissions){}
 };
+
+
+
+class OperandName
+{
+public:
+    string name;
+
+    OperandName(string name):name(name){}
+};
+
+typedef OperandName OperandApplication;
+typedef OperandName OperandFunction;
+
+
+
+class OperandNatural
+{
+public:
+    int N;
+
+    OperandNatural(int N):N(N){}
+};
+
+typedef OperandNatural OperandLable;
+typedef OperandNatural OperandFlag;

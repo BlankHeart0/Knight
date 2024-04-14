@@ -5,7 +5,7 @@
 // perm permission N
 void Perm::Excute()
 {
-    if(operand2_lable.lable_id)
+    if(operand2_flag.N)
         Steed.program_permissions+=operand1_permission.permissions;
 }
 
@@ -316,6 +316,13 @@ void Exit::Excute()
     Steed.is_stop=true;
 }
 
+void Sleep::Excute()
+{
+    sleep(operand1_natural.N);
+
+    Steed.pc.instruction_id++;
+}
+
 // push R
 void Push::Excute()
 {
@@ -387,7 +394,7 @@ void OutputEndline::Excute()
 // lable N (directive)
 void Lable::Excute()
 {
-    Steed.ParsingFunction().lables[operand1_lable.lable_id]=
+    Steed.ParsingFunction().lables[operand1_lable.N]=
         Steed.ParsingFunction().instructions.size();
 }
 
@@ -395,7 +402,7 @@ void Lable::Excute()
 void Jmp::Excute()
 {
     Steed.pc.instruction_id=
-        Steed.ExcutingFunction().lables[operand1_lable.lable_id];
+        Steed.ExcutingFunction().lables[operand1_lable.N];
 }
 
 // jmpt N R
@@ -405,7 +412,7 @@ void Jmpt::Excute()
     if(R.BOOL_val)
     {
         Steed.pc.instruction_id=
-            Steed.ExcutingFunction().lables[operand1_lable.lable_id];
+            Steed.ExcutingFunction().lables[operand1_lable.N];
     }
     else Steed.pc.instruction_id++;
 }
@@ -417,7 +424,7 @@ void Jmpf::Excute()
     if(!R.BOOL_val)
     {
         Steed.pc.instruction_id=
-            Steed.ExcutingFunction().lables[operand1_lable.lable_id];
+            Steed.ExcutingFunction().lables[operand1_lable.N];
     }
     else Steed.pc.instruction_id++;
 }

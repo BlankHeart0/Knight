@@ -1,4 +1,4 @@
-perm	USE_KEY,0
+perm	USE_KEY,1
 invoke	HaveKey,GetKey
 func	void,main
 load	r0,"PJD"

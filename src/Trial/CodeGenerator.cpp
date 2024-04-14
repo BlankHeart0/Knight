@@ -264,6 +264,13 @@ int ExitStatementAST::CodeGen()
     return NOTHING;
 }
 
+int SleepStatementAST::CodeGen()
+{
+    CodeGenerator::Sleep(constant.lexeme);
+    
+    return NOTHING;
+}
+
 int InputStatementAST::CodeGen()
 {
     for(Token& variable:variables)

@@ -25,6 +25,7 @@ jmpf	1,r0
 load	r0,"HaveKey Running..."
 output	r0
 output	endline
+sleep	1
 jmp		0
 lable	1
 ret		

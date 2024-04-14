@@ -24,32 +24,33 @@ public:
 
     // Instruction    
     // Type
-    static void Permission(string permission);          // PERM perm
-    static int  Test(PermissionSet permissions,int line);// TEST test
-    static void Convert(DataType to_dtype,int r_i);          // CVT cvt
+    static void Permission(string permission);                  // PERM perm
+    static int  Test(PermissionSet permissions,int line);       // TEST test
+    static void Convert(DataType to_dtype,int r_i);             // CVT cvt
     
     // Variable
-    static void Var(Type type,string variable_name,int line);// VAR var
-    static int  LoadConstant(Token constant);           // LOAD load
-    static int  LoadVariable(string variable_name,int line);// LOAD load
-    static void Store(string variable_name,int r_i,int line);// STORE store
+    static void Var(Type type,string variable_name,int line);   // VAR var
+    static int  LoadConstant(Token constant);                   // LOAD load
+    static int  LoadVariable(string variable_name,int line);    // LOAD load
+    static void Store(string variable_name,int r_i,int line);   // STORE store
     
     // Function
-    static void Invoke(string app_name,string function_name,int line); //INVOKE invoke
-    static void Invoke(Type type,string app_name,string function_name,int line); //INVOKE invoke
-    static void Func(string function_name,int line);   // FUNC func
-    static void Func(Type type,string function_name,int line);   // FUNC func
-    static int  TransX2R(int x_i);                      // TRANS trans
-    static void TransR2X(int x_i,int r_i);              // TRANS trans
-    static void TransY2R(int r_i);                      // TRANS trans
-    static void TransR2Y(int r_i,int line);             // TRANS trans
-    static int  Call(string function_name,int line);                   // CALL call
-    static void Ret();                                  // RET ret
-    static void Exit();//EXIT exit
-    static void Push(int r_i);                          // PUSH push
-    static void Pop(int r_i);                           // POP pop
-    static void Input(string variable_name,int line); // INPUT input
-    static void Output(int r_i,int line);            // OUTPUT output
+    static void Invoke(string app_name,string function_name,int line);              //INVOKE invoke
+    static void Invoke(Type type,string app_name,string function_name,int line);    //INVOKE invoke
+    static void Func(string function_name,int line);            // FUNC func
+    static void Func(Type type,string function_name,int line);  // FUNC func
+    static int  TransX2R(int x_i);                              // TRANS trans
+    static void TransR2X(int x_i,int r_i);                      // TRANS trans
+    static void TransY2R(int r_i);                              // TRANS trans
+    static void TransR2Y(int r_i,int line);                     // TRANS trans
+    static int  Call(string function_name,int line);            // CALL call
+    static void Ret();                                          // RET ret
+    static void Exit();                                         //EXIT exit
+    static void Sleep(string time);                             // SLEEP sleep
+    static void Push(int r_i);                                  // PUSH push
+    static void Pop(int r_i);                                   // POP pop
+    static void Input(string variable_name,int line);           // INPUT input
+    static void Output(int r_i,int line);                       // OUTPUT output
     
     // Control Flow
     static void Lable(int lable_id);                    // LABLE lable  

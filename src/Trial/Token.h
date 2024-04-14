@@ -9,7 +9,7 @@ enum TokenType
     BOOL, TRUE, FALSE,
     IF, ELSE, WHILE,
     INPUT, OUTPUT, 
-    RET, EXIT, 
+    RET, EXIT, SLEEP, 
     PERMISSION,INVOKE,
 
     //Identifier
@@ -44,7 +44,7 @@ static vector<string>TokenType_text
     "BOOL", "TRUE", "FALSE",
     "IF", "ELSE", "WHILE",
     "INPUT", "OUTPUT", 
-    "RET", "EXIT", 
+    "RET", "EXIT", "SLEEP",
     "PERMISSION","INVOKE",
 
     //Identifier
@@ -78,7 +78,7 @@ static unordered_map<string,TokenType>Keyword_map
     {"bool",BOOL}, {"true", TRUE}, {"false",FALSE},
     {"if",IF}, {"else",ELSE}, {"while",WHILE},
     {"input",INPUT}, {"output",OUTPUT}, 
-    {"ret",RET}, {"exit",EXIT}, 
+    {"ret",RET}, {"exit",EXIT}, {"sleep",SLEEP},
     {"permission",PERMISSION}, {"invoke",INVOKE},
     {"not",NOT}, {"and",AND}, {"or",OR}
 };

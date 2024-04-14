@@ -108,6 +108,24 @@ OperandType Parse_OperandType(string& operand_str)
     return OperandType();
 }
 
+OperandVariable Parse_OperandVariable(string& operand_str)
+{
+    int current=0;
+    //@Bug:I think it must have (
+    while(operand_str[current]!='(')current++;
+    string variable_name=operand_str.substr(0,current);
+    //@Bug: Also ...
+    current++;
+    int scope_i=0;
+    while(operand_str[current]!=')')
+    {
+        scope_i=scope_i*10+(operand_str[current]-'0');
+        current++;
+    }
+
+    return OperandVariable(variable_name,scope_i);
+}
+
 OperandPermission Parse_OperandPermission(string& operand_str)
 {
     PermissionSet permissions;
@@ -127,43 +145,38 @@ OperandPermission Parse_OperandPermission(string& operand_str)
     return OperandPermission(permissions);
 }
 
+OperandName Parse_OperandName(string& operand_str)
+{
+    string name=operand_str;
+
+    return OperandName(name);
+}
+
 OperandApplication Parse_OperandApplication(string& operand_str)
 {
-    string app_name=operand_str;
-
-    return OperandApplication(app_name);
+    return Parse_OperandName(operand_str);
 }
 
 OperandFunction Parse_OperandFunction(string& operand_str)
 {
-    string function_name=operand_str;
-
-    return OperandFunction(function_name);
+    return Parse_OperandName(operand_str);
 }
 
-OperandVariable Parse_OperandVariable(string& operand_str)
+OperandNatural Parse_OperandNatural(string& operand_str)
 {
-    int current=0;
-    //@Bug:I think it must have (
-    while(operand_str[current]!='(')current++;
-    string variable_name=operand_str.substr(0,current);
-    //@Bug: Also ...
-    current++;
-    int scope_i=0;
-    while(operand_str[current]!=')')
-    {
-        scope_i=scope_i*10+(operand_str[current]-'0');
-        current++;
-    }
+    int N=stoi(operand_str);
 
-    return OperandVariable(variable_name,scope_i);
+    return OperandNatural(N);
 }
 
 OperandLable Parse_OperandLable(string& operand_str)
 {
-    int lable_id=stoi(operand_str);
+    return Parse_OperandNatural(operand_str);
+}
 
-    return OperandLable(lable_id);
+OperandFlag Parse_OperandFlag (string& operand_str)
+{
+    return Parse_OperandNatural(operand_str);
 }
 
 
@@ -173,9 +186,9 @@ OperandLable Parse_OperandLable(string& operand_str)
 unique_ptr<Instruction> Parse_Perm (string& operand1_str,string& operand2_str)
 {
     OperandPermission operand1_permission=Parse_OperandPermission(operand1_str);
-    OperandLable      operand2_lable=Parse_OperandLable(operand2_str);
+    OperandFlag       operand2_flag=Parse_OperandFlag(operand2_str);
 
-    unique_ptr<Perm> perm=make_unique<Perm>(operand1_permission,operand2_lable);
+    unique_ptr<Perm> perm=make_unique<Perm>(operand1_permission,operand2_flag);
 
     return move(perm);
 }
@@ -262,7 +275,7 @@ unique_ptr<Instruction> Parse_Invoke(string& operand1_str,string& operand2_str)
 unique_ptr<Instruction> Parse_Func(string& operand1_str,string& operand2_str)
 {
     OperandType     operand1_type=Parse_OperandType(operand1_str);
-    OperandFunction operand2_function=Parse_OperandFunction(operand2_str);
+    OperandFunction operand2_function=Parse_OperandName(operand2_str);
 
     unique_ptr<Func> func=make_unique<Func>(operand1_type,operand2_function);
 
@@ -300,6 +313,15 @@ unique_ptr<Instruction> Parse_Exit(string& operand1_str,string& operand2_str)
     unique_ptr<Exit> exit=make_unique<Exit>();
 
     return move(exit);
+}
+
+unique_ptr<Instruction> Parse_Sleep (string& operand1_str,string& operand2_str)
+{
+    OperandNatural operand1_natural=Parse_OperandNatural(operand1_str);
+
+    unique_ptr<Sleep> sleep=make_unique<Sleep>(operand1_natural);
+
+    return move(sleep);
 }
 
 unique_ptr<Instruction> Parse_Push(string& operand1_str,string& operand2_str)

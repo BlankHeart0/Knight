@@ -24,11 +24,14 @@ public:
 OperandConstant    Parse_OperandConstant    (string& operand_str);
 OperandRegister    Parse_OperandRegister    (string& operand_str);
 OperandType        Parse_OperandType        (string& operand_str);
+OperandVariable    Parse_OperandVariable    (string& operand_str);
 OperandPermission  Parse_OperandPermission  (string& operand_str);
+OperandName        Parse_OperandName        (string& operand_str);
 OperandApplication Parse_OperandApplication (string& operand_str);
 OperandFunction    Parse_OperandFunction    (string& operand_str);
-OperandVariable    Parse_OperandVariable    (string& operand_str);
+OperandNatural     Parse_OperandNatural     (string& operand_str);
 OperandLable       Parse_OperandLable       (string& operand_str);
+OperandFlag        Parse_OperandFlag        (string& operand_str);
 
 
 
@@ -50,6 +53,7 @@ unique_ptr<Instruction> Parse_Trans (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Call  (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Ret   (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Exit  (string& operand1_str,string& operand2_str);
+unique_ptr<Instruction> Parse_Sleep (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Push  (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Pop   (string& operand1_str,string& operand2_str);
 unique_ptr<Instruction> Parse_Input (string& operand1_str,string& operand2_str);
@@ -101,6 +105,7 @@ static unordered_map<string,unique_ptr<Instruction>(*)(string&,string&)> ParseIn
     {"CALL",Parse_Call},    {"call",Parse_Call},
     {"RET",Parse_Ret},      {"ret",Parse_Ret},
     {"EXIT",Parse_Exit},    {"exit",Parse_Exit},
+    {"SLEEP",Parse_Sleep},  {"sleep",Parse_Sleep},
     {"PUSH",Parse_Push},    {"push",Parse_Push},
     {"POP",Parse_Pop},      {"pop",Parse_Pop},
     {"INPUT",Parse_Input},  {"input",Parse_Input},

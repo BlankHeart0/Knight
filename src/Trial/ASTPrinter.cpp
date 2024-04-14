@@ -158,6 +158,13 @@ void ExitStatementAST::Print(int depth)
     cout<<"Exit_Statement";
 }
 
+void SleepStatementAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Sleep_Statement";
+    cout<<" time:"<<constant.lexeme<<"s";
+}
+
 void InputStatementAST::Print(int depth)
 {
     PrintTab(depth);

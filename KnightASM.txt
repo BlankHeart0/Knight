@@ -18,6 +18,7 @@ trans   R           Y
 call    function
 ret
 exit
+sleep   N
 push    R
 pop     R
 input   variable(N)

@@ -21,10 +21,10 @@ class Perm: public Instruction
 {
 public:
     OperandPermission operand1_permission;
-    OperandLable      operand2_lable;
+    OperandFlag       operand2_flag;
 
-    Perm(OperandPermission operand1_permission,OperandLable operand2_lable):
-        operand1_permission(operand1_permission),operand2_lable(operand2_lable),
+    Perm(OperandPermission operand1_permission, OperandFlag operand2_flag):
+        operand1_permission(operand1_permission),operand2_flag(operand2_flag),
         Instruction(true){}
 
     void Excute() override;
@@ -179,6 +179,18 @@ public:
     Exit():Instruction(false){}
 
     void Excute() override;
+};
+
+class Sleep:public Instruction
+{
+public:
+    OperandNatural operand1_natural;
+
+    Sleep(OperandNatural operand1_natural):
+        operand1_natural(operand1_natural),
+        Instruction(false){}
+
+    void Excute() override;  
 };
 
 class Push:public Instruction

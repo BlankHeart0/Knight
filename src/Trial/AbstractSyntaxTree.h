@@ -172,6 +172,15 @@ public:
     void Print(int depth) override;
 };
 
+class SleepStatementAST: public ASTNode
+{
+public:
+    Token constant;
+
+    int CodeGen() override;
+    void Print(int depth) override; 
+};
+
 class InputStatementAST: public ASTNode
 {
 public:

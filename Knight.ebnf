@@ -16,14 +16,15 @@
 
 #Statement
 <Statement> ::= <Compound_Statement> | <LocalVariable_Definition> | <If_Statement> | <While_Statement> |
-              | <Return_Statement> | <Exit_Statement> | <Input_Statement> | <Output_Statement> | 
-              | <Assignment_Statement> | <Expression_Statement> 
+              | <Return_Statement> | <Exit_Statement> | <Sleep_Statement> |
+              | <Input_Statement> | <Output_Statement> | <Assignment_Statement> | <Expression_Statement> 
 <Compound_Statement> ::= "{"{<Statement>}"}"
 
 <If_Statement> ::= IF"("<Expression>")"<Statement>[ELSE<Statement>]
 <While_Statement> ::= WHILE"("<Expression>")"<Statement>
 <Return_Statement> ::= RET [<Expression>] ";"
 <Exit_Statement> ::= EXIT ";"
+<Sleep_Statement> ::= SLEEP CONSTANT_INT ";"
 <Input_Statement> ::= INPUT IDENTIFIER{,IDENTIFIER} ";"
 <Output_Statement> ::= OUTPUT <Expression>{,<Expression>} ";"
 <Assignment_Statement> ::= IDENTIFIER"=" <Expression> ";"

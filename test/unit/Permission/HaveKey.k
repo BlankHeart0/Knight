@@ -13,7 +13,10 @@ str<USE_KEY> GetKey(str name)
 main()
 {
     while(1)
+    {
         output "HaveKey Running...";
+        sleep 1;
+    }
     
     ret;
 }

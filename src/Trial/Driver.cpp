@@ -38,5 +38,6 @@ int main(int argc,char* argv[])
         file_manager.Load();
         Trial();
     }
+    
     return 0;
 }

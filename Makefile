@@ -1,6 +1,6 @@
-all: bin/trial bin/steed
+all: bin/trial bin/steed bin/duke
 
-$(shell mkdir -p build/trial build/steed bin)
+$(shell mkdir -p build/trial build/steed build/duke bin)
 
 # Trial
 -include $(objects_trial:.o=.d)
@@ -34,6 +34,21 @@ build/steed/%.o: $(path_steed)/%.cpp
 
 build/steed/%.d: $(path_steed)/%.cpp
 	g++ -M $< -MT "build/steed/$*.o" -MF $@
+
+# Duke
+-include $(objects_duke:.o=.d)
+path_duke = src/Duke
+objects_duke = build/duke/Driver.o build/duke/OS.o 
+
+bin/duke: $(objects_duke)
+	g++ -o bin/duke $(objects_duke)
+
+build/duke/%.o: $(path_duke)/%.cpp
+	g++ -c $< -o $@
+
+build/duke/%.d: $(path_duke)/%.cpp
+	g++ -M $< -MT "build/duke/$*.o" -MF $@
+
 
 clean:
 	-rm -rf bin/ build/

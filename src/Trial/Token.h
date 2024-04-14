@@ -10,15 +10,15 @@ enum TokenType
     IF, ELSE, WHILE,
     INPUT, OUTPUT, 
     RET, EXIT, 
-    PERMISSION,
+    PERMISSION,INVOKE,
 
     //Identifier
     IDENTIFIER,
 
     //Separator
-    SEMICOLON, COMMA, COLON, // ; , :
-    LEFT_PAREN, RIGHT_PAREN, // ( )
-    LEFT_BRACE, RIGHT_BRACE, // { }
+    SEMICOLON, COMMA, COLON, DOT,   // ; , : .
+    LEFT_PAREN, RIGHT_PAREN,        // ( )
+    LEFT_BRACE, RIGHT_BRACE,        // { }
     
     //Operator
     PLUS, MINUS, STAR, SLASH, PERCENT, // + - * / %
@@ -45,15 +45,15 @@ static vector<string>TokenType_text
     "IF", "ELSE", "WHILE",
     "INPUT", "OUTPUT", 
     "RET", "EXIT", 
-    "PERMISSION",
+    "PERMISSION","INVOKE",
 
     //Identifier
     "IDENTIFIER",
 
     //Separator
-    "SEMICOLON", "COMMA", "COLON", // ; , :
-    "LEFT_PAREN", "RIGHT_PAREN", // ( )
-    "LEFT_BRACE", "RIGHT_BRACE", // { }
+    "SEMICOLON", "COMMA", "COLON", "DOT", // ; , : .
+    "LEFT_PAREN", "RIGHT_PAREN",         // ( )
+    "LEFT_BRACE", "RIGHT_BRACE",         // { }
     
     //Operator
     "PLUS", "MINUS", "STAR", "SLASH", "PERCENT", // + - * / %
@@ -79,7 +79,7 @@ static unordered_map<string,TokenType>Keyword_map
     {"if",IF}, {"else",ELSE}, {"while",WHILE},
     {"input",INPUT}, {"output",OUTPUT}, 
     {"ret",RET}, {"exit",EXIT}, 
-    {"permission",PERMISSION},
+    {"permission",PERMISSION}, {"invoke",INVOKE},
     {"not",NOT}, {"and",AND}, {"or",OR}
 };
 

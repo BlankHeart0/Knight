@@ -194,6 +194,40 @@ void CodeGenerator::Store(string variable_name,int r_i,int line)
 
 
 // Fucntion
+void CodeGenerator::Invoke(string app_name,string function_name,int line)
+{
+    functable.Add(app_name+"."+function_name,line);
+    
+    // Opcode
+    file_manager.Write(is_upper?"INVOKE":"invoke");
+    file_manager.Write("\t");
+
+    // Operand1
+    file_manager.Write(app_name);
+    file_manager.WriteComma();
+
+    // Operand2
+    file_manager.Write(function_name);
+    file_manager.WriteEndl();
+}
+
+void CodeGenerator::Invoke(Type type,string app_name,string function_name,int line)
+{
+    functable.Add(type,app_name+"."+function_name,line);
+    
+    // Opcode
+    file_manager.Write(is_upper?"INVOKE":"invoke");
+    file_manager.Write("\t");
+    
+    // Operand1
+    file_manager.Write(app_name);
+    file_manager.WriteComma();
+
+    // Operand2
+    file_manager.Write(function_name);
+    file_manager.WriteEndl();
+}
+
 void CodeGenerator::Func(string function_name,int line)
 {
     functable.Add(function_name,line);

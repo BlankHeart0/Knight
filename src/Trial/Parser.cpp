@@ -21,6 +21,9 @@ unique_ptr<ASTNode> Parser::Parse_Translation_Unit()
         if(Peek(PERMISSION))
             AddChildToVector(node->permission_definitions,
                             Parse_Permission_Definition());
+        else if(Peek(INVOKE))
+            AddChildToVector(node->invoke_definitions,
+                            Parse_Invoke_Definition());
         else
             AddChildToVector(node->function_definitions,
                             Parse_Function_Definition());
@@ -89,6 +92,48 @@ TypeAsToken Parser::Parse_Type()
     }
 
     return TypeAsToken(data_token,permissions_token);
+}
+
+unique_ptr<ASTNode> Parser::Parse_Invoke_Definition()
+{
+    diagnostor.WhoAmI("Parse_Invoke_Definition");
+
+    unique_ptr<InvokeDefinitionAST> node=make_unique<InvokeDefinitionAST>();
+
+    if(Match(INVOKE))
+    {
+        if(Match(IDENTIFIER))
+        {
+            node->app_name=PreviousToken();
+
+            if(Match(COLON))
+            {
+                if(!Peek(IDENTIFIER))
+                    node->ret_type=Parse_Type();
+
+                if(Match(IDENTIFIER))
+                {
+                    node->function_name=PreviousToken();
+
+                    if(Match(LEFT_PAREN))
+                    {
+                        if(!Peek(RIGHT_PAREN))
+                            node->parameter_list=Parse_Parameter_List();
+
+                        if(!Match(RIGHT_PAREN))
+                            PARSE_ERROR("Right paren ')' loss"); 
+                    }
+                    else PARSE_ERROR("Left paren '(' loss");
+                }
+                else PARSE_ERROR("Function identifier loss");
+            }
+            else PARSE_ERROR("Colon ':' loss");
+        }
+        else PARSE_ERROR("App identifier loss");
+    }
+    else PARSE_ERROR("Keyword 'invoke' loss");
+    
+    return move(node);
 }
 
 unique_ptr<ASTNode> Parser::Parse_Function_Definition()
@@ -555,7 +600,7 @@ unique_ptr<ASTNode> Parser::Parse_Unary_Expression()
         node->prefix_operator=PreviousToken();
     }
 
-    if(Peek(IDENTIFIER)&&Peek(LEFT_PAREN,2))
+    if(Peek(IDENTIFIER)&&(Peek(LEFT_PAREN,2)||Peek(DOT,2)))
         node->functioncall_expression=Parse_FunctionCall_Expression();
     else
         node->primary_expression=Parse_Primary_Expression();
@@ -593,6 +638,18 @@ unique_ptr<ASTNode> Parser::Parse_FunctionCall_Expression()
     diagnostor.WhoAmI("Parse_FunctionCall_Expression");
 
     unique_ptr<FunctionCallExpressionAST> node=make_unique<FunctionCallExpressionAST>();
+
+    if(Peek(DOT,2))
+    {
+        if(Match(IDENTIFIER))
+        {
+            node->app=PreviousToken();
+            
+            if(!Match(DOT))
+                PARSE_ERROR("Dot '.' loss");
+        }
+        else PARSE_ERROR("App identifier loss");
+    }
 
     if(Match(IDENTIFIER))
     {

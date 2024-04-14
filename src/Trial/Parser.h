@@ -22,6 +22,7 @@ public:
     unique_ptr<ASTNode> Parse_Permission_Definition();
 
     TypeAsToken Parse_Type();
+    unique_ptr<ASTNode> Parse_Invoke_Definition();
     unique_ptr<ASTNode> Parse_Function_Definition();
     unique_ptr<ASTNode> Parse_Parameter();
     unique_ptr<ASTNode> Parse_Parameter_List();

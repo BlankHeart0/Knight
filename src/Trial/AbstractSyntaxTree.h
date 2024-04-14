@@ -30,6 +30,7 @@ class TranslationUnitAST: public ASTNode
 {
 public:    
     vector<unique_ptr<ASTNode>> permission_definitions;
+    vector<unique_ptr<ASTNode>> invoke_definitions;
     vector<unique_ptr<ASTNode>> function_definitions;
     
     int CodeGen() override;
@@ -49,6 +50,18 @@ public:
 };
 
 
+
+class InvokeDefinitionAST: public ASTNode
+{
+public:
+    Token app_name;
+    TypeAsToken ret_type;
+    Token function_name;
+    unique_ptr<ASTNode> parameter_list;
+        
+    int CodeGen() override;
+    void Print(int depth) override;
+};
 
 class FunctionDefinitionAST: public ASTNode
 {
@@ -308,6 +321,7 @@ public:
 class FunctionCallExpressionAST: public ASTNode
 {
 public:
+    Token app;
     Token function;
     vector<unique_ptr<ASTNode>> expressions;
 

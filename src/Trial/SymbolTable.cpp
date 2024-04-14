@@ -97,7 +97,7 @@ Function& FunctionTable::Visit(string function_name)
 Function& FunctionTable::Visit(string function_name,int line)
 {
     if(!Exist(function_name))
-        SYMBOL_ERROR("The variable: "+function_name+" is undefined");
+        SYMBOL_ERROR("The function: "+function_name+" is undefined");
     
     return table[function_name];
 }

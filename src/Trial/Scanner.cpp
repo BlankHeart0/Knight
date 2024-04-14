@@ -20,6 +20,7 @@ void Scanner::ScanToken()
         case ';': AddToken(SEMICOLON);      break;
         case ',': AddToken(COMMA);          break;
         case ':': AddToken(COLON);          break;
+        case '.': AddToken(DOT);            break;
         
         case '(': AddToken(LEFT_PAREN);     break;
         case ')': AddToken(RIGHT_PAREN);    break;
@@ -199,7 +200,7 @@ void Scanner::AddToken(TokenType token_type)
 
 void Scanner::Tokens_PrintTable()
 {
-    cout << "  Line\tType\t\tLexeme" << endl<<endl;
+    cout <<endl<<"  Line\tType\t\tLexeme" << endl<<endl;
 	for (Token& token : tokens)
 	{
 		cout << "  " << token.line << "\t" << TokenType_text[token.token_type] << "\t";

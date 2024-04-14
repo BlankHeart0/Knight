@@ -17,6 +17,7 @@ public:
     void CodeGen();
 
     static PermissionSet program_permissions;
+    static bool isInvoke;
     static string gen_fucntion;
     static Function& NowInFunction();
     static FunctionTable functable;
@@ -34,6 +35,8 @@ public:
     static void Store(string variable_name,int r_i,int line);// STORE store
     
     // Function
+    static void Invoke(string app_name,string function_name,int line); //INVOKE invoke
+    static void Invoke(Type type,string app_name,string function_name,int line); //INVOKE invoke
     static void Func(string function_name,int line);   // FUNC func
     static void Func(Type type,string function_name,int line);   // FUNC func
     static int  TransX2R(int x_i);                      // TRANS trans

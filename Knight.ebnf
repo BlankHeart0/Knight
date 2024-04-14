@@ -1,12 +1,13 @@
 # Knight's ebnf grammar
 
 # Begin
-<Translation_Unit> ::= {<Permission_Definition>|<Function_Definition>} CODE_EOF
+<Translation_Unit> ::= {<Permission_Definition>|Invoke_Definition|<Function_Definition>} CODE_EOF
 
 # Definition
 <Permission_Definition> ::= PERMISSION IDENTIFIER{,IDENTIFIER}
 
 <Type> ::= (INT | DEC | STR | BOOL)["<"IDENTIFIER{,IDENTIFIER}">"]
+<Invoke_Definition> ::= INVOKE IDENTIFIER ":" [<Type>] IDENTIFIER "("[<Parameter_List>]")"
 <Function_Definition> ::= [<Type>] IDENTIFIER "("[<Parameter_List>]")" "{"{<Statement>}"}" 
 <Parameter> ::= <Type> IDENTIFIER
 <Parameter_List> ::= <Parameter>{","<Parameter>}
@@ -43,4 +44,4 @@
 <Unary_Expression> ::= ["-" | "not"] (<Primary_Expression> | <FunctionCall_Expression>) 
 <Primary_Expression> ::= "("<Expression>")" | IDENTIFIER |
                         | CONSTANT_INT | CONSTANT_DEC | CONSTANT_STR | "true" | "false" 
-<FunctionCall_Expression>::= IDENTIFIER "(" [<Expression>{","<Expression>}] ")"                      
+<FunctionCall_Expression>::= [IDENTIFIER"."]IDENTIFIER "(" [<Expression>{","<Expression>}] ")"                      

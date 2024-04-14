@@ -9,6 +9,7 @@ load    R           constant
 load    R           variable(N)
 store   variable(N) R
 
+invoke  application function    (directive)
 func    type        function    (directive)
 trans   X           R
 trans   R           X

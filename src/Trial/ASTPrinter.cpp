@@ -22,6 +22,9 @@ void TranslationUnitAST::Print(int depth)
 
     for(unique_ptr<ASTNode>& ast_ptr:permission_definitions)
         ast_ptr->Print(depth+1);
+    
+    for(unique_ptr<ASTNode>& ast_ptr:invoke_definitions)
+        ast_ptr->Print(depth+1);
 
     for(unique_ptr<ASTNode>& ast_ptr:function_definitions)
         ast_ptr->Print(depth+1);
@@ -40,6 +43,17 @@ void PermissionDefinitionAST::Print(int depth)
 }
 
 
+
+void InvokeDefinitionAST::Print(int depth)
+{
+    PrintTab(depth);
+    cout<<"Invoke_Definition";
+
+    cout<<" app_name:"<<app_name.lexeme;
+    cout<<" ret_type:";ret_type.Print();
+    cout<<" function_name:"<<function_name.lexeme;
+    if(parameter_list)parameter_list->Print(depth+1);
+}
 
 void FunctionDefinitionAST::Print(int depth)
 {
@@ -324,6 +338,9 @@ void FunctionCallExpressionAST::Print(int depth)
     PrintTab(depth);
     cout<<"FunctionCall_Expression";
 
+    if(app.is_valid)
+        cout<<" app:"<<app.lexeme;
+        
     cout<<" function:"<<function.lexeme;
 
     for(unique_ptr<ASTNode>& ast_ptr:expressions)

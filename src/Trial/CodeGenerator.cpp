@@ -1,8 +1,9 @@
 #include "CodeGenerator.h"
 
 PermissionSet CodeGenerator::program_permissions;
-FunctionTable CodeGenerator::functable;
+bool CodeGenerator::isInvoke;
 string CodeGenerator::gen_fucntion;
+FunctionTable CodeGenerator::functable;
 
 Function& CodeGenerator::NowInFunction()
 {
@@ -31,6 +32,9 @@ int TranslationUnitAST::CodeGen()
     for(unique_ptr<ASTNode>& ast_ptr:permission_definitions)
         ast_ptr->CodeGen();
 
+    for(unique_ptr<ASTNode>& ast_ptr:invoke_definitions)
+        ast_ptr->CodeGen();
+
     for(unique_ptr<ASTNode>& ast_ptr:function_definitions)
         ast_ptr->CodeGen();
     
@@ -56,8 +60,26 @@ int PermissionDefinitionAST::CodeGen()
 
 
 
+int InvokeDefinitionAST::CodeGen()
+{
+    CodeGenerator::isInvoke=true;
+
+    if(ret_type.is_valid)
+        CodeGenerator::Invoke(ret_type.ToRealType(),app_name.lexeme,function_name.lexeme,app_name.line);
+    else
+        CodeGenerator::Invoke(app_name.lexeme,function_name.lexeme,app_name.line);
+    
+    CodeGenerator::gen_fucntion=app_name.lexeme+"."+function_name.lexeme;
+
+    if(parameter_list)parameter_list->CodeGen();
+
+    return NOTHING;
+}
+
 int FunctionDefinitionAST::CodeGen()
 {
+    CodeGenerator::isInvoke=false;
+
     if(ret_type.is_valid)
         CodeGenerator::Func(ret_type.ToRealType(),function_name.lexeme,function_name.line);
     else 
@@ -90,7 +112,8 @@ int FunctionDefinitionAST::CodeGen()
 
 int ParameterAST::CodeGen()
 {
-    CodeGenerator::Var(type.ToRealType(),parameter_name.lexeme,parameter_name.line);
+    if(!CodeGenerator::isInvoke)
+        CodeGenerator::Var(type.ToRealType(),parameter_name.lexeme,parameter_name.line);
     
     CodeGenerator::NowInFunction().parameters.push_back
         (Parameter(type.ToRealType(),parameter_name.lexeme));
@@ -415,7 +438,12 @@ int PrimaryExpressionAST::CodeGen()
 int FunctionCallExpressionAST::CodeGen()
 {
     int line=function.line;
-    Function& called_function=CodeGenerator::functable.Visit(function.lexeme,line);
+    string function_name;
+    if(app.is_valid)
+        function_name=app.lexeme+"."+function.lexeme;
+    else function_name=function.lexeme;
+
+    Function& called_function=CodeGenerator::functable.Visit(function_name,line);
 
     if(called_function.parameters.size()!=expressions.size())
         TYPE_ERROR("Parameter and Argument number not match");
@@ -451,5 +479,5 @@ int FunctionCallExpressionAST::CodeGen()
         }
     }
 
-    return CodeGenerator::Call(function.lexeme,function.line);
+    return CodeGenerator::Call(function_name,function.line);
 }

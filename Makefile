@@ -52,3 +52,9 @@ build/duke/%.d: $(path_duke)/%.cpp
 
 clean:
 	-rm -rf bin/ build/
+
+install:
+	sudo cp bin/trial bin/steed bin/duke /usr/bin/
+
+uninstall:
+	sudo rm /usr/bin/trial /usr/bin/steed /usr/bin/duke

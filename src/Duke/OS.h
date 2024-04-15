@@ -8,8 +8,12 @@ class OperatingSystem
 private:
     void PrintLogo();
 
-public:
+public: 
+    bool is_stop;
+    
     void Flash();
+    void HostOldTerminalRun(string command);
+    void HostNewTerminalRun(string command);
     void Run();
 };
 

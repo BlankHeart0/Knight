@@ -1,11 +1,12 @@
 --package:.ks
 --application:others
 
+byebye
+command
+clear
 draw
 
-list
-list -app
-list -pkg
+list [-pkg|-app]
 
 install package
 reinstall application

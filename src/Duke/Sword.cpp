@@ -1,4 +1,5 @@
 #include "Sword.h"
+#include "OS.h"
 
 void Sword::Blank(int n)
 {
@@ -28,7 +29,7 @@ void Sword::Fly()
     // Fly-Whole
     while(move_times>=0)
     {
-        system("clear");
+        duke.HostOldTerminalRun("clear");
         cout<<endl;
 
         Blank(move_item*move_times);cout<<"                                         /|\\"<<endl;

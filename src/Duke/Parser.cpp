@@ -22,7 +22,7 @@ bool Parser::GetNameArg()
     while(current<size&&isspace(command_str[current]))current++;
     if(current<size)
     {
-        cout<<"Command Format: command [arg]"<<endl;
+        cout<<"Command Format: \033[96mcommand [arg]\033[0m"<<endl;
         return false;
     }
     return true;
@@ -33,7 +33,7 @@ unique_ptr<Command> Parser::GetCommand()
     if(CommandParse_map.find(command_name)==CommandParse_map.end())
     {
         if(command_name!="")
-            cout<<"Unsupport Command: "<<command_name<<endl;
+            cout<<"Unsupport Command: \033[96m"<<command_name<<"\033[0m"<<endl;
         return nullptr;
     }
 
@@ -87,6 +87,19 @@ unique_ptr<Command> Parse_Echo(string& arg)
     unique_ptr<Echo> echo=make_unique<Echo>(something);
 
     return move(echo);
+}
+
+unique_ptr<Command> Parse_Again(string& arg)
+{
+    if(arg!="")
+    {
+        CommandUsage("again");
+        return nullptr;
+    }
+
+    unique_ptr<Again> again=make_unique<Again>();
+
+    return move(again);
 }
 
 unique_ptr<Command> Parse_Clear(string& arg)

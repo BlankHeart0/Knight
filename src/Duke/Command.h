@@ -9,6 +9,7 @@ static unordered_map<string,string> CommandUsage_map
     {"command","command"},
     {"history","history"},
     {"echo","echo something"},
+    {"again","again"},
     {"clear","clear"},
     {"draw","draw"},
     {"list","list [-pkg|-app]"},
@@ -56,6 +57,13 @@ public:
     string something;
 
     Echo(string something):something(something){}
+    void Excute();
+};
+
+// again
+class Again: public Command
+{
+public:
     void Excute();
 };
 

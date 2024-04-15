@@ -5,6 +5,7 @@ byebye
 command
 history
 echo
+again
 clear
 draw
 

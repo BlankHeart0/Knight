@@ -19,7 +19,20 @@ void Byebye::Excute()
 void _Command::Excute()
 {
     for(auto& it:CommandUsage_map)
-        cout<<it.second<<endl;
+        cout<<"* "<<it.second<<endl;
+}
+
+void History::Excute()
+{
+    for(int i=0;i<duke.history_command.size();i++)
+    {
+        cout<<i<<"\t"<<duke.history_command[i]<<endl;
+    }
+}
+
+void Echo::Excute()
+{
+    cout<<something<<endl;
 }
 
 void Clear::Excute()
@@ -41,6 +54,11 @@ void List::Excute()
         case L_PKG:duke.HostOldTerminalRun("ls | grep '\\.ks$'");              break;
         case L_APP:duke.HostOldTerminalRun("ls | grep -v '\\..*$'");           break;
     }
+}
+
+void Uninstall::Excute()
+{
+    duke.HostOldTerminalRun("rm "+application);
 }
 
 void Run::Excute()

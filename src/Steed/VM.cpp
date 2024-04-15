@@ -10,7 +10,7 @@ void VirtualMachine::Initialize(string knightASM_file_name)
 
 void VirtualMachine::Load()
 {
-    cout<<"Loadding... ..."<<endl<<endl;
+    //cout<<"Loadding... ..."<<endl<<endl;
 
     string line_str=file_manager.ReadLine();
     while(line_str!="")
@@ -28,13 +28,13 @@ void VirtualMachine::Load()
 
     file_manager.Close();
 
-    cout<<"++++++ Done ++++++"<<endl<<endl;
+    //cout<<"++++++ Done ++++++"<<endl<<endl;
 
 }
 
 void VirtualMachine::Run()
 {
-    cout<<endl<<"------Running------"<<endl<<endl;
+    //cout<<endl<<"------Running------"<<endl<<endl;
 
     pc.excuting_function="main";
     pc.instruction_id=0;
@@ -49,7 +49,7 @@ void VirtualMachine::Run()
         else is_stop=true;
     }
 
-    cout<<endl<<"------ Done ------"<<endl<<endl;
+    //cout<<endl<<"------ Done ------"<<endl<<endl;
 }
 
 Function& VirtualMachine::ParsingFunction()

@@ -68,6 +68,27 @@ unique_ptr<Command> Parse_Command(string& arg)
     return move(command);
 }
 
+unique_ptr<Command> Parse_History(string& arg)
+{
+    if(arg!="")
+    {
+        CommandUsage("history");
+        return nullptr;
+    }
+
+    unique_ptr<History> history=make_unique<History>();
+
+    return move(history);
+}
+
+unique_ptr<Command> Parse_Echo(string& arg)
+{
+    string something=arg;
+    unique_ptr<Echo> echo=make_unique<Echo>(something);
+
+    return move(echo);
+}
+
 unique_ptr<Command> Parse_Clear(string& arg)
 {
     if(arg!="")
@@ -116,6 +137,20 @@ unique_ptr<Command> Parse_List(string& arg)
     return nullptr;
 }
 
+unique_ptr<Command> Parse_Uninstall (string& arg)
+{
+    if(arg=="")
+    {
+        CommandUsage("uninstall");
+        return nullptr;
+    }
+
+    string application=arg;
+    unique_ptr<Uninstall> uninstall=make_unique<Uninstall>(application);
+
+    return move(uninstall);
+}
+
 unique_ptr<Command> Parse_Run(string& arg)
 {
     if(arg=="")
@@ -123,7 +158,7 @@ unique_ptr<Command> Parse_Run(string& arg)
         CommandUsage("run");
         return nullptr;
     }
-    
+
     string application=arg;
     unique_ptr<Run> run=make_unique<Run>(application);
 

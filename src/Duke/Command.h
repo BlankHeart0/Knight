@@ -7,9 +7,12 @@ static unordered_map<string,string> CommandUsage_map
 {
     {"byebye","byebye"},
     {"command","command"},
+    {"history","history"},
+    {"echo","echo something"},
     {"clear","clear"},
     {"draw","draw"},
     {"list","list [-pkg|-app]"},
+    {"uninstall","uninstall application"},
     {"run","run application"}
 };
 void CommandUsage(string command);
@@ -36,6 +39,23 @@ public:
 class _Command: public Command
 {
 public:
+    void Excute();
+};
+
+// history
+class History: public Command
+{
+public:
+    void Excute();
+};
+
+// echo
+class Echo: public Command
+{
+public:
+    string something;
+
+    Echo(string something):something(something){}
     void Excute();
 };
 
@@ -70,7 +90,17 @@ public:
     void Excute();
 };
 
-//run
+// uninstall
+class Uninstall: public Command
+{
+public:
+    string application;
+
+    Uninstall(string application):application(application){}
+    void Excute();
+};
+
+// run
 class Run: public Command
 {
 public:

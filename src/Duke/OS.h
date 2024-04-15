@@ -10,7 +10,8 @@ private:
 
 public: 
     bool is_stop;
-    
+    vector<string> history_command;
+
     void Flash();
     void HostOldTerminalRun(string command);
     void HostNewTerminalRun(string command);

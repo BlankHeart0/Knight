@@ -7,7 +7,7 @@ class FileManager
 {
 private:
     string knightASM_file_name;
-    ifstream knightASM_file;
+    ifstream knight_file;
 
 public:
     void Initialize(string knightASM_file_name);

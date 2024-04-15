@@ -3,12 +3,14 @@
 
 byebye
 command
+history
+echo
 clear
 draw
 
 list [-pkg|-app]
 
 install package
-reinstall application
+uninstall application
 chperm application
 run application

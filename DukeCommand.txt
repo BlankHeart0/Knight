@@ -11,7 +11,7 @@ draw
 
 list [-pkg|-app]
 
-install package
+-install package
 uninstall application
-chperm application
+-chperm application
 run application

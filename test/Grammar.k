@@ -6,17 +6,20 @@ afaf fakfj
 ##
 
 invoke xx
-permission aff;
+permission aff
+
 main()
 {
     int C:1.23;
-    if(C>1)output "Big";
+    C=af;
+    if(not C>=1 )output "Big";
     else output "Small";
-
+    exit;
+    sleep 12;
     ret;
 }
 
-int Foo()
+int<faf,fef> Foo()
 {
     int k:10;
     if(k>50)
@@ -25,6 +28,6 @@ int Foo()
     }
     else output "Small";
 
-    bool t:true;
+    bool t:false;
     if(t)ret 0;
 }

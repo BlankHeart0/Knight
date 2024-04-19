@@ -75,7 +75,36 @@ OperandConstant Parse_OperandConstant(string& operand_str)
     else if(operand_str=="false")return OperandConstant(false);
 
     // Str
-    return OperandConstant(operand_str.substr(1,operand_str.size()-2));
+    string temp_str=operand_str.substr(1,operand_str.size()-2);
+    string constant_str;
+
+    for(int i=0;i<temp_str.size();i++)
+    {
+        char c=temp_str[i];
+
+        if(temp_str[i]=='\\'&&i+1<temp_str.size())
+        {
+            switch(temp_str[i+1])
+            {
+                case 'a':c='\a'; break;
+                case 'b':c='\b'; break;
+                case 'f':c='\f'; break;
+                case 'n':c='\n'; break;
+                case 'r':c='\r'; break;
+                case 't':c='\t'; break;
+                case 'v':c='\v'; break;
+                case '\\':c='\\';break;
+                case '\'':c='\'';break;
+                case '\"':c='\"';break;
+                case '0': c='\0';break;
+            }
+            i++;
+        }
+        //@Bug:Get wrong escape character
+        constant_str.push_back(c);
+    }
+
+    return OperandConstant(constant_str);
 }
 
 OperandRegister Parse_OperandRegister(string& operand_str)

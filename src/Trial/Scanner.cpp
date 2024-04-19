@@ -49,9 +49,16 @@ void Scanner::ScanToken()
 
         //Comment
         case '#':
-            while(Peek()!='\n'&&!IsAtEnd())Advance();
+            if(Match('#'))
+            {
+                do{
+                    if(Peek()=='\n')line++;
+                }
+                while(Advance()!='#'||Peek()!='#');
+                Advance();
+            }
+            else while(Peek()!='\n'&&!IsAtEnd())Advance();
             break;
-        //@Todo: multiple lines
 
         //Blank
         case ' ': case '\r': case '\t':     break;

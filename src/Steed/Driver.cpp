@@ -3,7 +3,7 @@
 
 void Usage()
 {
-    cout<<"Usage: steed knight_file "<<endl;
+    cout<<"Usage: steed KnightAssembly_file "<<endl;
 }
 
 int main(int argc,char* argv[])

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "System.h"
+#include "FileManager.h"
 
 #define DEBUG 0
 

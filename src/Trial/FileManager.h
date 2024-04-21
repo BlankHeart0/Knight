@@ -25,6 +25,7 @@ public:
     void WriteComma();
     void WriteEndl();
     void Close();
+    void Remove();
 };
 
 extern FileManager file_manager;

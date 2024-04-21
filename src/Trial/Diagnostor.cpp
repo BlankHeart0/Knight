@@ -1,7 +1,7 @@
 #include "Diagnostor.h"
 
 Diagnostor diagnostor;
-bool is_upper=false;
+bool is_upper;
 
 void Diagnostor::ErrorHead(ErrorModule error_module)
 {
@@ -31,6 +31,8 @@ void Diagnostor::Error(ErrorModule error_module,int line,string error_message)
 
     cout<<"Line "<<line<<", "<<error_message<<endl;
 
+    file_manager.Close();
+    file_manager.Remove();
     exit(-1);
 }
 
@@ -40,6 +42,8 @@ void Diagnostor::Error(ErrorModule error_module,string error_message)
 
     cout<<error_message<<endl;
 
+    file_manager.Close();
+    file_manager.Remove();
     exit(-1);
 }
 

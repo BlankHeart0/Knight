@@ -20,8 +20,6 @@ void CodeGenerator::CodeGen()
 void AST::CodeGen()
 {
     translation_unit->CodeGen();
-
-    cout<<">>> CodeGen Done"<<endl;
 }
 
 

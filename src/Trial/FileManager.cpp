@@ -73,3 +73,8 @@ void FileManager::Close()
     input_file.close();
     output_file.close();
 }
+
+void FileManager::Remove()
+{
+    remove(output_file_name.c_str());
+}

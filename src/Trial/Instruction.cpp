@@ -924,7 +924,7 @@ int CodeGenerator::Neg(int r_i,int line)
     DataTypeChecker::Check_Neg(r_i,line);
 
     // Opcode
-    file_manager.Write((is_upper?"Neg":"neg"));
+    file_manager.Write((is_upper?"NEG":"neg"));
     file_manager.Write("\t\t");
 
     // Operand1
@@ -939,7 +939,7 @@ int CodeGenerator::Not(int r_i,int line)
     DataTypeChecker::Check_Not(r_i,line);
 
     // Opcode
-    file_manager.Write((is_upper?"Not":"not"));
+    file_manager.Write((is_upper?"NOT":"not"));
     file_manager.Write("\t\t");
 
     // Operand1

@@ -220,9 +220,9 @@ void Invoke::Excute()
 
         if(parser.opcode_str=="FUNC"||parser.opcode_str=="func")
         {
-            if(parser.operand2_str==operand2_function.name)
+            if(parser.operand1_str==operand2_function.name)
             {
-                parser.operand2_str=operand1_application.name+"."+operand2_function.name;
+                parser.operand1_str=operand1_application.name+"."+operand2_function.name;
                 isInTargetFunction=true;
             }
             else isInTargetFunction=false;
@@ -244,11 +244,8 @@ void Invoke::Excute()
 // func type function (directive)
 void Func::Excute()
 {
-    Steed.functions.New(operand2_function.name);
-    Steed.parsing_function=operand2_function.name;
-    
-    Steed.ParsingFunction().is_void=operand1_type.is_void;
-    Steed.ParsingFunction().data_type=operand1_type.data_type;
+    Steed.functions.New(operand1_function.name);
+    Steed.parsing_function=operand1_function.name;
 }
 
 /*

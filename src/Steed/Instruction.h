@@ -130,11 +130,10 @@ public:
 class Func: public Instruction
 {
 public:
-    OperandType     operand1_type;
-    OperandFunction operand2_function;
+    OperandFunction operand1_function;
 
-    Func(OperandType operand1_type,OperandFunction operand2_function):
-        operand1_type(operand1_type),operand2_function(operand2_function),
+    Func(OperandFunction operand1_function):
+        operand1_function(operand1_function),
         Instruction(true){}
 
     void Excute() override;  

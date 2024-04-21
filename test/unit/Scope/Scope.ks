@@ -1,4 +1,4 @@
-func	void,main
+func	main
 var		int,a(0)
 load	r0,123
 store	a(0),r0

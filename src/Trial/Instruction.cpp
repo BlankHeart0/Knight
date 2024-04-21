@@ -237,10 +237,6 @@ void CodeGenerator::Func(string function_name,int line)
     file_manager.Write("\t");
 
     // Operand1
-    file_manager.Write(is_upper?"VOID":"void");
-    file_manager.WriteComma();
-
-    // Operand2
     file_manager.Write(function_name);
     file_manager.WriteEndl();
 }
@@ -254,10 +250,6 @@ void CodeGenerator::Func(Type type,string function_name,int line)
     file_manager.Write("\t");
 
     // Operand1
-    file_manager.Write(type.Str());
-    file_manager.WriteComma();
-
-    // Operand2
     file_manager.Write(function_name);
     file_manager.WriteEndl();
 }

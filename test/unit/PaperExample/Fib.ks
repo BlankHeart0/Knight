@@ -1,4 +1,4 @@
-func	int,Fib
+func	Fib
 var		int,n(0)
 trans	r0,x0
 store	n(0),r0
@@ -28,7 +28,7 @@ trans	r1,y
 add		r0,r1
 trans	y,r0
 ret		
-func	void,main
+func	main
 var		int,i(0)
 load	r0,1
 store	i(0),r0

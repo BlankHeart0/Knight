@@ -1,6 +1,6 @@
 perm	USE_KEY,0
 invoke	HaveKey,GetKey
-func	void,main
+func	main
 load	r0,"PJD"
 trans	x0,r0
 call	HaveKey.GetKey

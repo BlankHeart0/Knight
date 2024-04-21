@@ -1,4 +1,4 @@
-func	void,f
+func	f
 load	r0,"f1"
 output	r0
 output	endline
@@ -9,7 +9,7 @@ exit
 load	r0,"f3"
 output	r0
 output	endline
-func	void,main
+func	main
 load	r0,1
 output	r0
 output	endline

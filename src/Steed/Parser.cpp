@@ -303,10 +303,9 @@ unique_ptr<Instruction> Parse_Invoke(string& operand1_str,string& operand2_str)
 
 unique_ptr<Instruction> Parse_Func(string& operand1_str,string& operand2_str)
 {
-    OperandType     operand1_type=Parse_OperandType(operand1_str);
-    OperandFunction operand2_function=Parse_OperandName(operand2_str);
+    OperandFunction operand1_function=Parse_OperandName(operand1_str);
 
-    unique_ptr<Func> func=make_unique<Func>(operand1_type,operand2_function);
+    unique_ptr<Func> func=make_unique<Func>(operand1_function);
 
     return move(func);
 }

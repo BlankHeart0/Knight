@@ -1,5 +1,5 @@
 perm	USE_KEY,0
-func	str,GetKey
+func	GetKey
 var		str,name(0)
 trans	r0,x0
 store	name(0),r0
@@ -17,7 +17,7 @@ lable	0
 load	r0,key(0)
 trans	y,r0
 ret		
-func	void,main
+func	main
 load	r0,"PJD"
 trans	x0,r0
 call	GetKey

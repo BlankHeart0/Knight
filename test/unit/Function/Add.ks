@@ -1,4 +1,4 @@
-func	int,add1
+func	add1
 var		int,a(0)
 var		int,b(0)
 trans	r0,x0
@@ -10,7 +10,7 @@ load	r1,b(0)
 add		r0,r1
 trans	y,r0
 ret		
-func	int,add2
+func	add2
 var		int,x1(0)
 var		int,x2(0)
 var		int,x3(0)
@@ -62,7 +62,7 @@ load	r1,x10(0)
 add		r0,r1
 trans	y,r0
 ret		
-func	dec,add3
+func	add3
 var		dec,a(0)
 var		dec,b(0)
 trans	r0,x0
@@ -74,7 +74,7 @@ load	r1,b(0)
 add		r0,r1
 trans	y,r0
 ret		
-func	void,main
+func	main
 load	r0,1
 load	r1,2
 load	r2,1

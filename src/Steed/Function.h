@@ -10,9 +10,6 @@
 class Function
 {
 public:
-    bool is_void;
-    DataType data_type;
-    
     vector<unique_ptr<Instruction>> instructions;
     VariableTable variables;
     unordered_map<int,int> lables;

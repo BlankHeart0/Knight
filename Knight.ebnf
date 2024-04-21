@@ -1,7 +1,7 @@
 # Knight's ebnf grammar
 
 # Begin
-<Translation_Unit> ::= {<Permission_Definition>|Invoke_Definition|<Function_Definition>} CODE_EOF
+<Translation_Unit> ::= {<Permission_Definition>|<Invoke_Definition>|<Function_Definition>} CODE_EOF
 
 # Definition
 <Permission_Definition> ::= PERMISSION IDENTIFIER{,IDENTIFIER}

@@ -1,4 +1,4 @@
-func	int,Factorial
+func	Factorial
 var		int,n(0)
 trans	r0,x0
 store	n(0),r0
@@ -21,7 +21,7 @@ load	r1,n(0)
 mul		r0,r1
 trans	y,r0
 ret		
-func	int,Fibonacci
+func	Fibonacci
 var		int,n(0)
 trans	r0,x0
 store	n(0),r0
@@ -51,7 +51,7 @@ trans	r1,y
 add		r0,r1
 trans	y,r0
 ret		
-func	void,main
+func	main
 var		int,i(0)
 load	r0,1
 store	i(0),r0

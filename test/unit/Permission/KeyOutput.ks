@@ -1,5 +1,5 @@
 perm	USE_KEY,0
-func	void,main
+func	main
 var		str,key(0)
 load	r0,"123456"
 store	key(0),r0

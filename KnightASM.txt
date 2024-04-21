@@ -10,7 +10,7 @@ load    R           variable(N)
 store   variable(N) R
 
 invoke  application function    (directive)
-func    type        function    (directive)
+func    function    (directive)
 trans   X           R
 trans   R           X
 trans   Y           R

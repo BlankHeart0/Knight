@@ -1,5 +1,5 @@
-perm	Look_BMI,1
-func	str,GetBMIResult
+perm	Look_BMI,0
+func	GetBMIResult
 var		dec,Height(0)
 var		dec,Weight(0)
 trans	r0,x0
@@ -41,7 +41,7 @@ load	r1,result(0)
 add		r0,r1
 trans	y,r0
 ret		
-func	void,main
+func	main
 var		str,name(0)
 var		int,age(0)
 load	r0,0

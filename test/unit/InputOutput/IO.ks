@@ -1,4 +1,4 @@
-func	void,main
+func	main
 var		str,name(0)
 load	r0,"Enter your name:"
 output	r0

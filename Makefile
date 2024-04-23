@@ -38,7 +38,7 @@ build/steed/%.d: $(path_steed)/%.cpp
 # Duke
 -include $(objects_duke:.o=.d)
 path_duke = src/Duke
-objects_duke = build/duke/Driver.o build/duke/OS.o build/duke/Parser.o build/duke/Command.o build/duke/Sword.o
+objects_duke = build/duke/Driver.o build/duke/OS.o build/duke/Parser.o build/duke/Command.o build/duke/Sword.o build/duke/FileManager.o
 
 bin/duke: $(objects_duke)
 	g++ -o bin/duke $(objects_duke)

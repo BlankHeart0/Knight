@@ -1,6 +1,6 @@
 #include "Parser.h"
 
-bool Parser::GetNameArg()
+bool CommandParser::GetNameArg()
 {
     int size=command_str.size();
     int current=0;
@@ -28,7 +28,7 @@ bool Parser::GetNameArg()
     return true;
 }
 
-unique_ptr<Command> Parser::GetCommand()
+unique_ptr<Command> CommandParser::GetCommand()
 {
     if(CommandParse_map.find(command_name)==CommandParse_map.end())
     {
@@ -150,7 +150,21 @@ unique_ptr<Command> Parse_List(string& arg)
     return nullptr;
 }
 
-unique_ptr<Command> Parse_Uninstall (string& arg)
+unique_ptr<Command> Parse_Install(string& arg)
+{
+    if(arg=="")
+    {
+        CommandUsage("install");
+        return nullptr;
+    }
+
+    string package=arg;
+    unique_ptr<Install> install=make_unique<Install>(package);
+    
+    return move(install);
+}
+
+unique_ptr<Command> Parse_Uninstall(string& arg)
 {
     if(arg=="")
     {
@@ -162,6 +176,20 @@ unique_ptr<Command> Parse_Uninstall (string& arg)
     unique_ptr<Uninstall> uninstall=make_unique<Uninstall>(application);
 
     return move(uninstall);
+}
+
+unique_ptr<Command> Parse_Chperm(string& arg)
+{
+    if(arg=="")
+    {
+        CommandUsage("chperm");
+        return nullptr;
+    }
+
+    string application=arg;
+    unique_ptr<Chperm> chperm=make_unique<Chperm>(application);
+
+    return move(chperm);
 }
 
 unique_ptr<Command> Parse_Run(string& arg)
@@ -176,4 +204,35 @@ unique_ptr<Command> Parse_Run(string& arg)
     unique_ptr<Run> run=make_unique<Run>(application);
 
     return move(run);
+}
+
+
+
+InstructionParser::InstructionParser(string line_code)
+{
+    this->line_code=line_code;
+
+    int current=0;
+
+    // Opcode
+    int end=current;
+    while(isalpha(line_code[end]))end++;
+    opcode_str=line_code.substr(current,end-current);
+
+    //skip the space
+    while(end<line_code.size()&&isspace(line_code[end]))
+        end++;
+
+    // Operand1
+    current=end;
+    while(end<line_code.size()&&line_code[end]!=',')end++;
+    if(current<line_code.size())
+        operand1_str=line_code.substr(current,end-current);
+
+    // Operand2
+    end++;
+    current=end;
+    while(end<line_code.size())end++;
+    if(current<line_code.size())
+        operand2_str=line_code.substr(current,end-current);
 }

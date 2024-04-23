@@ -3,7 +3,7 @@
 #include "System.h"
 #include "Command.h"
 
-class Parser
+class CommandParser
 {
 private:
     string command_str;
@@ -13,7 +13,7 @@ private:
 
 public: 
 
-    Parser(string command_str):command_str(command_str){}
+    CommandParser(string command_str):command_str(command_str){}
 
     bool GetNameArg();
     unique_ptr<Command> GetCommand();
@@ -27,7 +27,9 @@ unique_ptr<Command> Parse_Again     (string& arg);
 unique_ptr<Command> Parse_Clear     (string& arg);
 unique_ptr<Command> Parse_Draw      (string& arg);
 unique_ptr<Command> Parse_List      (string& arg);
+unique_ptr<Command> Parse_Install   (string& arg);
 unique_ptr<Command> Parse_Uninstall (string& arg);
+unique_ptr<Command> Parse_Chperm    (string& arg);
 unique_ptr<Command> Parse_Run       (string& arg);
 
 static unordered_map<string,unique_ptr<Command>(*)(string&)> CommandParse_map
@@ -40,6 +42,23 @@ static unordered_map<string,unique_ptr<Command>(*)(string&)> CommandParse_map
     {"clear",Parse_Clear},
     {"draw",Parse_Draw},
     {"list",Parse_List},
+    {"install",Parse_Install},
     {"uninstall",Parse_Uninstall},
+    {"chperm",Parse_Chperm},
     {"run",Parse_Run}
+};
+
+
+
+class InstructionParser
+{
+private:
+    string line_code;
+
+public:
+    string opcode_str;
+    string operand1_str;
+    string operand2_str;
+
+    InstructionParser(string line_code);
 };

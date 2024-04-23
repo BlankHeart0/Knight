@@ -12,7 +12,7 @@ void OperatingSystem::Run()
         cout<<"\033[94mCommand >> \033[0m";
         getline(cin,command_str);
 
-        Parser parser(command_str);
+        CommandParser parser(command_str);
         if(parser.GetNameArg())
         {
             unique_ptr<Command> command_ptr=parser.GetCommand();

@@ -2,6 +2,7 @@
 
 #include "System.h"
 #include "Sword.h"
+#include "FileManager.h"
 
 static unordered_map<string,string> CommandUsage_map
 {
@@ -13,7 +14,9 @@ static unordered_map<string,string> CommandUsage_map
     {"clear","clear"},
     {"draw","draw"},
     {"list","list [-pkg|-app]"},
+    {"install","install package"},
     {"uninstall","uninstall application"},
+    {"chperm","chperm application"},
     {"run","run application"}
 };
 void CommandUsage(string command);
@@ -98,6 +101,16 @@ public:
     void Excute();
 };
 
+// install
+class Install: public Command
+{
+public:
+    string package;
+
+    Install(string package):package(package){}
+    void Excute();
+};
+
 // uninstall
 class Uninstall: public Command
 {
@@ -105,6 +118,16 @@ public:
     string application;
 
     Uninstall(string application):application(application){}
+    void Excute();
+};
+
+// chperm
+class Chperm: public Command
+{
+public:
+    string application;
+
+    Chperm(string application):application(application){}
     void Excute();
 };
 

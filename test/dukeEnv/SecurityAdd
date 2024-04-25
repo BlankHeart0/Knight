@@ -1,5 +1,5 @@
-perm	USE_A,0
-perm	USE_B,0
+perm	USE_A,1
+perm	USE_B,1
 func	SecurityAdd
 var		int,a(0)
 var		int,b(0)

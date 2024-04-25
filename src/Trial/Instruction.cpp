@@ -153,13 +153,17 @@ void CodeGenerator::Store(string variable_name,int r_i,int line)
 {         
     Variable variable=NowInFunction().vartable.Visit(variable_name,line);
 
-    PermissionSet variable_permissions=variable.type.permissions;
     PermissionSet register_permissions=general_register.GetReg(r_i).type.permissions;
-    PermissionSet need_permissions=register_permissions-variable_permissions;
+    PermissionSet variable_permissions=variable.type.permissions;
+
+    PermissionSet miss_permissions=register_permissions-variable_permissions;
+    if(!miss_permissions.IsEmpty())
+        TYPE_ERROR("Miss permissions"+miss_permissions.Str());
+
     int lable_storeEnd=-1;
-    if(!need_permissions.IsEmpty())
+    if(!variable_permissions.IsEmpty())
     {
-        int test_ri=CodeGenerator::Test(need_permissions,line);
+        int test_ri=CodeGenerator::Test(variable_permissions,line);
         lable_storeEnd=CodeGenerator::NowInFunction().NewLable();
         CodeGenerator::JumpFalse(lable_storeEnd,test_ri);
     }
@@ -185,7 +189,7 @@ void CodeGenerator::Store(string variable_name,int r_i,int line)
     general_register.Free(r_i);
 
 
-    if(!need_permissions.IsEmpty())
+    if(!variable_permissions.IsEmpty())
     {
         CodeGenerator::Lable(lable_storeEnd);
     }
@@ -310,14 +314,18 @@ void CodeGenerator::TransY2R(int r_i)
 }
 
 void CodeGenerator::TransR2Y(int r_i,int line)
-{
-    PermissionSet ret_permissions=NowInFunction().ret_type.permissions;
+{    
     PermissionSet register_permissions=general_register.GetReg(r_i).type.permissions;
-    PermissionSet need_permissions=register_permissions-ret_permissions;
+    PermissionSet ret_permissions=NowInFunction().ret_type.permissions;
+    
+    PermissionSet miss_permissions=register_permissions-ret_permissions;
+    if(!miss_permissions.IsEmpty())
+        TYPE_ERROR("Miss permissions"+miss_permissions.Str());
+
     int lable_transEnd=-1;
-    if(!need_permissions.IsEmpty())
+    if(!ret_permissions.IsEmpty())
     {
-        int test_ri=CodeGenerator::Test(need_permissions,line);
+        int test_ri=CodeGenerator::Test(ret_permissions,line);
         lable_transEnd=CodeGenerator::NowInFunction().NewLable();
         CodeGenerator::JumpFalse(lable_transEnd,test_ri);
     }
@@ -340,7 +348,7 @@ void CodeGenerator::TransR2Y(int r_i,int line)
     general_register.Free(r_i);
 
 
-    if(!need_permissions.IsEmpty())
+    if(!ret_permissions.IsEmpty())
     {
         CodeGenerator::Lable(lable_transEnd);
     }

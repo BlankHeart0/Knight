@@ -37,13 +37,18 @@ make uninstall
 trial [-LUTA] knight_file 
 ```
 **-L**: Compile to lower-case KnightAssembly file (default)
+
 **-U**: Compile to upper-case KnightAssembly file
+
 **-T**: Scan the code, print tokens
+
 **-A**: Parse the code, print abstract syntax tree
+
 ### Steed
 ```shell
 steed KnightAssembly_file
 ```
+
 ### Duke
 In the directory where you want duke to use the files
 , such as "test/duke/Env"

@@ -1,5 +1,5 @@
 # ✨ Knight 🗡️
-Knight is a Programming Language to protect the Security of Information Flow.
+### Knight is a Programming Language to protect the Security of Information Flow.
 
 **If you want to know details, please read KnightDocument.pdf(Only can open under Windows), KnightGrammar.ebnf, etc.**
 
@@ -14,7 +14,7 @@ The whole Knight project, toolchain includes four parts:
 * __Steed :__ The Virtual Machine to run Knight programs(Knight Assembly)
 * __Duke :__ A toy System to show Knight program's behavior
 
-***If you want to have a great experience in reading and coding Knight or KnightAssembly programs, please install Knight extensions.They are in extension directory***
+***If you want to have a great experience in reading and coding Knight or KnightAssembly programs, please install Knight extensions.They are in extension directory.***
 
 ## Build
 ```shell

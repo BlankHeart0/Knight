@@ -4,7 +4,7 @@
 
 int main()
 {   
-    //Sword::Fly();
+    Sword::Fly();
     duke.Flash();
     duke.Run();
 
